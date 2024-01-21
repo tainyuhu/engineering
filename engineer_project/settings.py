@@ -36,16 +36,22 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',
 ]
 # Thired party apps (第三方應用套件)
 INSTALLED_APPS += [
-    # 'corsheaders',
+    'corsheaders',
+    'rest_framework',
+    'casbin_adapter.apps.CasbinAdapterConfig',
 ]
 
 # Custom apps (自定義)
 INSTALLED_APPS += [
-    'apps.project_app_pv', 
-    'apps.project_app_breeding', 
+    'apps.browse_historical_project_progress', #歷史工程資料相關
+    'apps.plan_app',
+    'apps.pv_app', #PV工程相關
+    'apps.breeding_app', #養殖工程相關
+    'apps.login', #登入相關
 ]
 
 # 如果要透過 apps來管理每個 app，則必須加上這行，否則上方 INSTALLED_APPS則必須要加上前綴 <apps>
@@ -62,10 +68,13 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'apps.plan_app.global_exception_middleware.GlobalExceptionMiddleware',
+    'apps.pv_app.global_exception_middleware.GlobalExceptionMiddleware',
 ]
 
 ROOT_URLCONF = 'engineer_project.urls'
@@ -100,9 +109,9 @@ WSGI_APPLICATION = 'engineer_project.wsgi.application'
 DATABASES = {
     'default': { # MySQL(預設)
         'ENGINE': 'django.db.backends.mysql', # 使用的資料庫引擎
-        'NAME': 'engineer_progress', # MySQL 資料庫的名稱
+        'NAME': 'engineer_system', # MySQL 資料庫的名稱
         'USER': 'root', # 使用者名稱
-        'PASSWORD': 'Ru,6e.4vu4wj/3', # 密碼
+        # 'PASSWORD': 'Ru,6e.4vu4wj/3', # 密碼
         'HOST': 'localhost', # IP 地址
         'PORT': '3306', # 埠號(mysql為 3306)
         'OPTIONS': { # 避免發生『MariaDB Strict Mode』問題
@@ -176,3 +185,21 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+CORS_ALLOW_CREDENTIALS = True
+CSRF_TRUSTED_ORIGINS = [
+    'http://127.0.0.1:8000',
+    "http://localhost:8080",
+    "http://127.0.0.1:8080",
+]
+
+
+# CASBIN 設定
+CASBIN_MODEL = os.path.join(BASE_DIR, 'casbin.conf')
