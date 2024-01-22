@@ -199,11 +199,19 @@ REST_FRAMEWORK = {
 }
 
 CORS_ALLOW_CREDENTIALS = True
-CSRF_TRUSTED_ORIGINS = [
-    'http://127.0.0.1:8000',
-    "http://localhost:8080",
-    "http://127.0.0.1:8080",
-]
+CORS_ORIGIN_ALLOW_ALL = True # 允許所有跨站請求, 且whitelist不會被使用
+# CORS_ORIGIN_WHITELIST = ( # 設定白名單
+#     "http://localhost:8000",
+#     "http://localhost",
+#     'http://103.118.27.148',
+#     'https://103.118.27.148',
+# )
+# CSRF_TRUSTED_ORIGINS = [
+#     'http://127.0.0.1:80',
+#     'http://127.0.0.1:8000',
+#     "http://localhost:8080",
+#     "http://127.0.0.1:8080",
+# ]
 
 
 # CASBIN 設定
