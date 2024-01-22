@@ -23,9 +23,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-cacs3$pgw!!h-enhi0pxg!hcx@ap&f-^8e11i89&*c=pj011_r'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 #region (APPS 設定)
 # Application definition
@@ -69,6 +71,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     # 'django.middleware.csrf.CsrfViewMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', # 新增這一行 (pip install whitenoise)
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -111,7 +114,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql', # 使用的資料庫引擎
         'NAME': 'engineer_system', # MySQL 資料庫的名稱
         'USER': 'root', # 使用者名稱
-        # 'PASSWORD': 'Ru,6e.4vu4wj/3', # 密碼
+        'PASSWORD': 'Ru,6e.4vu4wj/3', # 密碼
         'HOST': 'localhost', # IP 地址
         'PORT': '3306', # 埠號(mysql為 3306)
         'OPTIONS': { # 避免發生『MariaDB Strict Mode』問題
@@ -179,6 +182,8 @@ STATICFILES_DIRS = [
     os.path.join(FRONTEND_DIR, 'dist', 'static'),
 ]
 
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage' # pip install whitenoise
+
 #endregion
 
 # Default primary key field type
@@ -194,11 +199,19 @@ REST_FRAMEWORK = {
 }
 
 CORS_ALLOW_CREDENTIALS = True
-CSRF_TRUSTED_ORIGINS = [
-    'http://127.0.0.1:8000',
-    "http://localhost:8080",
-    "http://127.0.0.1:8080",
-]
+CORS_ORIGIN_ALLOW_ALL = True # 允許所有跨站請求, 且whitelist不會被使用
+# CORS_ORIGIN_WHITELIST = ( # 設定白名單
+#     "http://localhost:8000",
+#     "http://localhost",
+#     'http://103.118.27.148',
+#     'https://103.118.27.148',
+# )
+# CSRF_TRUSTED_ORIGINS = [
+#     'http://127.0.0.1:80',
+#     'http://127.0.0.1:8000',
+#     "http://localhost:8080",
+#     "http://127.0.0.1:8080",
+# ]
 
 
 # CASBIN 設定
