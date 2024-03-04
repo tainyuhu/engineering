@@ -20,6 +20,7 @@ sys.path.insert(0, PROJECT_DIR)  # 項目加入導包路徑
 virtualenv_dir = os.path.join(PROJECT_DIR, 'venv', 'Lib', 'site-packages')  # 虛擬環境python包文件夾
 sys.path.insert(0, virtualenv_dir)  # 加入導包路徑
 
-#endregion
+# #endregion
+
 
 application = get_wsgi_application()
