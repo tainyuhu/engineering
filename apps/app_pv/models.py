@@ -184,7 +184,7 @@ class ProjectPVExpectedProgress(models.Model):
     expected_progress_id = models.AutoField(primary_key=True)
     pv_id = models.ForeignKey('ProjectPV', on_delete=models.CASCADE, db_column='pv_id')
     parameter_id = models.ForeignKey('LogisticParameters', on_delete=models.CASCADE, db_column='parameter_id')
-    expected_percentage = models.DecimalField(max_digits=5, decimal_places=2)
+    progress_percentage = models.DecimalField(max_digits=5, decimal_places=2)
     calculation_date = models.DateField()
     last_update = models.DateTimeField(auto_now=True)
     create_at = models.DateTimeField(auto_now_add=True)
