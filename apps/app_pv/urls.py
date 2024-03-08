@@ -1,6 +1,5 @@
 from django.urls import path
 from . import views
-from .views import GetPVProgressAndExpected
 
 
 urlpatterns = [
@@ -68,8 +67,7 @@ urlpatterns = [
     path('pv-bank-expected-history/', views.PVBankExpectedHistoryList.as_view(), name='pv-bank-expected-history-list'),
     path('pv-bank-expected-history/<int:pk>/', views.PVBankExpectedHistoryDetail.as_view(), name='pv-bank-expected-history-detail'),
 
-    path('get_pv_progress_and_expected/<int:loop_id>/', GetPVProgressAndExpected.as_view(), name='get_pv_progress_and_expected'),
-
-   
+    # 計算周進度
+    path('get_pv_progress/<int:loop_id>/<int:currentPage>/<int:itemsPerPage>/<str:project_type>/', views.GetPVProgress.as_view(), name='get_pv_progress'),
 
 ]

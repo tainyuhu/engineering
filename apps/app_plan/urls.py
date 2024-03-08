@@ -61,9 +61,13 @@ urlpatterns = [
     # 發電量比例 EnergyProductionRatio URLs
     path('energyproductionratios/', views.EnergyProductionRatioList.as_view(), name='energyproductionratio-list'),
     path('energyproductionratios/<int:pk>/', views.EnergyProductionRatioDetail.as_view(), name='energyproductionratio-detail'),
-    # FileProgress
+    
     # 文件連結管理 URLs
     path('fileprogress/', views.FileProgressList.as_view(), name='fileprogress-list'),
     path('fileprogress/<int:pk>/', views.FileProgressDetail.as_view(), name='fileprogress-detail'),
+
+    # 會議連結管理 URLs
+    path('meetingrecord/', views.MeetingRecordList.as_view(), name='meetingrecord-list'),
+    path('meetingrecord/<int:pk>/', views.MeetingRecordDetail.as_view(), name='meetingrecord-detail'),
     
 ]

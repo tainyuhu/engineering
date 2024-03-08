@@ -1,13 +1,13 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from .models import (
-    ProjectValueRatio, ProjectValueRatiosHistory, Plan, PlansHistory,  PlansProgress, 
+    MeetingRecord, ProjectValueRatio, ProjectValueRatiosHistory, Plan, PlansHistory,  PlansProgress, 
     MasterPlan, MasterPlansHistory, MasterPlanProgress,
     PlanWeight, PlanAssociation, PlanTotalEnergyProduction,
     ProjectLoopEnergyProduction, ProjectCaseEnergyProduction, EnergyProductionSeries, EnergyProductionRatio, FileProgress
 )
 from .serializers import (
-    ProjectValueRatioSerializer, ProjectValueRatiosHistorySerializer, PlanSerializer, PlansHistorySerializer, PlansProgressSerializer, 
+    MeetingRecordSerializer, ProjectValueRatioSerializer, ProjectValueRatiosHistorySerializer, PlanSerializer, PlansHistorySerializer, PlansProgressSerializer, 
     MasterPlanSerializer, MasterPlansHistorySerializer, MasterPlanProgressSerializer,
     PlanWeightSerializer, PlanAssociationSerializer, PlanTotalEnergyProductionSerializer,
     ProjectLoopEnergyProductionSerializer, ProjectCaseEnergyProductionSerializer, 
@@ -172,5 +172,15 @@ class FileProgressList(generics.ListCreateAPIView):
 class FileProgressDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = FileProgress.objects.all()
     serializer_class = FileProgressSerializer
+#endregion
+    
+#region 會議連結管理
+class MeetingRecordList(generics.ListCreateAPIView):
+    queryset = MeetingRecord.objects.all()
+    serializer_class = MeetingRecordSerializer
+
+class MeetingRecordDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = MeetingRecord.objects.all()
+    serializer_class = MeetingRecordSerializer
 #endregion
     

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2024-03-04 08:05:08
+-- 產生時間： 2024-03-08 02:21:21
 -- 伺服器版本： 10.4.28-MariaDB
 -- PHP 版本： 8.2.4
 
@@ -790,6 +790,34 @@ CREATE TABLE `master_plan_progress` (
 -- --------------------------------------------------------
 
 --
+-- 資料表結構 `meeting_record`
+--
+
+CREATE TABLE `meeting_record` (
+  `id` int(11) NOT NULL,
+  `file_name` varchar(255) NOT NULL,
+  `file_link` varchar(255) NOT NULL,
+  `last_update` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `create_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `update_description` text DEFAULT NULL,
+  `routeName` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- 傾印資料表的資料 `meeting_record`
+--
+
+INSERT INTO `meeting_record` (`id`, `file_name`, `file_link`, `last_update`, `create_at`, `update_description`, `routeName`) VALUES
+(1, '1130109 會議紀錄', 'https://drive.google.com/file/d/1nbyebycLgxObamSn4BPhYwQCmmnj_718/view?usp=sharing', '2024-02-29 02:52:52', '2024-02-29 02:52:52', NULL, ''),
+(2, '1130116 會議紀錄', 'https://drive.google.com/file/d/1YDzaQZQ5JmC40FX9Cazf1MehnBV54km5/view?usp=sharing', '2024-03-01 05:19:16', '2024-03-05 05:19:16', NULL, ''),
+(3, '1130124 會議紀錄', 'https://drive.google.com/file/d/1jZvZ1lgtZ8zNGaIBUC8NHspWxkFmRYpj/view?usp=sharing', '2024-03-02 05:20:00', '2024-03-05 05:20:00', NULL, ''),
+(4, '1130131 職業安全衛生協議組織會議', 'https://drive.google.com/file/d/14yhU0nyOBNWWCX1jR9IAqIkf5A4n69m-/view?usp=sharing', '2024-03-03 05:20:42', '2024-03-05 05:20:42', NULL, ''),
+(5, '1130207 會議紀錄', 'https://drive.google.com/file/d/1TFRRuqJF1Q9RuDIcqiyUzhzNq72oIuJK/view?usp=sharing', '2024-03-04 05:21:22', '2024-03-05 05:21:22', NULL, ''),
+(6, '1130221 會議紀錄', 'https://drive.google.com/file/d/1yevm0KqZxLNMWU8oYe0ICTcmE3egoCED/view?usp=sharing', '2024-03-05 05:22:04', '2024-03-05 05:22:04', NULL, '');
+
+-- --------------------------------------------------------
+
+--
 -- 資料表結構 `plans`
 --
 
@@ -984,7 +1012,8 @@ CREATE TABLE `project_cases` (
 --
 
 INSERT INTO `project_cases` (`case_id`, `loop_id`, `cases_name`, `longitude`, `latitude`, `address`, `plannedstart_date`, `plannedend_date`, `actualstart_date`, `actualend_date`, `construction_status`, `notes`, `last_update`, `create_at`) VALUES
-(1, 1, '升三-A02區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-02-29 02:32:45', '2024-02-29 02:32:45');
+(1, 1, '升三-A02區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-02-29 02:32:45', '2024-02-29 02:32:45'),
+(2, 1, '升三-A02區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-02-29 02:32:45', '2024-02-29 02:32:45');
 
 -- --------------------------------------------------------
 
@@ -1078,7 +1107,8 @@ CREATE TABLE `project_pv` (
 --
 
 INSERT INTO `project_pv` (`pv_id`, `pv_name`, `planned_start_date`, `planned_end_date`, `actual_start_date`, `actual_end_date`, `construction_status`, `series_id`, `last_update`, `create_at`, `case_id`) VALUES
-(1, '升三-A02區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-02-29 02:33:34', '2024-02-29 02:33:34', 1);
+(1, '升三-A02區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-02-29 02:33:34', '2024-02-29 02:33:34', 1),
+(2, '升三-A02區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-02-29 02:33:34', '2024-02-29 02:33:34', 2);
 
 -- --------------------------------------------------------
 
@@ -1090,7 +1120,7 @@ CREATE TABLE `project_pv_expected_progress` (
   `expected_progress_id` int(11) NOT NULL,
   `pv_id` int(11) DEFAULT NULL,
   `parameter_id` int(11) DEFAULT NULL,
-  `expected_percentage` decimal(5,2) DEFAULT NULL,
+  `progress_percentage` decimal(5,2) DEFAULT NULL,
   `calculation_date` date DEFAULT NULL,
   `last_update` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `create_at` timestamp NOT NULL DEFAULT current_timestamp(),
@@ -1102,8 +1132,11 @@ CREATE TABLE `project_pv_expected_progress` (
 -- 傾印資料表的資料 `project_pv_expected_progress`
 --
 
-INSERT INTO `project_pv_expected_progress` (`expected_progress_id`, `pv_id`, `parameter_id`, `expected_percentage`, `calculation_date`, `last_update`, `create_at`, `start_date`, `end_date`) VALUES
-(1, 1, NULL, 0.15, NULL, '2024-02-29 08:24:18', '2024-02-29 08:24:18', '2024-01-07', '2024-01-13');
+INSERT INTO `project_pv_expected_progress` (`expected_progress_id`, `pv_id`, `parameter_id`, `progress_percentage`, `calculation_date`, `last_update`, `create_at`, `start_date`, `end_date`) VALUES
+(1, 1, NULL, 0.15, NULL, '2024-02-29 08:24:18', '2024-02-29 08:24:18', '2024-01-07', '2024-01-13'),
+(2, 1, NULL, 0.15, NULL, '2024-02-29 08:24:18', '2024-02-29 08:24:18', '2024-01-14', '2024-01-20'),
+(5, 1, NULL, 0.15, NULL, '2024-02-29 08:24:18', '2024-02-29 08:24:18', '2023-12-31', '2024-01-06'),
+(6, 1, NULL, 0.15, NULL, '2024-02-29 08:24:18', '2024-02-29 08:24:18', '2024-01-21', '2024-01-27');
 
 -- --------------------------------------------------------
 
@@ -1149,7 +1182,10 @@ CREATE TABLE `project_pv_progress` (
 --
 
 INSERT INTO `project_pv_progress` (`progress_id`, `pv_id`, `series_id`, `progress_percentage`, `supervisor`, `non_construction_reason`, `progress_calculation_description`, `last_update`, `create_at`, `start_date`, `end_date`) VALUES
-(1, 1, NULL, 0.20, NULL, NULL, NULL, '2024-02-29 08:23:13', '2024-02-29 08:23:13', '2024-01-07', '2024-01-13');
+(1, 1, NULL, 0.20, NULL, NULL, NULL, '2024-03-05 09:15:04', '2024-02-29 08:23:13', '2024-01-14', '2024-01-20'),
+(2, 1, NULL, 0.15, NULL, NULL, NULL, '2024-03-08 01:18:01', '2024-02-29 08:23:13', '2024-01-07', '2024-01-13'),
+(5, 1, NULL, 0.10, NULL, NULL, NULL, '2024-03-08 01:17:24', '2024-02-29 08:23:13', '2023-12-31', '2024-01-06'),
+(6, 1, NULL, 0.25, NULL, NULL, NULL, '2024-03-05 12:22:20', '2024-02-29 08:23:13', '2024-01-21', '2024-01-27');
 
 -- --------------------------------------------------------
 
@@ -1242,6 +1278,16 @@ CREATE TABLE `pv_bank_progress` (
   `end_date` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- 傾印資料表的資料 `pv_bank_progress`
+--
+
+INSERT INTO `pv_bank_progress` (`pv_bank_id`, `pv_id`, `progress_percentage`, `last_update`, `create_at`, `start_date`, `end_date`) VALUES
+(1, 1, 0.40, '2024-03-07 12:44:15', '2024-03-07 12:44:15', '2024-01-21', '2024-01-27'),
+(3, 1, 0.40, '2024-03-07 12:44:15', '2024-03-07 12:44:15', '2024-01-14', '2024-01-20'),
+(4, 1, 0.40, '2024-03-07 12:44:15', '2024-03-07 12:44:15', '2024-01-07', '2024-01-13'),
+(5, 1, 0.40, '2024-03-07 12:44:15', '2024-03-07 12:44:15', '2023-12-31', '2024-01-06');
+
 -- --------------------------------------------------------
 
 --
@@ -1259,6 +1305,16 @@ CREATE TABLE `pv_bank_progress_expected` (
   `start_date` date DEFAULT NULL,
   `end_date` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- 傾印資料表的資料 `pv_bank_progress_expected`
+--
+
+INSERT INTO `pv_bank_progress_expected` (`pv_bank_expected_id`, `pv_id`, `parameter_id`, `is_parameter_based`, `progress_percentage`, `last_update`, `create_at`, `start_date`, `end_date`) VALUES
+(1, 1, NULL, NULL, NULL, '2024-03-07 12:46:27', '2024-03-07 12:46:27', '2024-01-21', '2024-01-27'),
+(3, 1, NULL, NULL, NULL, '2024-03-07 12:46:27', '2024-03-07 12:46:27', '2024-01-14', '2024-01-20'),
+(4, 1, NULL, NULL, NULL, '2024-03-07 12:46:27', '2024-03-07 12:46:27', '2024-01-07', '2024-01-13'),
+(5, 1, NULL, NULL, NULL, '2024-03-07 12:46:27', '2024-03-07 12:46:27', '2023-12-31', '2024-01-06');
 
 -- --------------------------------------------------------
 
@@ -1522,6 +1578,12 @@ ALTER TABLE `master_plans_history`
 ALTER TABLE `master_plan_progress`
   ADD PRIMARY KEY (`progress_id`),
   ADD KEY `master_plan_id` (`master_plan_id`);
+
+--
+-- 資料表索引 `meeting_record`
+--
+ALTER TABLE `meeting_record`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- 資料表索引 `plans`
@@ -1879,6 +1941,12 @@ ALTER TABLE `master_plan_progress`
   MODIFY `progress_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- 使用資料表自動遞增(AUTO_INCREMENT) `meeting_record`
+--
+ALTER TABLE `meeting_record`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
 -- 使用資料表自動遞增(AUTO_INCREMENT) `plans`
 --
 ALTER TABLE `plans`
@@ -1936,7 +2004,7 @@ ALTER TABLE `projects_progress_expected`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `project_cases`
 --
 ALTER TABLE `project_cases`
-  MODIFY `case_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `case_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `project_case_energy_production`
@@ -1960,13 +2028,13 @@ ALTER TABLE `project_loop_energy_production`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `project_pv`
 --
 ALTER TABLE `project_pv`
-  MODIFY `pv_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `pv_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `project_pv_expected_progress`
 --
 ALTER TABLE `project_pv_expected_progress`
-  MODIFY `expected_progress_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `expected_progress_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `project_pv_history`
@@ -1978,7 +2046,7 @@ ALTER TABLE `project_pv_history`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `project_pv_progress`
 --
 ALTER TABLE `project_pv_progress`
-  MODIFY `progress_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `progress_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `project_value_ratios`
@@ -2008,13 +2076,13 @@ ALTER TABLE `pv_bank_history`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `pv_bank_progress`
 --
 ALTER TABLE `pv_bank_progress`
-  MODIFY `pv_bank_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `pv_bank_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `pv_bank_progress_expected`
 --
 ALTER TABLE `pv_bank_progress_expected`
-  MODIFY `pv_bank_expected_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `pv_bank_expected_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `series`
