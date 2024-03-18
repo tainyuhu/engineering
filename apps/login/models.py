@@ -1,3 +1,8 @@
 from django.db import models
 
-# Create your models here.
+class BrowseProgressPermission(models.Model):
+    class Meta:
+        managed = False
+        permissions = (
+            ("view_browse_progress", "Can view Browse Progress"),
+        )

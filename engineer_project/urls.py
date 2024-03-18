@@ -32,8 +32,8 @@ else:
     urlpatterns = [
         re_path(r'^$', TemplateView.as_view(template_name="index.html")), # 配置前端路由
 
-        path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-        path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+        # path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+        # path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
         path('api/', include('apps.login.urls')),
         path('api/', include('apps.browse_historical_project_progress.urls')),
         path('api/v1/', include('apps.app_plan.urls')),

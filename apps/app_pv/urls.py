@@ -67,7 +67,15 @@ urlpatterns = [
     path('pv-bank-expected-history/', views.PVBankExpectedHistoryList.as_view(), name='pv-bank-expected-history-list'),
     path('pv-bank-expected-history/<int:pk>/', views.PVBankExpectedHistoryDetail.as_view(), name='pv-bank-expected-history-detail'),
 
+    # 專案PV周
+    path('pv-week/', views.PvWeekList.as_view(), name='pv-week-list'),
+    path('pv-week/<int:pk>/', views.PvWeekDetail.as_view(), name='pv-week-detail'),
+
     # 計算周進度
     path('get_pv_progress/<int:loop_id>/<int:currentPage>/<int:itemsPerPage>/<str:project_type>/', views.GetPVProgress.as_view(), name='get_pv_progress'),
+    # 計算所有季進度
+    path('get_pv_all_quarter_progress/<int:loop_id>/<int:currentPage>/<int:itemsPerPage>/<str:project_type>/', views.GetPVAllQuarterProgress.as_view(), name='get_pv_all_quarter_progress'),
+    # 計算所有季進度
+    path('get_pv_quarter_progress/<int:loop_id>/<int:currentPage>/<int:itemsPerPage>/<str:project_type>/', views.GetPVQuarterProgress.as_view(), name='get_pv_quarter_progress'),
 
 ]

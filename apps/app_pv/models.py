@@ -124,7 +124,22 @@ class LogisticParametersHistory(models.Model):
         managed = False
         db_table = 'logistic_parameters_history'
 #endregion
-        
+
+# 專案PV周
+class PvWeek(models.Model):
+    week_id = models.AutoField(primary_key=True)
+    year = models.IntegerField(null=True, blank=True)
+    quarter = models.IntegerField(null=True, blank=True)
+    week = models.IntegerField(null=True, blank=True)
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
+
+    class Meta:
+        managed = False
+        db_table = 'pv_week'
+
+#endregion
+           
 #region 專案PV
 # 專案PV
 class ProjectPV(models.Model):
@@ -172,12 +187,11 @@ class ProjectPVProgress(models.Model):
     progress_calculation_description = models.TextField()
     last_update = models.DateTimeField(auto_now=True)
     create_at = models.DateTimeField(auto_now_add=True)
-    start_date = models.DateField(null=True, blank=True)
-    end_date = models.DateField(null=True, blank=True)
+    pv_week_id = models.ForeignKey(PvWeek, on_delete=models.CASCADE, db_column='pv_week_id')
 
     class Meta:
         managed = False
-        db_table = 'project_pv_progress'
+        db_table = 'pv_progress'
 
 # 專案PV預期進度(工程版)
 class ProjectPVExpectedProgress(models.Model):
@@ -188,12 +202,11 @@ class ProjectPVExpectedProgress(models.Model):
     calculation_date = models.DateField()
     last_update = models.DateTimeField(auto_now=True)
     create_at = models.DateTimeField(auto_now_add=True)
-    start_date = models.DateField(null=True, blank=True)
-    end_date = models.DateField(null=True, blank=True)
+    pv_week_id = models.ForeignKey(PvWeek, on_delete=models.CASCADE, db_column='pv_week_id')
 
     class Meta:
         managed = False
-        db_table = 'project_pv_expected_progress'
+        db_table = 'pv_expected_progress'
 
 # 專案PV實際進度(銀行版)
 class PVBankProgress(models.Model):
@@ -202,12 +215,11 @@ class PVBankProgress(models.Model):
     progress_percentage = models.DecimalField(max_digits=5, decimal_places=2)
     last_update = models.DateTimeField(auto_now=True)
     create_at = models.DateTimeField(auto_now_add=True)
-    start_date = models.DateField(null=True, blank=True)
-    end_date = models.DateField(null=True, blank=True)
+    pv_week_id = models.ForeignKey(PvWeek, on_delete=models.CASCADE, db_column='pv_week_id')
 
     class Meta:
         managed = False
-        db_table = 'pv_bank_progress'
+        db_table = 'pvbank_progress'
 
 # 專案PV實際進度(銀行版)歷史
 class PVBankHistory(models.Model):
@@ -235,12 +247,12 @@ class PVBankProgressExpected(models.Model):
     progress_percentage = models.DecimalField(max_digits=5, decimal_places=2)
     last_update = models.DateTimeField(auto_now=True)
     create_at = models.DateTimeField(auto_now_add=True)
-    start_date = models.DateField(null=True, blank=True)
-    end_date = models.DateField(null=True, blank=True)    
+    pv_week_id = models.ForeignKey('PvWeek', on_delete=models.CASCADE, db_column='pv_week_id')
+   
 
     class Meta:
         managed = False
-        db_table = 'pv_bank_progress_expected'
+        db_table = 'pvbank_progress_expected'
 
 # 專案PV預期進度(銀行版)歷史
 class PVBankExpectedHistory(models.Model):
@@ -260,3 +272,6 @@ class PVBankExpectedHistory(models.Model):
         db_table = 'pv_bank_expected_history'
 
 #endregion
+
+
+

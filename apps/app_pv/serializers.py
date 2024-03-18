@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import (
-    Series, SeriesHistory, MajorItemPercentage, MajorItemPercentageHistory,
+    PvWeek, Series, SeriesHistory, MajorItemPercentage, MajorItemPercentageHistory,
     SubItemPercentage, SubItemPercentageHistory, LogisticParameters, LogisticParametersHistory,
     ProjectPV, ProjectPVHistory, ProjectPVProgress, ProjectPVExpectedProgress,
     PVBankProgress, PVBankHistory, PVBankProgressExpected, PVBankExpectedHistory
@@ -54,6 +54,12 @@ class LogisticParametersHistorySerializer(serializers.ModelSerializer):
         model = LogisticParametersHistory
         fields = '__all__'
 
+# 專案PV周
+class PvWeekSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PvWeek
+        fields = ('week_id', 'year', 'quarter', 'week', 'start_date', 'end_date')
+
 # 專案PV
 class ProjectPVSerializer(serializers.ModelSerializer):
     class Meta:
@@ -70,7 +76,18 @@ class ProjectPVHistorySerializer(serializers.ModelSerializer):
 class ProjectPVProgressSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectPVProgress
-        fields = '__all__'
+        fields = [
+            'progress_id',
+            'pv_id',
+            'series_id',
+            'progress_percentage',
+            'supervisor',
+            'non_construction_reason',
+            'progress_calculation_description',
+            'last_update',
+            'create_at',
+            'pv_week_id',
+        ]
 
 # 專案PV預期進度(工程版)
 class ProjectPVExpectedProgressSerializer(serializers.ModelSerializer):
