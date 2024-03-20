@@ -77,5 +77,7 @@ urlpatterns = [
     path('get_pv_all_quarter_progress/<int:loop_id>/<int:currentPage>/<int:itemsPerPage>/<str:project_type>/', views.GetPVAllQuarterProgress.as_view(), name='get_pv_all_quarter_progress'),
     # 計算所有季進度
     path('get_pv_quarter_progress/<int:loop_id>/<int:currentPage>/<int:itemsPerPage>/<str:project_type>/', views.GetPVQuarterProgress.as_view(), name='get_pv_quarter_progress'),
+    # 計算季進度報表
+    path('get_pv_quarter_chart_progress/<int:loop_id>/<str:project_type>/', views.GetPVQuarterChartProgress.as_view(), name='get_pv_quarter_chart_progress'),
 
 ]

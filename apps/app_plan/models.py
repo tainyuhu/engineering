@@ -1,8 +1,9 @@
 from django.db import models
+from common.models import BaseModel
 
 #region 專案價金比例
 #專案價金比例
-class ProjectValueRatio(models.Model):
+class ProjectValueRatio(BaseModel):
     ratio_id = models.AutoField(primary_key=True)
     plan_id = models.ForeignKey('Plan', on_delete=models.CASCADE, db_column='plan_id')
     project_id = models.IntegerField()
@@ -18,7 +19,7 @@ class ProjectValueRatio(models.Model):
         db_table = 'project_value_ratios' 
 
 #專案價金比例歷史
-class ProjectValueRatiosHistory(models.Model):
+class ProjectValueRatiosHistory(BaseModel):
     history_id = models.AutoField(primary_key=True)
     reference_id = models.ForeignKey('ProjectValueRatio', on_delete=models.CASCADE, db_column='ratio_id')
     changed_column = models.CharField(max_length=255)
@@ -37,7 +38,7 @@ class ProjectValueRatiosHistory(models.Model):
         
 #region 計畫
 # 計畫
-class Plan(models.Model):
+class Plan(BaseModel):
     plan_id = models.AutoField(primary_key=True)
     plan_name = models.CharField(max_length=255)
     planned_start_date = models.DateField(null=True, blank=True)
@@ -55,7 +56,7 @@ class Plan(models.Model):
         db_table = 'plans'
 
 # 計畫歷史
-class PlansHistory(models.Model):
+class PlansHistory(BaseModel):
     history_id = models.AutoField(primary_key=True)
     reference_id = models.ForeignKey('Plan', on_delete=models.CASCADE, db_column='plan_id')
     changed_column = models.CharField(max_length=255)
@@ -72,7 +73,7 @@ class PlansHistory(models.Model):
         db_table = 'plans_history'
 
 # 計畫實際進度
-class PlansProgress(models.Model):
+class PlansProgress(BaseModel):
     progress_id = models.AutoField(primary_key=True)
     plan_id = models.ForeignKey('Plan', on_delete=models.CASCADE, db_column='plan_id')
     ratio_id = models.ForeignKey('ProjectValueRatio', on_delete=models.CASCADE, db_column='ratio_id')
@@ -88,7 +89,7 @@ class PlansProgress(models.Model):
 
 #region 統體計畫
 # 總體計畫
-class MasterPlan(models.Model):
+class MasterPlan(BaseModel):
     master_plan_id = models.AutoField(primary_key=True)
     master_plan_name = models.CharField(max_length=255)
     planned_start_date = models.DateField()
@@ -106,7 +107,7 @@ class MasterPlan(models.Model):
         db_table = 'master_plans'
 
 # 總體計畫歷史
-class MasterPlansHistory(models.Model):
+class MasterPlansHistory(BaseModel):
     history_id = models.AutoField(primary_key=True)
     reference_id = models.ForeignKey('MasterPlan', on_delete=models.CASCADE, db_column='master_plan_id')
     changed_column = models.CharField(max_length=255)
@@ -123,7 +124,7 @@ class MasterPlansHistory(models.Model):
         db_table = 'master_plans_history'
 
 # 總體計畫實際進度
-class MasterPlanProgress(models.Model):
+class MasterPlanProgress(BaseModel):
     progress_id = models.AutoField(primary_key=True)
     master_plan_id = models.ForeignKey('MasterPlan', on_delete=models.CASCADE, db_column='master_plan_id')
     progress_percentage = models.DecimalField(max_digits=5, decimal_places=2)
@@ -136,7 +137,7 @@ class MasterPlanProgress(models.Model):
         db_table = 'master_plan_progress'
 
 # 計畫比例
-class PlanWeight(models.Model):
+class PlanWeight(BaseModel):
     weight_id = models.AutoField(primary_key=True)
     project_id = models.ForeignKey('Plan', on_delete=models.CASCADE, db_column='plan_id')
     weight = models.DecimalField(max_digits=5, decimal_places=2)
@@ -148,7 +149,7 @@ class PlanWeight(models.Model):
         db_table = 'plan_weights'
 
 # 計畫關聯
-class PlanAssociation(models.Model):
+class PlanAssociation(BaseModel):
     association_id = models.AutoField(primary_key=True)
     master_plan_id = models.ForeignKey('MasterPlan', on_delete=models.CASCADE, db_column='master_plan_id')
     weight_id = models.ForeignKey('PlanWeight', on_delete=models.CASCADE, db_column='weight_id')
@@ -162,7 +163,7 @@ class PlanAssociation(models.Model):
 
 #region 發電量
 # 計畫發電量
-class PlanTotalEnergyProduction(models.Model):
+class PlanTotalEnergyProduction(BaseModel):
     plan_total_energy_id = models.AutoField(primary_key=True)
     plan_id = models.ForeignKey('Plan', on_delete=models.CASCADE, db_column='plan_id')
     total_energy_production = models.DecimalField(max_digits=10, decimal_places=2)
@@ -178,7 +179,7 @@ class PlanTotalEnergyProduction(models.Model):
         db_table = 'plan_total_energy_production'
 
 # 迴路發電量
-class ProjectLoopEnergyProduction(models.Model):
+class ProjectLoopEnergyProduction(BaseModel):
     loop_energy_id = models.AutoField(primary_key=True)
     loop_id = models.ForeignKey('app_project.ProjectLoop', on_delete=models.CASCADE, db_column='loop_id')
     energy_production = models.DecimalField(max_digits=10, decimal_places=2)
@@ -194,7 +195,7 @@ class ProjectLoopEnergyProduction(models.Model):
         db_table = 'project_loop_energy_production'
 
 # 案場發電量
-class ProjectCaseEnergyProduction(models.Model):
+class ProjectCaseEnergyProduction(BaseModel):
     case_energy_id = models.AutoField(primary_key=True)
     case_id = models.ForeignKey('app_project.ProjectCase', on_delete=models.CASCADE, db_column='case_id')
     energy_production = models.DecimalField(max_digits=10, decimal_places=2)
@@ -210,7 +211,7 @@ class ProjectCaseEnergyProduction(models.Model):
         db_table = 'project_case_energy_production'
 
 # 發電量比例系列
-class EnergyProductionSeries(models.Model):
+class EnergyProductionSeries(BaseModel):
     series_id = models.AutoField(primary_key=True)
     series_name = models.CharField(max_length=255)
     description = models.TextField()
@@ -224,7 +225,7 @@ class EnergyProductionSeries(models.Model):
         db_table = 'energy_production_series'
 
 # 發電量比例
-class EnergyProductionRatio(models.Model):
+class EnergyProductionRatio(BaseModel):
     ratio_id = models.AutoField(primary_key=True)
     series_id = models.ForeignKey('EnergyProductionSeries', on_delete=models.CASCADE, db_column='series_id')
     plan_total_energy_id = models.ForeignKey('PlanTotalEnergyProduction', on_delete=models.CASCADE, db_column='plan_total_energy_id', null=True, blank=True)
@@ -243,7 +244,7 @@ class EnergyProductionRatio(models.Model):
 #endregion
 
 #region 文件管理
-class FileProgress(models.Model):
+class FileProgress(BaseModel):
     file_name = models.CharField(max_length=255, blank=False, null=False)
     file_link = models.CharField(max_length=255, blank=False, null=False)
     last_update = models.DateTimeField(auto_now=True)
@@ -257,7 +258,7 @@ class FileProgress(models.Model):
 #endregion
         
 #region 會議記錄
-class MeetingRecord(models.Model):
+class MeetingRecord(BaseModel):
     file_name = models.CharField(max_length=255, blank=False, null=False)
     file_link = models.CharField(max_length=255, blank=False, null=False)
     last_update = models.DateTimeField(auto_now=True)

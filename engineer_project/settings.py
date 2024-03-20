@@ -51,6 +51,9 @@ INSTALLED_APPS += [
     'apps.app_plan',
     'apps.app_project',
     'apps.app_pv',
+    'apps.app_breeding',
+    'apps.app_voltage161k',
+    'apps.app_voltage228k',
     'apps.browse_historical_project_progress', #歷史工程資料相關
     'apps.login', #登入相關
 ]

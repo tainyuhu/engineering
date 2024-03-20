@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from collections import defaultdict, OrderedDict
 from django.core.paginator import Paginator
 from django.db.models import Max
+import hashlib
 
 #region 工程價金系列
 class SeriesList(generics.ListCreateAPIView):
@@ -273,7 +274,7 @@ class GetPVProgress(APIView):
             return Response({'error': str(e)}, status=500)
 #endregion
         
-#region 計算季工程進度
+#region 計算所有季工程進度
 class GetPVAllQuarterProgress(APIView):
     def get(self, request, loop_id, currentPage, itemsPerPage, project_type):
         try:
@@ -297,7 +298,7 @@ class GetPVAllQuarterProgress(APIView):
             for case in cases:
                 pvs = ProjectPV.objects.filter(case_id=case.case_id)
                 for pv in pvs:
-                    # 找到每个季度的最后一周
+                    # 找到每一個季度的最後一周
                     all_years = PvWeek.objects.values_list('year', flat=True).distinct()
                     for year in all_years:
                         for quarter in range(1, 5):
@@ -394,7 +395,7 @@ class GetPVAllQuarterProgress(APIView):
             return Response({'error': str(e)}, status=500)
 #endregion
         
-# #region 計算季工程進度
+#region 計算季工程進度
 class GetPVQuarterProgress(APIView):
     def get(self, request, loop_id, currentPage, itemsPerPage, project_type):
         try:
@@ -512,4 +513,93 @@ class GetPVQuarterProgress(APIView):
         except Exception as e:
             print(f"Error: {e}")
             return Response({'error': str(e)}, status=500)
-# #endregion
+#endregion
+        
+def get_color_from_name(name):
+    hash_obj = hashlib.sha256(name.encode())
+    hash_hex = hash_obj.hexdigest()
+
+    # Ensure each color component is not too bright (limit to 127/0x7F)
+    r = int(hash_hex[0:2], 16) % 128
+    g = int(hash_hex[2:4], 16) % 128
+    b = int(hash_hex[4:6], 16) % 128
+    
+    color = f'#{r:02x}{g:02x}{b:02x}'
+    return color
+
+#region 計算季工程進度報表
+class GetPVQuarterChartProgress(APIView):
+    def get(self, request, loop_id, project_type):
+        try:
+            cases = ProjectCase.objects.filter(loop_id=loop_id)
+
+            if project_type == "engineering":
+                progress_model = ProjectPVProgress
+                expected_model = ProjectPVExpectedProgress
+            elif project_type == "bank":
+                progress_model = PVBankProgress
+                expected_model = PVBankProgressExpected
+            else:
+                return Response({"error": "Invalid project type."}, status=400)
+
+            current_year = datetime.datetime.now().year
+            labels = [f"Q{quarter}" for quarter in range(1, 5)]
+
+            datasets = []
+
+            for case in cases:
+                pvs = ProjectPV.objects.filter(case_id=case.case_id)
+                for pv in pvs:
+                    actual_data = []
+                    expected_data = []
+                    for quarter in range(1, 5):
+                        last_week_of_quarter = PvWeek.objects.filter(
+                            year=current_year, 
+                            quarter=quarter
+                        ).aggregate(Max('week'))['week__max']
+
+                        if last_week_of_quarter:
+                            last_week = PvWeek.objects.get(
+                                year=current_year, 
+                                quarter=quarter, 
+                                week=last_week_of_quarter
+                            )
+
+                            progress_record = progress_model.objects.filter(
+                                pv_id=pv.pv_id, 
+                                pv_week_id=last_week.week_id
+                            ).first()
+
+                            expected_record = expected_model.objects.filter(
+                                pv_id=pv.pv_id, 
+                                pv_week_id=last_week.week_id
+                            ).first() if progress_record else None
+
+                            actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
+                            expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
+
+                            actual_data.append(actual_percentage)
+                            expected_data.append(expected_percentage)
+
+                    base_color = get_color_from_name(pv.pv_name)
+
+                    datasets.append({
+                        "label": f"{pv.pv_name} 實際",
+                        "data": actual_data,
+                        "backgroundColor": base_color,
+                        "borderColor": base_color
+                    })
+                    datasets.append({
+                        "label": f"{pv.pv_name} 預計",
+                        "data": expected_data,
+                        "borderColor": base_color,
+                        "borderDash": [5, 5]
+                    })
+
+            return Response({
+                "labels": labels,
+                "datasets": datasets
+            })
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)
+#endregion

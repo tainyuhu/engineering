@@ -1,9 +1,10 @@
 from django.db import models
+from common.models import BaseModel
 
 #region 工程價金系列
 # 工程價金系列
 
-class Series(models.Model):
+class Series(BaseModel):
     series_id = models.AutoField(primary_key=True)
     series_name = models.CharField(max_length=255)
     description = models.TextField()
@@ -15,7 +16,7 @@ class Series(models.Model):
         db_table = 'series'
 
 # 工程價金系列歷史
-class SeriesHistory(models.Model):
+class SeriesHistory(BaseModel):
     history_id = models.AutoField(primary_key=True)
     reference_id = models.ForeignKey('Series', on_delete=models.CASCADE, db_column='reference_id')
     changed_column = models.CharField(max_length=255)
@@ -32,7 +33,7 @@ class SeriesHistory(models.Model):
         db_table = 'series_history'
 
 # 大價金比例資料
-class MajorItemPercentage(models.Model):
+class MajorItemPercentage(BaseModel):
     major_item_id = models.AutoField(primary_key=True)
     series_id = models.ForeignKey('Series', on_delete=models.CASCADE, db_column='series_id')
     item_name = models.CharField(max_length=255)
@@ -45,7 +46,7 @@ class MajorItemPercentage(models.Model):
         db_table = 'major_item_percentage'
 
 # 大價金比例資料歷史
-class MajorItemPercentageHistory(models.Model):
+class MajorItemPercentageHistory(BaseModel):
     history_id = models.AutoField(primary_key=True)
     reference_id = models.ForeignKey('MajorItemPercentage', on_delete=models.CASCADE, db_column='reference_id')
     changed_column = models.CharField(max_length=255)
@@ -62,7 +63,7 @@ class MajorItemPercentageHistory(models.Model):
         db_table = 'major_item_percentage_history'
 
 # 小價金比例資料
-class SubItemPercentage(models.Model):
+class SubItemPercentage(BaseModel):
     sub_item_id = models.AutoField(primary_key=True)
     major_item_id = models.ForeignKey('MajorItemPercentage', on_delete=models.CASCADE, db_column='major_item_id')
     item_name = models.CharField(max_length=255)
@@ -75,7 +76,7 @@ class SubItemPercentage(models.Model):
         db_table = 'sub_item_percentage'
 
 # 小價金比例資料歷史
-class SubItemPercentageHistory(models.Model):
+class SubItemPercentageHistory(BaseModel):
     history_id = models.AutoField(primary_key=True)
     reference_id = models.ForeignKey('SubItemPercentage', on_delete=models.CASCADE, db_column='reference_id')
     changed_column = models.CharField(max_length=255)
@@ -94,7 +95,7 @@ class SubItemPercentageHistory(models.Model):
 
 #region 邏輯斯蒂方程參數
 #  邏輯斯蒂方程參數
-class LogisticParameters(models.Model):
+class LogisticParameters(BaseModel):
     parameter_id = models.AutoField(primary_key=True)
     version = models.DecimalField(max_digits=10, decimal_places=2)
     max_percentage = models.DecimalField(max_digits=5, decimal_places=2)
@@ -108,7 +109,7 @@ class LogisticParameters(models.Model):
         db_table = 'logistic_parameters'
 
 #  邏輯斯蒂方程參數歷史
-class LogisticParametersHistory(models.Model):
+class LogisticParametersHistory(BaseModel):
     history_id = models.AutoField(primary_key=True)
     reference_id = models.ForeignKey(LogisticParameters, on_delete=models.CASCADE, db_column='reference_id')
     changed_column = models.CharField(max_length=255)
@@ -126,7 +127,7 @@ class LogisticParametersHistory(models.Model):
 #endregion
 
 # 專案PV周
-class PvWeek(models.Model):
+class PvWeek(BaseModel):
     week_id = models.AutoField(primary_key=True)
     year = models.IntegerField(null=True, blank=True)
     quarter = models.IntegerField(null=True, blank=True)
@@ -142,7 +143,7 @@ class PvWeek(models.Model):
            
 #region 專案PV
 # 專案PV
-class ProjectPV(models.Model):
+class ProjectPV(BaseModel):
     pv_id = models.AutoField(primary_key=True)
     pv_name = models.CharField(max_length=255)
     planned_start_date = models.DateField()
@@ -160,7 +161,7 @@ class ProjectPV(models.Model):
         db_table = 'project_pv'
 
 # 專案PV歷史
-class ProjectPVHistory(models.Model):
+class ProjectPVHistory(BaseModel):
     history_id = models.AutoField(primary_key=True)
     reference_id = models.ForeignKey('ProjectPV', on_delete=models.CASCADE, db_column='reference_id')
     changed_column = models.CharField(max_length=255)
@@ -177,7 +178,7 @@ class ProjectPVHistory(models.Model):
         db_table = 'project_pv_history'
 
 # 專案PV實際進度(工程版)
-class ProjectPVProgress(models.Model):
+class ProjectPVProgress(BaseModel):
     progress_id = models.AutoField(primary_key=True)
     pv_id = models.ForeignKey(ProjectPV, on_delete=models.CASCADE, db_column='pv_id')
     series_id = models.ForeignKey('Series', on_delete=models.CASCADE, db_column='series_id')
@@ -194,7 +195,7 @@ class ProjectPVProgress(models.Model):
         db_table = 'pv_progress'
 
 # 專案PV預期進度(工程版)
-class ProjectPVExpectedProgress(models.Model):
+class ProjectPVExpectedProgress(BaseModel):
     expected_progress_id = models.AutoField(primary_key=True)
     pv_id = models.ForeignKey('ProjectPV', on_delete=models.CASCADE, db_column='pv_id')
     parameter_id = models.ForeignKey('LogisticParameters', on_delete=models.CASCADE, db_column='parameter_id')
@@ -209,7 +210,7 @@ class ProjectPVExpectedProgress(models.Model):
         db_table = 'pv_expected_progress'
 
 # 專案PV實際進度(銀行版)
-class PVBankProgress(models.Model):
+class PVBankProgress(BaseModel):
     pv_bank_id = models.AutoField(primary_key=True)
     pv_id = models.ForeignKey('ProjectPV', on_delete=models.CASCADE, db_column='pv_id')
     progress_percentage = models.DecimalField(max_digits=5, decimal_places=2)
@@ -222,7 +223,7 @@ class PVBankProgress(models.Model):
         db_table = 'pvbank_progress'
 
 # 專案PV實際進度(銀行版)歷史
-class PVBankHistory(models.Model):
+class PVBankHistory(BaseModel):
     history_id = models.AutoField(primary_key=True)
     reference_id = models.ForeignKey('PVBankProgress', on_delete=models.CASCADE, db_column='reference_id')
     changed_column = models.CharField(max_length=255)
@@ -239,7 +240,7 @@ class PVBankHistory(models.Model):
         db_table = 'pv_bank_history'
 
 # 專案PV預期進度(銀行版)
-class PVBankProgressExpected(models.Model):
+class PVBankProgressExpected(BaseModel):
     pv_bank_expected_id = models.AutoField(primary_key=True)
     pv_id = models.ForeignKey('ProjectPV', on_delete=models.CASCADE, db_column='pv_id')
     parameter_id = models.ForeignKey('LogisticParameters', on_delete=models.CASCADE, db_column='parameter_id')
@@ -255,7 +256,7 @@ class PVBankProgressExpected(models.Model):
         db_table = 'pvbank_progress_expected'
 
 # 專案PV預期進度(銀行版)歷史
-class PVBankExpectedHistory(models.Model):
+class PVBankExpectedHistory(BaseModel):
     history_id = models.AutoField(primary_key=True)
     reference_id = models.ForeignKey('PVBankProgressExpected', on_delete=models.CASCADE, db_column='reference_id')
     changed_column = models.CharField(max_length=255)
