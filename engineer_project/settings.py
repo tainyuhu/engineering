@@ -23,8 +23,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-cacs3$pgw!!h-enhi0pxg!hcx@ap&f-^8e11i89&*c=pj011_r'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-# DEBUG = False
+# DEBUG = True
+DEBUG = False
 
 # ALLOWED_HOSTS = []
 ALLOWED_HOSTS = ["*"]
@@ -44,7 +44,6 @@ INSTALLED_APPS = [
 INSTALLED_APPS += [
     'corsheaders',
     'rest_framework',
-    'casbin_adapter.apps.CasbinAdapterConfig',
 ]
 
 # Custom apps (自定義)
@@ -52,6 +51,9 @@ INSTALLED_APPS += [
     'apps.app_plan',
     'apps.app_project',
     'apps.app_pv',
+    'apps.app_breeding',
+    'apps.app_voltage161k',
+    'apps.app_voltage228k',
     'apps.browse_historical_project_progress', #歷史工程資料相關
     'apps.login', #登入相關
 ]
@@ -112,7 +114,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql', # 使用的資料庫引擎
         'NAME': 'engineer_system', # MySQL 資料庫的名稱
         'USER': 'root', # 使用者名稱
-        # 'PASSWORD': 'Ru,6e.4vu4wj/3', # 密碼
+        'PASSWORD': 'Ru,6e.4vu4wj/3', # 密碼
         'HOST': 'localhost', # IP 地址
         'PORT': '3306', # 埠號(mysql為 3306)
         'OPTIONS': { # 避免發生『MariaDB Strict Mode』問題
@@ -196,7 +198,53 @@ REST_FRAMEWORK = {
     ),
 }
 
+#region 【Simple-JWT 設定】
+from datetime import timedelta
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=2), # 指 Access Token 的靜態有效期限，時效較【短】(通常建議將其設置為幾分鐘到數小時之間)
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1), # 指 Refresh Token 的有效期限，時效較【長】: user維持登入狀態的時間(通常建議將其設置為幾天到幾週之間。)
+    # "ACCESS_TOKEN_LIFETIME": timedelta(seconds=15), # 指 Access Token 的靜態有效期限，時效較【短】(通常建議將其設置為幾分鐘到數小時之間)
+    # "REFRESH_TOKEN_LIFETIME": timedelta(days=1), # 指 Refresh Token 的有效期限，時效較【長】: user維持登入狀態的時間(通常建議將其設置為幾天到幾週之間。)
+    "ROTATE_REFRESH_TOKENS": True, # (預設False):更新Token時，只會更新 access token。如果設為 True，則連 refresh token也會跟著更新
+    "BLACKLIST_AFTER_ROTATION": True, # (預設False):設為True時，token更新之後，舊的 refresh 和 access token 都失去權限，這也相對安全
+    "UPDATE_LAST_LOGIN": False,
 
+    "ALGORITHM": "HS256",
+    "SIGNING_KEY": SECRET_KEY,
+    "VERIFYING_KEY": "",
+    "AUDIENCE": None,
+    "ISSUER": None,
+    "JSON_ENCODER": None,
+    "JWK_URL": None,
+    "LEEWAY": 0,
 
-# CASBIN 設定
-CASBIN_MODEL = os.path.join(BASE_DIR, 'casbin.conf')
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
+    "USER_ID_FIELD": "id",
+    "USER_ID_CLAIM": "user_id",
+    "USER_AUTHENTICATION_RULE": "rest_framework_simplejwt.authentication.default_user_authentication_rule",
+
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+    "TOKEN_TYPE_CLAIM": "token_type",
+    "TOKEN_USER_CLASS": "rest_framework_simplejwt.models.TokenUser",
+
+    "JTI_CLAIM": "jti",
+    
+    # 指 Refresh Token 的動態有效期限
+    "SLIDING_TOKEN_REFRESH_EXP_CLAIM": "refresh_exp",
+    # "SLIDING_TOKEN_LIFETIME": timedelta(seconds=3),
+    # "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
+    "SLIDING_TOKEN_LIFETIME": timedelta(hours=1),
+    "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
+
+    # "TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainPairSerializer",
+    # 使用客製化的SERIALIZER
+    "TOKEN_OBTAIN_SERIALIZER": "login.serializers.MyTokenObtainPairSerializer",
+    "TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSerializer",
+    "TOKEN_VERIFY_SERIALIZER": "rest_framework_simplejwt.serializers.TokenVerifySerializer",
+    "TOKEN_BLACKLIST_SERIALIZER": "rest_framework_simplejwt.serializers.TokenBlacklistSerializer",
+    "SLIDING_TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainSlidingSerializer",
+    "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
+}
+#endregion
+

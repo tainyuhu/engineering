@@ -1,8 +1,9 @@
 from django.db import models
+from common.models import BaseModel
 
 #region 專案
 # 專案
-class Project(models.Model):
+class Project(BaseModel):
     project_id = models.AutoField(primary_key=True)
     plan_id = models.ForeignKey('app_plan.Plan', on_delete=models.CASCADE, db_column='plan_id')
     project_name = models.CharField(max_length=255)
@@ -20,7 +21,7 @@ class Project(models.Model):
         db_table = 'projects'
 
 # 專案進度
-class ProjectsProgress(models.Model):
+class ProjectsProgress(BaseModel):
     progress_id = models.AutoField(primary_key=True)
     project_id = models.ForeignKey('Project', on_delete=models.CASCADE, db_column='project_id')
     ratio_id = models.ForeignKey('app_plan.ProjectValueRatio', on_delete=models.CASCADE, db_column='ratio_id')
@@ -34,7 +35,7 @@ class ProjectsProgress(models.Model):
         db_table = 'projects_progress'
 
 # 專案預期進度
-class ProjectsProgressExpected(models.Model):
+class ProjectsProgressExpected(BaseModel):
     progress_id = models.AutoField(primary_key=True)
     project_id = models.ForeignKey('Project', on_delete=models.CASCADE, db_column='project_id')
     progress_percentage = models.DecimalField(max_digits=5, decimal_places=2)
@@ -50,7 +51,7 @@ class ProjectsProgressExpected(models.Model):
         
 #region 專案迴路
 # 專案迴路
-class ProjectLoop(models.Model):
+class ProjectLoop(BaseModel):
     loop_id = models.AutoField(primary_key=True)
     project_id = models.ForeignKey('Project', on_delete=models.CASCADE, db_column='project_id')
     loop_name = models.CharField(max_length=255)
@@ -71,7 +72,7 @@ class ProjectLoop(models.Model):
         db_table = 'project_loops'
 
 # 專案迴路歷史
-class LoopsHistory(models.Model):
+class LoopsHistory(BaseModel):
     history_id = models.AutoField(primary_key=True)
     reference_id = models.ForeignKey('ProjectLoop', on_delete=models.CASCADE, db_column='reference_id')
     changed_column = models.CharField(max_length=255)
@@ -88,7 +89,7 @@ class LoopsHistory(models.Model):
         db_table = 'loops_history'
 
 # 專案迴路進度
-class LoopsProgress(models.Model):
+class LoopsProgress(BaseModel):
     progress_id = models.AutoField(primary_key=True)
     loop_id = models.ForeignKey('ProjectLoop', on_delete=models.CASCADE, db_column='loop_id')
     series_id = models.ForeignKey('app_plan.EnergyProductionSeries', on_delete=models.CASCADE, db_column='series_id')
@@ -102,7 +103,7 @@ class LoopsProgress(models.Model):
         db_table = 'loops_progress'
 
 # 專案迴路預計進度
-class LoopsProgressExpected(models.Model):
+class LoopsProgressExpected(BaseModel):
     progress_id = models.AutoField(primary_key=True)
     loop_id = models.ForeignKey('ProjectLoop', on_delete=models.CASCADE, db_column='loop_id')
     progress_percentage = models.DecimalField(max_digits=5, decimal_places=2)
@@ -113,12 +114,11 @@ class LoopsProgressExpected(models.Model):
     class Meta:
         managed = False
         db_table = 'loops_progress_expected'
-
 #endregion
 
 #region 專案案場
 # 專案案場
-class ProjectCase(models.Model):
+class ProjectCase(BaseModel):
     case_id = models.AutoField(primary_key=True)
     loop_id = models.ForeignKey('ProjectLoop', on_delete=models.CASCADE, db_column='loop_id')
     cases_name = models.CharField(max_length=255)
@@ -139,7 +139,7 @@ class ProjectCase(models.Model):
         db_table = 'project_cases'
 
 # 專案案場歷史
-class CasesHistory(models.Model):
+class CasesHistory(BaseModel):
     history_id = models.AutoField(primary_key=True)
     reference_id = models.ForeignKey('ProjectCase', on_delete=models.CASCADE, db_column='reference_id')
     changed_column = models.CharField(max_length=255)
@@ -156,7 +156,7 @@ class CasesHistory(models.Model):
         db_table = 'cases_history'
 
 # 專案案場進度
-class CasesProgress(models.Model):
+class CasesProgress(BaseModel):
     progress_id = models.AutoField(primary_key=True)
     case_id = models.ForeignKey('ProjectCase', on_delete=models.CASCADE, db_column='case_id')
     series_id = models.ForeignKey('app_plan.EnergyProductionSeries', on_delete=models.CASCADE, db_column='series_id')
@@ -170,7 +170,7 @@ class CasesProgress(models.Model):
         db_table = 'cases_progress'
 
 # 專案案場預期進度
-class CasesProgressExpected(models.Model):
+class CasesProgressExpected(BaseModel):
     progress_id = models.AutoField(primary_key=True)
     case_id = models.ForeignKey('ProjectCase', on_delete=models.CASCADE, db_column='case_id')
     progress_percentage = models.DecimalField(max_digits=5, decimal_places=2)
