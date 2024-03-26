@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2024-03-20 08:50:08
+-- 產生時間： 2024-03-26 03:39:27
 -- 伺服器版本： 10.4.28-MariaDB
 -- PHP 版本： 8.2.4
 
@@ -500,8 +500,8 @@ CREATE TABLE `auth_user` (
 --
 
 INSERT INTO `auth_user` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `is_active`, `date_joined`) VALUES
-(2, 'pbkdf2_sha256$600000$mo1G5CWcLiMLWQiLNBKojT$dBdPuAmR8Jl+cukcifZMhrFkI+G4T4aj0Mmgy6cHGQ0=', '2023-11-13 03:51:14.715685', 1, 'admin', '', '', 'cathy5852077@gmail.com', 1, 1, '2023-11-13 03:50:50.815058'),
-(3, 'pbkdf2_sha256$600000$mo1G5CWcLiMLWQiLNBKojT$dBdPuAmR8Jl+cukcifZMhrFkI+G4T4aj0Mmgy6cHGQ0=', '2023-11-13 03:51:14.715685', 1, 'pp', '測試', '中', 'cathy5852077@gmail.com', 0, 1, '2023-11-13 03:50:50.815058'),
+(2, 'pbkdf2_sha256$600000$mo1G5CWcLiMLWQiLNBKojT$dBdPuAmR8Jl+cukcifZMhrFkI+G4T4aj0Mmgy6cHGQ0=', '2023-11-13 03:51:14.715685', 1, 'admin2', '', '', 'cathy5852077@gmail.com', 1, 1, '2023-11-13 03:50:50.815058'),
+(3, 'pbkdf2_sha256$600000$mo1G5CWcLiMLWQiLNBKojT$dBdPuAmR8Jl+cukcifZMhrFkI+G4T4aj0Mmgy6cHGQ0=', '2023-11-13 03:51:14.715685', 1, 'admin', '測試', '中', 'cathy5852077@gmail.com', 0, 1, '2023-11-13 03:50:50.815058'),
 (5, 'pbkdf2_sha256$600000$vDC4TxfSpEt2dxe2Pcq6p1$lLfgIlBHD5xEGaMENnLqIj6f2ATRPBir/M563EBDbCU=', NULL, 0, 'a', '林', '黛玉', '', 0, 1, '2024-03-12 06:26:38.586450'),
 (6, 'pbkdf2_sha256$600000$myqFXrtlkZYFgSsG8o1B02$6utc5cPMPhn3PtO/amRdeXMs8jDDn4kFpzuoSIdTJLw=', NULL, 0, 'b', '賈', '豆花', '', 0, 1, '2024-03-12 06:26:39.275366');
 
@@ -561,15 +561,6 @@ CREATE TABLE `breedingbank_progress` (
   `user_id` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- 傾印資料表的資料 `breedingbank_progress`
---
-
-INSERT INTO `breedingbank_progress` (`breeding_bank_id`, `breeding_id`, `progress_percentage`, `last_update`, `create_at`, `breeding_week_id`, `user_id`) VALUES
-(1, 1, 0.20, '2024-03-14 03:53:16', '2024-03-14 03:53:16', 1, 0),
-(2, 1, 0.30, '2024-03-14 03:53:16', '2024-03-14 03:53:16', 2, 0),
-(3, 1, 0.30, '2024-03-14 03:53:16', '2024-03-14 03:53:16', 3, 0);
-
 -- --------------------------------------------------------
 
 --
@@ -587,15 +578,6 @@ CREATE TABLE `breedingbank_progress_expected` (
   `breeding_week_id` int(11) DEFAULT NULL,
   `user_id` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- 傾印資料表的資料 `breedingbank_progress_expected`
---
-
-INSERT INTO `breedingbank_progress_expected` (`breeding_bank_expected_id`, `breeding_id`, `parameter_id`, `is_parameter_based`, `progress_percentage`, `last_update`, `create_at`, `breeding_week_id`, `user_id`) VALUES
-(1, 1, NULL, NULL, 0.40, '2024-03-14 03:53:54', '2024-03-14 03:53:54', 1, 0),
-(2, 1, NULL, NULL, 0.60, '2024-03-14 03:53:54', '2024-03-14 03:53:54', 2, 0),
-(3, 1, NULL, NULL, 0.60, '2024-03-14 03:53:54', '2024-03-14 03:53:54', 3, 0);
 
 -- --------------------------------------------------------
 
@@ -655,15 +637,6 @@ CREATE TABLE `breeding_expected_progress` (
   `user_id` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- 傾印資料表的資料 `breeding_expected_progress`
---
-
-INSERT INTO `breeding_expected_progress` (`expected_progress_id`, `breeding_id`, `parameter_id`, `progress_percentage`, `calculation_date`, `last_update`, `create_at`, `breeding_week_id`, `user_id`) VALUES
-(1, 1, NULL, 0.15, NULL, '2024-03-14 03:48:37', '2024-03-14 03:48:37', 1, 0),
-(2, 1, NULL, 0.25, NULL, '2024-03-14 03:48:37', '2024-03-14 03:48:37', 2, 0),
-(3, 1, NULL, 0.25, NULL, '2024-03-14 03:48:37', '2024-03-14 03:48:37', 3, 0);
-
 -- --------------------------------------------------------
 
 --
@@ -683,15 +656,6 @@ CREATE TABLE `breeding_progress` (
   `breeding_week_id` int(11) DEFAULT NULL,
   `user_id` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- 傾印資料表的資料 `breeding_progress`
---
-
-INSERT INTO `breeding_progress` (`progress_id`, `breeding_id`, `series_id`, `progress_percentage`, `supervisor`, `non_construction_reason`, `progress_calculation_description`, `last_update`, `create_at`, `breeding_week_id`, `user_id`) VALUES
-(1, 1, NULL, 0.10, NULL, NULL, NULL, '2024-03-14 03:47:55', '2024-03-14 03:47:55', 1, 0),
-(2, 1, NULL, 0.30, NULL, NULL, NULL, '2024-03-14 03:47:55', '2024-03-14 03:47:55', 2, 0),
-(3, 1, NULL, 0.30, NULL, NULL, NULL, '2024-03-14 03:47:55', '2024-03-14 03:47:55', 3, 0);
 
 -- --------------------------------------------------------
 
@@ -714,9 +678,15 @@ CREATE TABLE `breeding_week` (
 --
 
 INSERT INTO `breeding_week` (`week_id`, `year`, `quarter`, `week`, `start_date`, `end_date`, `user_id`) VALUES
-(1, '2023', 4, 13, '2023-12-31', '2024-01-06', 0),
-(2, '2024', 1, 2, '2024-01-07', '2024-01-13', 0),
-(3, '2024', 2, 1, '2024-03-31', '2024-04-06', 0);
+(1, '2024', 1, 1, '2023-12-31', '2024-01-06', 2),
+(2, '2024', 1, 2, '2024-01-07', '2024-01-13', 2),
+(3, '2024', 1, 3, '2024-01-14', '2024-01-20', 2),
+(4, '2024', 1, 4, '2024-01-21', '2024-01-27', 2),
+(5, '2024', 1, 5, '2024-01-28', '2024-02-03', 2),
+(6, '2024', 1, 6, '2024-02-04', '2024-02-10', 2),
+(7, '2024', 1, 7, '2024-02-11', '2024-02-17', 2),
+(8, '2024', 1, 8, '2024-02-18', '2024-02-24', 2),
+(9, '2024', 1, 9, '2024-02-25', '2024-03-02', 2);
 
 -- --------------------------------------------------------
 
@@ -1055,10 +1025,37 @@ CREATE TABLE `file_progress` (
 INSERT INTO `file_progress` (`id`, `file_name`, `file_link`, `last_update`, `create_at`, `update_description`, `routeName`, `user_id`) VALUES
 (1, '000多元Re-financing管理總表', 'https://docs.google.com/spreadsheets/d/1rQLC04I6F-ViQ8D9jqboa5hn3YH31lGK/edit?usp=sharing&ouid=100002892372171714788&rtpof=true&sd=true', '2024-03-01 01:43:26', '2024-02-27 05:23:31', '已將2/11-2/17進度更新', 'File_Progress', 0),
 (2, '00多元Phase2管理總表', 'https://docs.google.com/spreadsheets/d/1vMsJzYlVB6awlL6ZeLUvczQJ6Oi0OJeg/edit?usp=sharing&ouid=100002892372171714788&rtpof=true&sd=true', '2024-03-01 01:43:40', '2024-02-27 05:23:31', '已將2/11-2/17進度更新', 'File_Progress', 0),
-(3, '00多元Phase1管理總表', 'https://docs.google.com/spreadsheets/d/1HyEo6al2mDjegqgTAYe0OZY_2r1uSzyP/edit?usp=sharing&ouid=100002892372171714788&rtpof=true&sd=true', '2024-03-01 01:43:50', '2024-02-27 05:23:31', '已將2/11-2/17進度更新', 'File_Progress', 0),
-(4, '電業申辦進度', 'https://docs.google.com/spreadsheets/d/1uos3Wmr1PHXqk0hbDUQHjZJuXPH6eRds/edit?usp=sharing&ouid=100002892372171714788&rtpof=true&sd=true', '2024-02-27 08:35:54', '2024-02-27 05:23:31', '已更新新進度', 'File_Progress', 0),
-(5, '22.8KV多元Phase1監工週報', 'https://docs.google.com/spreadsheets/d/1XrJln7GXJbmOEjgMZdhaBN2ntU-KAV9L/edit?usp=sharing&ouid=100002892372171714788&rtpof=true&sd=true', '2024-03-01 01:43:50', '2024-02-27 05:23:31', '已將2/11-2/17進度更新', 'File_Progress', 0),
+(4, 'Phase2電業申辦進度', 'https://docs.google.com/spreadsheets/d/1izRUP1MCWeDeE4MFYlkFqmr5EHpfobeQ/edit?usp=sharing&ouid=100002892372171714788&rtpof=true&sd=trueusp=sharing&ouid=100002892372171714788&rtpof=true&sd=true', '2024-03-22 15:10:07', '2024-02-27 05:23:31', '已更新新進度', 'File_Progress', 0),
 (6, '22.8KV多元Phase2監工週報', 'https://docs.google.com/spreadsheets/d/1ZkeCC9llCynfgIa5e7lXIJw6AvkPKlX-/edit?usp=sharing&ouid=100002892372171714788&rtpof=true&sd=true', '2024-03-01 01:43:50', '2024-02-27 05:23:31', '已將2/11-2/17進度更新', 'File_Progress', 0),
+(25, 'N1多元Phase2光電工程報告', 'https://docs.google.com/spreadsheets/d/1-4NGCAX3ehV-pohqnkCiXYgQImvdHJ2D/edit?usp=sharing&ouid=100002892372171714788&rtpof=true&sd=true', '2024-03-01 02:03:10', '2024-02-27 05:23:31', '已將2/11-2/17進度更新', 'File_Progress', 0),
+(26, 'N向陽多元Phase2-SN2', 'https://docs.google.com/spreadsheets/d/1vbJBXSZsSPhv5fNpHe1GqOhfApEqB1p-/edit?usp=sharing&ouid=100002892372171714788&rtpof=true&sd=true', '2024-03-01 02:03:10', '2024-02-27 05:23:31', '已將2/11-2/17進度更新', 'File_Progress', 0),
+(27, 'N向陽多元Phase2-SN1', 'https://docs.google.com/spreadsheets/d/1jTxdOqMpLjBJ_82hyO4HHcgYmLftawWl/edit?usp=sharing&ouid=100002892372171714788&rtpof=true&sd=true', '2024-03-01 02:03:10', '2024-02-27 05:23:31', '已將2/11-2/17進度更新', 'File_Progress', 2);
+
+-- --------------------------------------------------------
+
+--
+-- 資料表結構 `file_progress_phase`
+--
+
+CREATE TABLE `file_progress_phase` (
+  `id` int(11) NOT NULL,
+  `file_name` varchar(255) NOT NULL,
+  `file_link` varchar(255) NOT NULL,
+  `last_update` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `create_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `update_description` text DEFAULT NULL,
+  `routeName` text NOT NULL,
+  `user_id` int(11) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- 傾印資料表的資料 `file_progress_phase`
+--
+
+INSERT INTO `file_progress_phase` (`id`, `file_name`, `file_link`, `last_update`, `create_at`, `update_description`, `routeName`, `user_id`) VALUES
+(3, '00多元Phase1管理總表', 'https://docs.google.com/spreadsheets/d/1HyEo6al2mDjegqgTAYe0OZY_2r1uSzyP/edit?usp=sharing&ouid=100002892372171714788&rtpof=true&sd=true', '2024-03-01 01:43:50', '2024-02-27 05:23:31', '已將2/11-2/17進度更新', 'File_Progress', 0),
+(4, 'Phase1電業申辦進度', 'https://docs.google.com/spreadsheets/d/132bwWWBZmRaIwtzAm8JWkzuAArJaGuN5/edit?usp=sharing&ouid=100002892372171714788&rtpof=true&sd=true', '2024-03-22 15:08:47', '2024-02-27 05:23:31', '已更新新進度', 'File_Progress', 0),
+(5, '22.8KV多元Phase1監工週報', 'https://docs.google.com/spreadsheets/d/1XrJln7GXJbmOEjgMZdhaBN2ntU-KAV9L/edit?usp=sharing&ouid=100002892372171714788&rtpof=true&sd=true', '2024-03-01 01:43:50', '2024-02-27 05:23:31', '已將2/11-2/17進度更新', 'File_Progress', 0),
 (7, 'D1多元光電工程報告', 'https://docs.google.com/spreadsheets/d/1RkOG-EzMJnC0nEiIzbMV5KUnfqFnxa68/edit?usp=sharing&ouid=100002892372171714788&rtpof=true&sd=true', '2024-03-01 01:43:50', '2024-02-27 05:23:31', '已將2/11-2/17進度更新', 'File_Progress', 0),
 (8, 'D2養殖工程進度表', 'https://docs.google.com/spreadsheets/d/1bma8yfhC08IgDKAJow9GtoHrQ-CJpi_1/edit?usp=sharing&ouid=100002892372171714788&rtpof=true&sd=true', '2024-03-01 01:43:50', '2024-02-27 05:23:31', '已將2/11-2/17進度更新', 'File_Progress', 0),
 (9, 'D向陽多元-S01', 'https://docs.google.com/spreadsheets/d/18L6lMX3UdjKyUHoTeoj3_50n7Zj70H8M/edit?usp=sharing&ouid=100002892372171714788&rtpof=true&sd=true', '2024-03-01 01:43:50', '2024-02-27 05:23:31', '完工', 'File_Progress', 0),
@@ -1076,8 +1073,8 @@ INSERT INTO `file_progress` (`id`, `file_name`, `file_link`, `last_update`, `cre
 (22, 'E泰陽光電-T02', 'https://docs.google.com/spreadsheets/d/11ZcUzK6a-7Z4lFXDoQwWmecNCdi4fEri/edit?usp=sharing&ouid=100002892372171714788&rtpof=true&sd=true', '2024-03-01 02:03:10', '2024-02-27 05:23:31', '完工', 'File_Progress', 0),
 (23, 'E泰陽光電-T03', 'https://docs.google.com/spreadsheets/d/1X54He6SAgYNcJ4pr9A7nCqyS1HxUMU-O/edit?usp=sharing&ouid=100002892372171714788&rtpof=true&sd=true', '2024-03-01 02:03:10', '2024-02-27 05:23:31', '完工', 'File_Progress', 0),
 (24, 'E泰陽光電-T04', 'https://docs.google.com/spreadsheets/d/1nE-g1Goip4wHrL6cJUOJAfogyGrB8i30/edit?usp=sharing&ouid=100002892372171714788&rtpof=true&sd=true', '2024-03-01 02:03:10', '2024-02-27 05:23:31', '完工', 'File_Progress', 0),
-(25, 'N1多元Phase2光電工程報告', 'https://docs.google.com/spreadsheets/d/1-4NGCAX3ehV-pohqnkCiXYgQImvdHJ2D/edit?usp=sharing&ouid=100002892372171714788&rtpof=true&sd=true', '2024-03-01 02:03:10', '2024-02-27 05:23:31', '已將2/11-2/17進度更新', 'File_Progress', 0),
-(26, 'N向陽多元Phase2-SN2', 'https://docs.google.com/spreadsheets/d/1vbJBXSZsSPhv5fNpHe1GqOhfApEqB1p-/edit?usp=sharing&ouid=100002892372171714788&rtpof=true&sd=true', '2024-03-01 02:03:10', '2024-02-27 05:23:31', '已將2/11-2/17進度更新', 'File_Progress', 0);
+(27, '升壓站監工周報', 'https://docs.google.com/spreadsheets/d/1OfVYR-cb9JEMb5hq5reNO8PwYIDgwQ5y/edit?usp=sharing&ouid=100002892372171714788&rtpof=true&sd=true', '2024-03-01 02:03:10', '2024-02-27 05:23:31', '完工', 'File_Progress', 0),
+(28, '161KV施工周報', 'https://docs.google.com/spreadsheets/d/1KS9fCHVwyFjl_3QdFgaJzXY_iieYqPFj/edit?usp=sharing&ouid=100002892372171714788&rtpof=true&sd=true', '2024-03-01 02:03:10', '2024-02-27 05:23:31', '完工', 'File_Progress', 0);
 
 -- --------------------------------------------------------
 
@@ -1317,7 +1314,8 @@ CREATE TABLE `plans` (
 --
 
 INSERT INTO `plans` (`plan_id`, `plan_name`, `planned_start_date`, `planned_end_date`, `actual_start_date`, `actual_end_date`, `plan_manager`, `plan_status`, `plan_description`, `last_update`, `create_at`, `user_id`) VALUES
-(1, 'Phase 2', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-02-23 07:32:42', '2024-02-23 07:32:42', 0);
+(1, 'Phase 2', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-02-23 07:32:42', '2024-02-23 07:32:42', 0),
+(3, 'Phase 1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-02-23 07:32:42', '2024-02-23 07:32:42', 2);
 
 -- --------------------------------------------------------
 
@@ -1434,7 +1432,12 @@ INSERT INTO `projects` (`project_id`, `plan_id`, `project_name`, `plannedstart_d
 (1, 1, '161KV', NULL, NULL, NULL, NULL, NULL, NULL, '2024-02-26 07:33:28', '2024-02-26 06:45:48', 0),
 (2, 1, '22.8KV', NULL, NULL, NULL, NULL, NULL, NULL, '2024-02-26 07:33:34', '2024-02-26 06:45:48', 0),
 (3, 1, '案場', NULL, NULL, NULL, NULL, NULL, NULL, '2024-02-26 06:46:39', '2024-02-26 06:46:39', 0),
-(4, 1, '電業申辦', NULL, NULL, NULL, NULL, NULL, NULL, '2024-02-26 06:46:39', '2024-02-26 06:46:39', 0);
+(4, 1, '電業申辦', NULL, NULL, NULL, NULL, NULL, NULL, '2024-02-26 06:46:39', '2024-02-26 06:46:39', 0),
+(5, 3, '161KV', NULL, NULL, NULL, NULL, NULL, NULL, '2024-02-26 07:33:28', '2024-02-26 06:45:48', 2),
+(6, 3, '22.8KV', NULL, NULL, NULL, NULL, NULL, NULL, '2024-02-26 07:33:34', '2024-02-26 06:45:48', 2),
+(7, 3, '案場', NULL, NULL, NULL, NULL, NULL, NULL, '2024-02-26 06:46:39', '2024-02-26 06:46:39', 2),
+(8, 3, '電業申辦', NULL, NULL, NULL, NULL, NULL, NULL, '2024-02-26 06:46:39', '2024-02-26 06:46:39', 2),
+(9, 3, '升壓站', NULL, NULL, NULL, NULL, NULL, NULL, '2024-02-26 06:46:39', '2024-02-26 06:46:39', 2);
 
 -- --------------------------------------------------------
 
@@ -1496,7 +1499,76 @@ CREATE TABLE `project_breeding` (
 
 INSERT INTO `project_breeding` (`breeding_id`, `breeding_name`, `planned_start_date`, `planned_end_date`, `actual_start_date`, `actual_end_date`, `construction_status`, `series_id`, `last_update`, `create_at`, `case_id`, `user_id`) VALUES
 (1, '升三-A02區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-02-29 02:33:34', '2024-02-29 02:33:34', 1, 0),
-(2, '升三-A02區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-02-29 02:33:34', '2024-02-29 02:33:34', 2, 0);
+(2, '升三-A02區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-02-29 02:33:34', '2024-02-29 02:33:34', 2, 0),
+(3, '升三-A03區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 14:15:40', '2024-03-23 14:15:40', 7, 2),
+(4, '升三-B01區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 14:15:40', '2024-03-23 14:15:40', 8, 2),
+(5, '升三-E01區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 14:15:40', '2024-03-23 14:15:40', 9, 2),
+(6, '升三-F01區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 14:15:40', '2024-03-23 14:15:40', 49, 2),
+(7, '升三-F02區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 14:15:40', '2024-03-23 14:15:40', 50, 2),
+(8, '升三-I01區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 14:15:40', '2024-03-23 14:15:40', 51, 2),
+(9, '升三-I02區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 14:15:40', '2024-03-23 14:15:40', 52, 2),
+(10, '升四-K01區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 14:15:40', '2024-03-23 14:15:40', 53, 2),
+(11, '升四-K02區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 14:15:40', '2024-03-23 14:15:40', 54, 2),
+(12, '升四-D03區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 14:24:49', '2024-03-23 14:24:49', 17, 2),
+(13, '升三-D01區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 14:24:49', '2024-03-23 14:24:49', 16, 2),
+(14, '升四-D04區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 14:24:49', '2024-03-23 14:24:49', 18, 2),
+(15, '升四-G01區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 14:24:49', '2024-03-23 14:24:49', 19, 2),
+(16, '升四-G02區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 14:24:49', '2024-03-23 14:24:49', 20, 2),
+(17, '升三-H01區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 14:24:49', '2024-03-23 14:24:49', 21, 2),
+(18, '升三-H02區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 14:24:49', '2024-03-23 14:24:49', 22, 2),
+(19, '升四-H03區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 14:24:49', '2024-03-23 14:24:49', 23, 2),
+(20, '升四-H04區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 14:24:49', '2024-03-23 14:24:49', 24, 2),
+(21, '升四-H05區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 14:24:49', '2024-03-23 14:24:49', 25, 2),
+(22, '升四-H06區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 14:24:49', '2024-03-23 14:24:49', 26, 2),
+(30, '升三-B02區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:10:35', '2024-03-25 01:10:35', 81, 2),
+(31, '升三-C01區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:10:35', '2024-03-25 01:10:35', 82, 2),
+(32, '升三-C02區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:10:35', '2024-03-25 01:10:35', 83, 2),
+(33, '升三-C03區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:10:35', '2024-03-25 01:10:35', 84, 2),
+(34, '升三-C07區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:10:35', '2024-03-25 01:10:35', 85, 2),
+(35, '升三-C08區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:10:35', '2024-03-25 01:10:35', 86, 2),
+(36, '升三-C09區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:10:35', '2024-03-25 01:10:35', 87, 2),
+(37, '升三-E02區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:15:19', '2024-03-25 01:15:19', 88, 2),
+(38, '升三-E03區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:15:19', '2024-03-25 01:15:19', 89, 2),
+(39, '升三-E04區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:15:19', '2024-03-25 01:15:19', 90, 2),
+(40, '升三-E04區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:15:19', '2024-03-25 01:15:19', 91, 2),
+(41, '升四-E05區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:15:19', '2024-03-25 01:15:19', 92, 2),
+(42, '升四-E05區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:15:19', '2024-03-25 01:15:19', 93, 2),
+(43, '升四-E06區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:15:19', '2024-03-25 01:15:19', 94, 2),
+(44, '升三-F03區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:15:19', '2024-03-25 01:15:19', 95, 2),
+(45, '升四-J01區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:15:19', '2024-03-25 01:15:19', 96, 2),
+(46, '升三-A01區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:24:18', '2024-03-25 01:24:18', 115, 2),
+(47, '升四-A04區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:24:18', '2024-03-25 01:24:18', 116, 2),
+(48, '升四-D02區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:24:18', '2024-03-25 01:24:18', 117, 2),
+(49, '升四-G05區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:24:18', '2024-03-25 01:24:18', 118, 2),
+(50, '升四-G06區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:24:18', '2024-03-25 01:24:18', 119, 2),
+(51, '升四-G07區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:24:18', '2024-03-25 01:24:18', 120, 2),
+(52, '升四-H08區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:24:18', '2024-03-25 01:24:18', 121, 2),
+(53, '升四-H09區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:24:18', '2024-03-25 01:24:18', 122, 2),
+(54, '升四-H10區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:24:18', '2024-03-25 01:24:18', 123, 2),
+(55, '升四-H10區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:24:18', '2024-03-25 01:24:18', 124, 2),
+(56, '升四-G03區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:27:27', '2024-03-25 01:27:27', 145, 2),
+(57, '升四-G04區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:27:27', '2024-03-25 01:27:27', 146, 2),
+(58, '升四-H07區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:27:27', '2024-03-25 01:27:27', 147, 2),
+(59, '升四-L01區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:27:27', '2024-03-25 01:27:27', 148, 2),
+(60, '升四-L02區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:27:27', '2024-03-25 01:27:27', 149, 2),
+(61, '升四-L03區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:27:27', '2024-03-25 01:27:27', 150, 2),
+(62, '升三-C04區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:30:26', '2024-03-25 01:30:26', 163, 2),
+(63, '升三-C04區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:30:26', '2024-03-25 01:30:26', 164, 2),
+(64, '升三-C05區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:30:26', '2024-03-25 01:30:26', 165, 2),
+(65, '升三-C05區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:30:26', '2024-03-25 01:30:26', 166, 2),
+(66, '升三-C06區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:30:26', '2024-03-25 01:30:26', 167, 2),
+(67, '升四-C15區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:30:26', '2024-03-25 01:30:26', 168, 2),
+(68, '升四-C10區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:32:56', '2024-03-25 01:32:56', 181, 2),
+(69, '升四-C11區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:32:56', '2024-03-25 01:32:56', 182, 2),
+(70, '升四-C12區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:32:56', '2024-03-25 01:32:56', 183, 2),
+(71, '升四-C13區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:32:56', '2024-03-25 01:32:56', 184, 2),
+(72, '升四-C14區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:32:56', '2024-03-25 01:32:56', 185, 2),
+(73, '升四-F04區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:32:56', '2024-03-25 01:32:56', 186, 2),
+(74, '升四-F05區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:32:56', '2024-03-25 01:32:56', 187, 2),
+(75, '升四-F06區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:34:46', '2024-03-25 01:34:46', 202, 2),
+(76, '升四-F07區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:34:46', '2024-03-25 01:34:46', 203, 2),
+(77, '升四-F07區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:34:46', '2024-03-25 01:34:46', 204, 2),
+(78, '升四-F07區-C棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:34:46', '2024-03-25 01:34:46', 205, 2);
 
 -- --------------------------------------------------------
 
@@ -1552,7 +1624,214 @@ INSERT INTO `project_cases` (`case_id`, `loop_id`, `cases_name`, `longitude`, `l
 (3, 5, '升三-A02區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-02-29 02:32:45', '2024-02-29 02:32:45', 2),
 (4, 5, '升三-A02區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-02-29 02:32:45', '2024-02-29 02:32:45', 2),
 (5, 6, '升三-A02區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-02-29 02:32:45', '2024-02-29 02:32:45', 2),
-(6, 6, '升三-A02區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-02-29 02:32:45', '2024-02-29 02:32:45', 2);
+(6, 6, '升三-A02區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-02-29 02:32:45', '2024-02-29 02:32:45', 2),
+(7, 1, '升三-I02區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 03:54:20', '2024-03-22 03:54:20', 2),
+(8, 1, '升四-K02區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 03:54:20', '2024-03-22 03:54:20', 2),
+(9, 1, '升三-A03區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 03:55:14', '2024-03-22 03:54:20', 2),
+(10, 5, '升三-I02區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 03:54:49', '2024-03-22 03:54:49', 2),
+(11, 5, '升四-K02區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 03:54:49', '2024-03-22 03:54:49', 2),
+(12, 5, '升三-A03區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 03:54:49', '2024-03-22 03:54:49', 2),
+(13, 6, '升三-I02區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 03:54:59', '2024-03-22 03:54:59', 2),
+(14, 6, '升四-K02區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 03:54:59', '2024-03-22 03:54:59', 2),
+(15, 6, '升三-A03區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 03:54:59', '2024-03-22 03:54:59', 2),
+(16, 2, '升三-D01區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:12:01', '2024-03-22 05:12:01', 2),
+(17, 2, '升四-D03區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:12:01', '2024-03-22 05:12:01', 2),
+(18, 2, '升四-D04區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:12:01', '2024-03-22 05:12:01', 2),
+(19, 2, '升四-G01區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:12:01', '2024-03-22 05:12:01', 2),
+(20, 2, '升四-G02區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:12:01', '2024-03-22 05:12:01', 2),
+(21, 2, '升三-H01區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:12:01', '2024-03-22 05:12:01', 2),
+(22, 2, '升三-H02區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:12:01', '2024-03-22 05:12:01', 2),
+(23, 2, '升四-H03區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:12:01', '2024-03-22 05:12:01', 2),
+(24, 2, '升四-H04區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:12:01', '2024-03-22 05:12:01', 2),
+(25, 2, '升四-H05區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:12:01', '2024-03-22 05:12:01', 2),
+(26, 2, '升四-H06區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:12:01', '2024-03-22 05:12:01', 2),
+(27, 14, '升三-D01區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:12:01', '2024-03-22 05:12:01', 2),
+(28, 14, '升四-D03區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:12:01', '2024-03-22 05:12:01', 2),
+(29, 14, '升四-D04區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:12:01', '2024-03-22 05:12:01', 2),
+(30, 14, '升四-G01區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:12:01', '2024-03-22 05:12:01', 2),
+(31, 14, '升四-G02區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:12:01', '2024-03-22 05:12:01', 2),
+(32, 14, '升三-H01區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:12:01', '2024-03-22 05:12:01', 2),
+(33, 14, '升三-H02區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:12:01', '2024-03-22 05:12:01', 2),
+(34, 14, '升四-H03區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:12:01', '2024-03-22 05:12:01', 2),
+(35, 14, '升四-H04區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:12:01', '2024-03-22 05:12:01', 2),
+(36, 14, '升四-H05區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:12:01', '2024-03-22 05:12:01', 2),
+(37, 14, '升四-H06區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:12:01', '2024-03-22 05:12:01', 2),
+(38, 22, '升三-D01區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:12:01', '2024-03-22 05:12:01', 2),
+(39, 22, '升四-D03區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:12:01', '2024-03-22 05:12:01', 2),
+(40, 22, '升四-D04區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:12:01', '2024-03-22 05:12:01', 2),
+(41, 22, '升四-G01區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:12:01', '2024-03-22 05:12:01', 2),
+(42, 22, '升四-G02區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:12:01', '2024-03-22 05:12:01', 2),
+(43, 22, '升三-H01區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:12:01', '2024-03-22 05:12:01', 2),
+(44, 22, '升三-H02區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:12:01', '2024-03-22 05:12:01', 2),
+(45, 22, '升四-H03區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:12:01', '2024-03-22 05:12:01', 2),
+(46, 22, '升四-H04區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:12:01', '2024-03-22 05:12:01', 2),
+(47, 22, '升四-H05區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:12:01', '2024-03-22 05:12:01', 2),
+(48, 22, '升四-H06區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:12:01', '2024-03-22 05:12:01', 2),
+(49, 1, '升三-B01區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:45:30', '2024-03-22 05:45:30', 2),
+(50, 1, '升三-E01區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:45:30', '2024-03-22 05:45:30', 2),
+(51, 1, '升三-F01區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:45:30', '2024-03-22 05:45:30', 2),
+(52, 1, '升三-F02區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:45:30', '2024-03-22 05:45:30', 2),
+(53, 1, '升三-I01區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:45:30', '2024-03-22 05:45:30', 2),
+(54, 1, '升四-K01區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:45:30', '2024-03-22 05:45:30', 2),
+(55, 5, '升三-B01區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:45:30', '2024-03-22 05:45:30', 2),
+(56, 5, '升三-E01區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:45:30', '2024-03-22 05:45:30', 2),
+(57, 5, '升三-F01區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:45:30', '2024-03-22 05:45:30', 2),
+(58, 5, '升三-F02區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:45:30', '2024-03-22 05:45:30', 2),
+(59, 5, '升三-I01區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:45:30', '2024-03-22 05:45:30', 2),
+(60, 5, '升四-K01區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:45:30', '2024-03-22 05:45:30', 2),
+(61, 6, '升三-B01區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:45:30', '2024-03-22 05:45:30', 2),
+(62, 6, '升三-E01區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:45:30', '2024-03-22 05:45:30', 2),
+(63, 6, '升三-F01區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:45:30', '2024-03-22 05:45:30', 2),
+(64, 6, '升三-F02區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:45:30', '2024-03-22 05:45:30', 2),
+(65, 6, '升三-I01區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:45:30', '2024-03-22 05:45:30', 2),
+(66, 6, '升四-K01區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:45:30', '2024-03-22 05:45:30', 2),
+(67, 7, '升三-B02區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:48:50', '2024-03-22 05:48:50', 2),
+(68, 7, '升三-C01區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:48:50', '2024-03-22 05:48:50', 2),
+(69, 7, '升三-C02區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:48:50', '2024-03-22 05:48:50', 2),
+(70, 7, '升三-C03區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:48:50', '2024-03-22 05:48:50', 2),
+(71, 7, '升三-C07區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:48:50', '2024-03-22 05:48:50', 2),
+(72, 7, '升三-C08區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:48:50', '2024-03-22 05:48:50', 2),
+(73, 7, '升三-C09區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:48:50', '2024-03-22 05:48:50', 2),
+(74, 15, '升三-B02區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:48:50', '2024-03-22 05:48:50', 2),
+(75, 15, '升三-C01區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:48:50', '2024-03-22 05:48:50', 2),
+(76, 15, '升三-C02區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:48:50', '2024-03-22 05:48:50', 2),
+(77, 15, '升三-C03區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:48:50', '2024-03-22 05:48:50', 2),
+(78, 15, '升三-C07區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:48:50', '2024-03-22 05:48:50', 2),
+(79, 15, '升三-C08區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:48:50', '2024-03-22 05:48:50', 2),
+(80, 15, '升三-C09區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:48:50', '2024-03-22 05:48:50', 2),
+(81, 23, '升三-B02區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:48:50', '2024-03-22 05:48:50', 2),
+(82, 23, '升三-C01區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:48:50', '2024-03-22 05:48:50', 2),
+(83, 23, '升三-C02區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:48:50', '2024-03-22 05:48:50', 2),
+(84, 23, '升三-C03區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:48:50', '2024-03-22 05:48:50', 2),
+(85, 23, '升三-C07區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:48:50', '2024-03-22 05:48:50', 2),
+(86, 23, '升三-C08區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:48:50', '2024-03-22 05:48:50', 2),
+(87, 23, '升三-C09區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:48:50', '2024-03-22 05:48:50', 2),
+(88, 8, '升三-E02區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:52:08', '2024-03-22 05:52:08', 2),
+(89, 8, '升三-E03區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:52:08', '2024-03-22 05:52:08', 2),
+(90, 8, '升三-E04區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:52:08', '2024-03-22 05:52:08', 2),
+(91, 8, '升三-E04區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:52:08', '2024-03-22 05:52:08', 2),
+(92, 8, '升四-E05區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:52:08', '2024-03-22 05:52:08', 2),
+(93, 8, '升四-E05區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:52:08', '2024-03-22 05:52:08', 2),
+(94, 8, '升四-E06區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:52:08', '2024-03-22 05:52:08', 2),
+(95, 8, '升三-F03區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:52:08', '2024-03-22 05:52:08', 2),
+(96, 8, '升四-J01區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:52:08', '2024-03-22 05:52:08', 2),
+(97, 16, '升三-E02區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:52:08', '2024-03-22 05:52:08', 2),
+(98, 16, '升三-E03區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:52:08', '2024-03-22 05:52:08', 2),
+(99, 16, '升三-E04區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:52:08', '2024-03-22 05:52:08', 2),
+(100, 16, '升三-E04區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:52:08', '2024-03-22 05:52:08', 2),
+(101, 16, '升四-E05區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:52:08', '2024-03-22 05:52:08', 2),
+(102, 16, '升四-E05區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:52:08', '2024-03-22 05:52:08', 2),
+(103, 16, '升四-E06區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:52:08', '2024-03-22 05:52:08', 2),
+(104, 16, '升三-F03區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:52:08', '2024-03-22 05:52:08', 2),
+(105, 16, '升四-J01區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:52:08', '2024-03-22 05:52:08', 2),
+(106, 24, '升三-E02區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:52:08', '2024-03-22 05:52:08', 2),
+(107, 24, '升三-E03區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:52:08', '2024-03-22 05:52:08', 2),
+(108, 24, '升三-E04區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:52:08', '2024-03-22 05:52:08', 2),
+(109, 24, '升三-E04區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:52:08', '2024-03-22 05:52:08', 2),
+(110, 24, '升四-E05區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:52:08', '2024-03-22 05:52:08', 2),
+(111, 24, '升四-E05區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:52:08', '2024-03-22 05:52:08', 2),
+(112, 24, '升四-E06區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:52:08', '2024-03-22 05:52:08', 2),
+(113, 24, '升三-F03區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:52:08', '2024-03-22 05:52:08', 2),
+(114, 24, '升四-J01區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:52:08', '2024-03-22 05:52:08', 2),
+(115, 9, '升三-A01區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:54:26', '2024-03-22 15:54:26', 2),
+(116, 9, '升四-A04區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:54:26', '2024-03-22 15:54:26', 2),
+(117, 9, '升四-D02區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:54:26', '2024-03-22 15:54:26', 2),
+(118, 9, '升四-G05區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:54:26', '2024-03-22 15:54:26', 2),
+(119, 9, '升四-G06區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:54:26', '2024-03-22 15:54:26', 2),
+(120, 9, '升四-G07區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:54:26', '2024-03-22 15:54:26', 2),
+(121, 9, '升四-H08區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:54:26', '2024-03-22 15:54:26', 2),
+(122, 9, '升四-H09區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:54:26', '2024-03-22 15:54:26', 2),
+(123, 9, '升四-H10區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:54:26', '2024-03-22 15:54:26', 2),
+(124, 9, '升四-H10區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:54:26', '2024-03-22 15:54:26', 2),
+(125, 17, '升三-A01區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:54:26', '2024-03-22 15:54:26', 2),
+(126, 17, '升四-A04區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:54:26', '2024-03-22 15:54:26', 2),
+(127, 17, '升四-D02區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:54:26', '2024-03-22 15:54:26', 2),
+(128, 17, '升四-G05區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:54:26', '2024-03-22 15:54:26', 2),
+(129, 17, '升四-G06區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:54:26', '2024-03-22 15:54:26', 2),
+(130, 17, '升四-G07區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:54:26', '2024-03-22 15:54:26', 2),
+(131, 17, '升四-H08區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:54:26', '2024-03-22 15:54:26', 2),
+(132, 17, '升四-H09區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:54:26', '2024-03-22 15:54:26', 2),
+(133, 17, '升四-H10區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:54:26', '2024-03-22 15:54:26', 2),
+(134, 17, '升四-H10區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:54:26', '2024-03-22 15:54:26', 2),
+(135, 25, '升三-A01區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:54:26', '2024-03-22 15:54:26', 2),
+(136, 25, '升四-A04區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:54:26', '2024-03-22 15:54:26', 2),
+(137, 25, '升四-D02區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:54:26', '2024-03-22 15:54:26', 2),
+(138, 25, '升四-G05區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:54:26', '2024-03-22 15:54:26', 2),
+(139, 25, '升四-G06區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:54:26', '2024-03-22 15:54:26', 2),
+(140, 25, '升四-G07區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:54:26', '2024-03-22 15:54:26', 2),
+(141, 25, '升四-H08區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:54:26', '2024-03-22 15:54:26', 2),
+(142, 25, '升四-H09區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:54:26', '2024-03-22 15:54:26', 2),
+(143, 25, '升四-H10區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:54:26', '2024-03-22 15:54:26', 2),
+(144, 25, '升四-H10區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:54:26', '2024-03-22 15:54:26', 2),
+(145, 10, '升四-G03區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:58:08', '2024-03-22 15:58:08', 2),
+(146, 10, '升四-G04區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:58:08', '2024-03-22 15:58:08', 2),
+(147, 10, '升四-H07區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:58:08', '2024-03-22 15:58:08', 2),
+(148, 10, '升四-L01區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:58:08', '2024-03-22 15:58:08', 2),
+(149, 10, '升四-L02區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:58:08', '2024-03-22 15:58:08', 2),
+(150, 10, '升四-L03區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:58:08', '2024-03-22 15:58:08', 2),
+(151, 18, '升四-G03區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:58:08', '2024-03-22 15:58:08', 2),
+(152, 18, '升四-G04區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:58:08', '2024-03-22 15:58:08', 2),
+(153, 18, '升四-H07區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:58:08', '2024-03-22 15:58:08', 2),
+(154, 18, '升四-L01區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:58:08', '2024-03-22 15:58:08', 2),
+(155, 18, '升四-L02區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:58:08', '2024-03-22 15:58:08', 2),
+(156, 18, '升四-L03區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:58:08', '2024-03-22 15:58:08', 2),
+(157, 26, '升四-G03區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:58:08', '2024-03-22 15:58:08', 2),
+(158, 26, '升四-G04區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:58:08', '2024-03-22 15:58:08', 2),
+(159, 26, '升四-H07區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:58:08', '2024-03-22 15:58:08', 2),
+(160, 26, '升四-L01區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:58:08', '2024-03-22 15:58:08', 2),
+(161, 26, '升四-L02區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:58:08', '2024-03-22 15:58:08', 2),
+(162, 26, '升四-L03區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 15:58:08', '2024-03-22 15:58:08', 2),
+(163, 11, '升三-C04區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 16:00:58', '2024-03-22 16:00:58', 2),
+(164, 11, '升三-C04區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 16:00:58', '2024-03-22 16:00:58', 2),
+(165, 11, '升三-C05區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 16:00:58', '2024-03-22 16:00:58', 2),
+(166, 11, '升三-C05區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 16:00:58', '2024-03-22 16:00:58', 2),
+(167, 11, '升三-C06區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 16:00:58', '2024-03-22 16:00:58', 2),
+(168, 11, '升四-C15區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 16:00:58', '2024-03-22 16:00:58', 2),
+(169, 19, '升三-C04區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 16:00:58', '2024-03-22 16:00:58', 2),
+(170, 19, '升三-C04區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 16:00:58', '2024-03-22 16:00:58', 2),
+(171, 19, '升三-C05區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 16:00:58', '2024-03-22 16:00:58', 2),
+(172, 19, '升三-C05區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 16:00:58', '2024-03-22 16:00:58', 2),
+(173, 19, '升三-C06區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 16:00:58', '2024-03-22 16:00:58', 2),
+(174, 19, '升四-C15區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 16:00:58', '2024-03-22 16:00:58', 2),
+(175, 27, '升三-C04區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 16:00:58', '2024-03-22 16:00:58', 2),
+(176, 27, '升三-C04區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 16:00:58', '2024-03-22 16:00:58', 2),
+(177, 27, '升三-C05區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 16:00:58', '2024-03-22 16:00:58', 2),
+(178, 27, '升三-C05區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 16:00:58', '2024-03-22 16:00:58', 2),
+(179, 27, '升三-C06區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 16:00:58', '2024-03-22 16:00:58', 2),
+(180, 27, '升四-C15區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 16:00:58', '2024-03-22 16:00:58', 2),
+(181, 12, '升四-C10區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 13:28:53', '2024-03-23 13:28:53', 2),
+(182, 12, '升四-C11區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 13:28:53', '2024-03-23 13:28:53', 2),
+(183, 12, '升四-C12區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 13:28:53', '2024-03-23 13:28:53', 2),
+(184, 12, '升四-C13區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 13:28:53', '2024-03-23 13:28:53', 2),
+(185, 12, '升四-C14區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 13:28:53', '2024-03-23 13:28:53', 2),
+(186, 12, '升四-F04區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 13:28:53', '2024-03-23 13:28:53', 2),
+(187, 12, '升四-F05區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 13:28:53', '2024-03-23 13:28:53', 2),
+(188, 20, '升四-C10區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 13:28:53', '2024-03-23 13:28:53', 2),
+(189, 20, '升四-C11區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 13:28:53', '2024-03-23 13:28:53', 2),
+(190, 20, '升四-C12區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 13:28:53', '2024-03-23 13:28:53', 2),
+(191, 20, '升四-C13區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 13:28:53', '2024-03-23 13:28:53', 2),
+(192, 20, '升四-C14區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 13:28:53', '2024-03-23 13:28:53', 2),
+(193, 20, '升四-F04區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 13:28:53', '2024-03-23 13:28:53', 2),
+(194, 20, '升四-F05區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 13:28:53', '2024-03-23 13:28:53', 2),
+(195, 28, '升四-C10區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 13:28:53', '2024-03-23 13:28:53', 2),
+(196, 28, '升四-C11區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 13:28:53', '2024-03-23 13:28:53', 2),
+(197, 28, '升四-C12區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 13:28:53', '2024-03-23 13:28:53', 2),
+(198, 28, '升四-C13區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 13:28:53', '2024-03-23 13:28:53', 2),
+(199, 28, '升四-C14區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 13:28:53', '2024-03-23 13:28:53', 2),
+(200, 28, '升四-F04區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 13:28:53', '2024-03-23 13:28:53', 2),
+(201, 28, '升四-F05區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 13:28:53', '2024-03-23 13:28:53', 2),
+(202, 13, '升四-F06區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 13:41:04', '2024-03-23 13:41:04', 2),
+(203, 13, '升四-F07區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 13:41:04', '2024-03-23 13:41:04', 2),
+(204, 13, '升四-F07區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 13:41:04', '2024-03-23 13:41:04', 2),
+(205, 13, '升四-F07區-C棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 13:41:04', '2024-03-23 13:41:04', 2),
+(206, 21, '升四-F06區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 13:41:04', '2024-03-23 13:41:04', 2),
+(207, 21, '升四-F07區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 13:41:04', '2024-03-23 13:41:04', 2),
+(208, 21, '升四-F07區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 13:41:04', '2024-03-23 13:41:04', 2),
+(209, 21, '升四-F07區-C棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 13:41:04', '2024-03-23 13:41:04', 2),
+(210, 29, '升四-F06區', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 13:41:04', '2024-03-23 13:41:04', 2),
+(211, 29, '升四-F07區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 13:41:04', '2024-03-23 13:41:04', 2),
+(212, 29, '升四-F07區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 13:41:04', '2024-03-23 13:41:04', 2),
+(213, 29, '升四-F07區-C棟', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 13:41:04', '2024-03-23 13:41:04', 2);
 
 -- --------------------------------------------------------
 
@@ -1605,7 +1884,30 @@ INSERT INTO `project_loops` (`loop_id`, `project_id`, `loop_name`, `plannedstart
 (1, 3, 'SN1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-02-27 12:24:35', '2024-02-27 12:24:35', 0),
 (2, 3, 'SN2', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-02-27 12:24:35', '2024-02-27 12:24:35', 0),
 (5, 2, 'SN1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-02-27 12:24:35', '2024-02-27 12:24:35', 2),
-(6, 1, 'SN1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-02-27 12:24:35', '2024-02-27 12:24:35', 2);
+(6, 1, 'SN1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-02-27 12:24:35', '2024-02-27 12:24:35', 2),
+(7, 2, 'SN3', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 03:45:42', '2024-03-22 03:45:30', 2),
+(8, 3, 'SN4', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 03:46:04', '2024-03-22 03:45:30', 2),
+(9, 3, 'SN5', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 03:46:16', '2024-03-22 03:45:30', 2),
+(10, 3, 'SN6', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 03:46:21', '2024-03-22 03:45:30', 2),
+(11, 3, 'SN7', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 03:46:27', '2024-03-22 03:45:30', 2),
+(12, 3, 'SN8', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 03:46:29', '2024-03-22 03:45:30', 2),
+(13, 3, 'SN9', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 03:46:32', '2024-03-22 03:45:30', 2),
+(14, 1, 'SN2', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 03:48:20', '2024-03-22 03:48:20', 2),
+(15, 1, 'SN3', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 03:48:20', '2024-03-22 03:48:20', 2),
+(16, 1, 'SN4', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 03:48:20', '2024-03-22 03:48:20', 2),
+(17, 1, 'SN5', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 03:48:20', '2024-03-22 03:48:20', 2),
+(18, 1, 'SN6', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 03:48:20', '2024-03-22 03:48:20', 2),
+(19, 1, 'SN7', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 03:48:20', '2024-03-22 03:48:20', 2),
+(20, 1, 'SN8', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 03:48:20', '2024-03-22 03:48:20', 2),
+(21, 1, 'SN9', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 03:48:20', '2024-03-22 03:48:20', 2),
+(22, 2, 'SN2', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 03:48:42', '2024-03-22 03:48:42', 2),
+(23, 3, 'SN3', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 05:54:55', '2024-03-22 03:48:42', 2),
+(24, 2, 'SN4', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 03:48:42', '2024-03-22 03:48:42', 2),
+(25, 2, 'SN5', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 03:48:42', '2024-03-22 03:48:42', 2),
+(26, 2, 'SN6', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 03:48:42', '2024-03-22 03:48:42', 2),
+(27, 2, 'SN7', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 03:48:42', '2024-03-22 03:48:42', 2),
+(28, 2, 'SN8', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 03:48:42', '2024-03-22 03:48:42', 2),
+(29, 2, 'SN9', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-22 03:48:42', '2024-03-22 03:48:42', 2);
 
 -- --------------------------------------------------------
 
@@ -1653,7 +1955,76 @@ CREATE TABLE `project_pv` (
 
 INSERT INTO `project_pv` (`pv_id`, `pv_name`, `planned_start_date`, `planned_end_date`, `actual_start_date`, `actual_end_date`, `construction_status`, `series_id`, `last_update`, `create_at`, `case_id`, `user_id`) VALUES
 (1, '升三-A02區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-02-29 02:33:34', '2024-02-29 02:33:34', 1, 0),
-(2, '升三-A02區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-02-29 02:33:34', '2024-02-29 02:33:34', 2, 0);
+(2, '升三-A02區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-02-29 02:33:34', '2024-02-29 02:33:34', 2, 0),
+(3, '升三-A03區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 14:16:52', '2024-03-23 14:16:52', 7, 2),
+(4, '升三-B01區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 14:16:52', '2024-03-23 14:16:52', 8, 2),
+(5, '升三-E01區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 14:16:52', '2024-03-23 14:16:52', 9, 2),
+(6, '升三-F01區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 14:16:52', '2024-03-23 14:16:52', 49, 2),
+(7, '升三-F02區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 14:16:52', '2024-03-23 14:16:52', 50, 2),
+(8, '升三-I01區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 14:16:52', '2024-03-23 14:16:52', 51, 2),
+(9, '升三-I02區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 14:16:52', '2024-03-23 14:16:52', 52, 2),
+(10, '升四-K01區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 14:16:52', '2024-03-23 14:16:52', 53, 2),
+(11, '升四-K02區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 14:16:52', '2024-03-23 14:16:52', 54, 2),
+(12, '升四-D03區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 14:25:14', '2024-03-23 14:25:14', 17, 2),
+(13, '升三-D01區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 14:25:14', '2024-03-23 14:25:14', 16, 2),
+(14, '升四-D04區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 14:25:14', '2024-03-23 14:25:14', 18, 2),
+(15, '升四-G01區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 14:25:14', '2024-03-23 14:25:14', 19, 2),
+(16, '升四-G02區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 14:25:14', '2024-03-23 14:25:14', 20, 2),
+(17, '升三-H01區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 14:25:14', '2024-03-23 14:25:14', 21, 2),
+(18, '升三-H02區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 14:25:14', '2024-03-23 14:25:14', 22, 2),
+(19, '升四-H03區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 14:25:14', '2024-03-23 14:25:14', 23, 2),
+(20, '升四-H04區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 14:25:14', '2024-03-23 14:25:14', 24, 2),
+(21, '升四-H05區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 14:25:14', '2024-03-23 14:25:14', 25, 2),
+(22, '升四-H06區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-23 14:25:14', '2024-03-23 14:25:14', 26, 2),
+(30, '升三-B02區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:10:36', '2024-03-25 01:10:36', 81, 2),
+(31, '升三-C01區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:10:36', '2024-03-25 01:10:36', 82, 2),
+(32, '升三-C02區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:10:36', '2024-03-25 01:10:36', 83, 2),
+(33, '升三-C03區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:10:36', '2024-03-25 01:10:36', 84, 2),
+(34, '升三-C07區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:10:36', '2024-03-25 01:10:36', 85, 2),
+(35, '升三-C08區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:10:36', '2024-03-25 01:10:36', 86, 2),
+(36, '升三-C09區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:10:36', '2024-03-25 01:10:36', 87, 2),
+(37, '升三-E02區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:15:19', '2024-03-25 01:15:19', 88, 2),
+(38, '升三-E03區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:15:19', '2024-03-25 01:15:19', 89, 2),
+(39, '升三-E04區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:15:19', '2024-03-25 01:15:19', 90, 2),
+(40, '升三-E04區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:15:19', '2024-03-25 01:15:19', 91, 2),
+(41, '升四-E05區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:15:19', '2024-03-25 01:15:19', 92, 2),
+(42, '升四-E05區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:15:19', '2024-03-25 01:15:19', 93, 2),
+(43, '升四-E06區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:15:19', '2024-03-25 01:15:19', 94, 2),
+(44, '升三-F03區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:15:19', '2024-03-25 01:15:19', 95, 2),
+(45, '升四-J01區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:15:19', '2024-03-25 01:15:19', 96, 2),
+(46, '升三-A01區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:24:18', '2024-03-25 01:24:18', 115, 2),
+(47, '升四-A04區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:24:18', '2024-03-25 01:24:18', 116, 2),
+(48, '升四-D02區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:24:18', '2024-03-25 01:24:18', 117, 2),
+(49, '升四-G05區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:24:18', '2024-03-25 01:24:18', 118, 2),
+(50, '升四-G06區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:24:18', '2024-03-25 01:24:18', 119, 2),
+(51, '升四-G07區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:24:18', '2024-03-25 01:24:18', 120, 2),
+(52, '升四-H08區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:24:18', '2024-03-25 01:24:18', 121, 2),
+(53, '升四-H09區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:24:18', '2024-03-25 01:24:18', 122, 2),
+(54, '升四-H10區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:24:18', '2024-03-25 01:24:18', 123, 2),
+(55, '升四-H10區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:24:18', '2024-03-25 01:24:18', 124, 2),
+(56, '升四-G03區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:27:27', '2024-03-25 01:27:27', 145, 2),
+(57, '升四-G04區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:27:27', '2024-03-25 01:27:27', 146, 2),
+(58, '升四-H07區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:27:27', '2024-03-25 01:27:27', 147, 2),
+(59, '升四-L01區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:27:27', '2024-03-25 01:27:27', 148, 2),
+(60, '升四-L02區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:27:27', '2024-03-25 01:27:27', 149, 2),
+(61, '升四-L03區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:27:27', '2024-03-25 01:27:27', 150, 2),
+(62, '升三-C04區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:30:26', '2024-03-25 01:30:26', 163, 2),
+(63, '升三-C04區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:30:26', '2024-03-25 01:30:26', 164, 2),
+(64, '升三-C05區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:30:26', '2024-03-25 01:30:26', 165, 2),
+(65, '升三-C05區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:30:26', '2024-03-25 01:30:26', 166, 2),
+(66, '升三-C06區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:30:26', '2024-03-25 01:30:26', 167, 2),
+(67, '升四-C15區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:30:26', '2024-03-25 01:30:26', 168, 2),
+(68, '升四-C10區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:32:56', '2024-03-25 01:32:56', 181, 2),
+(69, '升四-C11區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:32:56', '2024-03-25 01:32:56', 182, 2),
+(70, '升四-C12區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:32:56', '2024-03-25 01:32:56', 183, 2),
+(71, '升四-C13區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:32:56', '2024-03-25 01:32:56', 184, 2),
+(72, '升四-C14區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:32:56', '2024-03-25 01:32:56', 185, 2),
+(73, '升四-F04區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:32:56', '2024-03-25 01:32:56', 186, 2),
+(74, '升四-F05區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:32:56', '2024-03-25 01:32:56', 187, 2),
+(75, '升四-F06區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:34:46', '2024-03-25 01:34:46', 202, 2),
+(76, '升四-F07區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:34:46', '2024-03-25 01:34:46', 203, 2),
+(77, '升四-F07區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:34:46', '2024-03-25 01:34:46', 204, 2),
+(78, '升四-F07區-C棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 01:34:46', '2024-03-25 01:34:46', 205, 2);
 
 -- --------------------------------------------------------
 
@@ -1770,7 +2141,76 @@ CREATE TABLE `project_voltage228k` (
 
 INSERT INTO `project_voltage228k` (`voltage228k_id`, `voltage228k_name`, `planned_start_date`, `planned_end_date`, `actual_start_date`, `actual_end_date`, `construction_status`, `series_id`, `last_update`, `create_at`, `case_id`, `user_id`) VALUES
 (1, '升三-A02區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-20 06:39:45', '2024-02-29 02:33:34', 3, 0),
-(2, '升三-A02區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-20 06:39:48', '2024-02-29 02:33:34', 4, 0);
+(2, '升三-A02區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-20 06:39:48', '2024-02-29 02:33:34', 4, 0),
+(3, '升三-A03區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:49:21', '2024-03-25 05:49:21', 12, 2),
+(4, '升三-B01區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:49:21', '2024-03-25 05:49:21', 55, 2),
+(5, '升三-E01區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:49:21', '2024-03-25 05:49:21', 56, 2),
+(6, '升三-F01區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:49:21', '2024-03-25 05:49:21', 57, 2),
+(7, '升三-F02區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:49:21', '2024-03-25 05:49:21', 58, 2),
+(8, '升三-I01區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:49:21', '2024-03-25 05:49:21', 59, 2),
+(9, '升三-I02區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:49:21', '2024-03-25 05:49:21', 10, 2),
+(10, '升四-K01區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:49:21', '2024-03-25 05:49:21', 60, 2),
+(11, '升四-K02區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:49:21', '2024-03-25 05:49:21', 11, 2),
+(12, '升四-D03區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:51:16', '2024-03-25 05:51:16', 39, 2),
+(13, '升三-D01區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:51:16', '2024-03-25 05:51:16', 38, 2),
+(14, '升四-D04區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:51:16', '2024-03-25 05:51:16', 40, 2),
+(15, '升四-G01區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:51:16', '2024-03-25 05:51:16', 41, 2),
+(16, '升四-G02區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:51:16', '2024-03-25 05:51:16', 42, 2),
+(17, '升三-H01區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:51:16', '2024-03-25 05:51:16', 43, 2),
+(18, '升三-H02區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:51:16', '2024-03-25 05:51:16', 44, 2),
+(19, '升四-H03區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:51:16', '2024-03-25 05:51:16', 45, 2),
+(20, '升四-H04區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:51:16', '2024-03-25 05:51:16', 46, 2),
+(21, '升四-H05區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:51:16', '2024-03-25 05:51:16', 47, 2),
+(22, '升四-H06區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:51:16', '2024-03-25 05:51:16', 48, 2),
+(23, '升三-B02區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:52:15', '2024-03-25 05:52:15', 67, 2),
+(24, '升三-C01區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:52:15', '2024-03-25 05:52:15', 68, 2),
+(25, '升三-C02區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:52:15', '2024-03-25 05:52:15', 69, 2),
+(26, '升三-C03區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:52:15', '2024-03-25 05:52:15', 70, 2),
+(27, '升三-C07區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:52:15', '2024-03-25 05:52:15', 71, 2),
+(28, '升三-C08區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:52:15', '2024-03-25 05:52:15', 72, 2),
+(29, '升三-C09區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:52:15', '2024-03-25 05:52:15', 73, 2),
+(30, '升三-E02區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:53:27', '2024-03-25 05:53:27', 106, 2),
+(31, '升三-E03區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:53:27', '2024-03-25 05:53:27', 107, 2),
+(32, '升三-E04區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:53:27', '2024-03-25 05:53:27', 108, 2),
+(33, '升三-E04區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:53:27', '2024-03-25 05:53:27', 109, 2),
+(34, '升四-E05區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:53:27', '2024-03-25 05:53:27', 110, 2),
+(35, '升四-E05區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:53:27', '2024-03-25 05:53:27', 111, 2),
+(36, '升四-E06區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:53:27', '2024-03-25 05:53:27', 112, 2),
+(37, '升三-F03區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:53:27', '2024-03-25 05:53:27', 113, 2),
+(38, '升四-J01區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:53:27', '2024-03-25 05:53:27', 114, 2),
+(39, '升三-A01區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:54:37', '2024-03-25 05:54:37', 135, 2),
+(40, '升四-A04區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:54:37', '2024-03-25 05:54:37', 136, 2),
+(41, '升四-D02區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:54:37', '2024-03-25 05:54:37', 137, 2),
+(42, '升四-G05區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:54:37', '2024-03-25 05:54:37', 138, 2),
+(43, '升四-G06區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:54:37', '2024-03-25 05:54:37', 139, 2),
+(44, '升四-G07區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:54:37', '2024-03-25 05:54:37', 140, 2),
+(45, '升四-H08區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:54:37', '2024-03-25 05:54:37', 141, 2),
+(46, '升四-H09區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:54:37', '2024-03-25 05:54:37', 142, 2),
+(47, '升四-H10區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:54:37', '2024-03-25 05:54:37', 143, 2),
+(48, '升四-H10區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:54:37', '2024-03-25 05:54:37', 144, 2),
+(49, '升四-G03區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:55:40', '2024-03-25 05:55:40', 157, 2),
+(50, '升四-G04區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:55:40', '2024-03-25 05:55:40', 158, 2),
+(51, '升四-H07區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:55:40', '2024-03-25 05:55:40', 159, 2),
+(52, '升四-L01區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:55:40', '2024-03-25 05:55:40', 160, 2),
+(53, '升四-L02區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:55:40', '2024-03-25 05:55:40', 161, 2),
+(54, '升四-L03區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:55:40', '2024-03-25 05:55:40', 162, 2),
+(55, '升三-C04區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:56:41', '2024-03-25 05:56:41', 175, 2),
+(56, '升三-C04區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:56:41', '2024-03-25 05:56:41', 176, 2),
+(57, '升三-C05區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:56:41', '2024-03-25 05:56:41', 177, 2),
+(58, '升三-C05區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:56:41', '2024-03-25 05:56:41', 178, 2),
+(59, '升三-C06區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:56:41', '2024-03-25 05:56:41', 179, 2),
+(60, '升四-C15區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:56:41', '2024-03-25 05:56:41', 180, 2),
+(61, '升四-C10區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:57:42', '2024-03-25 05:57:42', 195, 2),
+(62, '升四-C11區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:57:42', '2024-03-25 05:57:42', 196, 2),
+(63, '升四-C12區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:57:42', '2024-03-25 05:57:42', 197, 2),
+(64, '升四-C13區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:57:42', '2024-03-25 05:57:42', 198, 2),
+(65, '升四-C14區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:57:42', '2024-03-25 05:57:42', 199, 2),
+(66, '升四-F04區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:57:42', '2024-03-25 05:57:42', 200, 2),
+(67, '升四-F05區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:57:42', '2024-03-25 05:57:42', 201, 2),
+(68, '升四-F06區', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:58:22', '2024-03-25 05:58:22', 210, 2),
+(69, '升四-F07區-A棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:58:22', '2024-03-25 05:58:22', 211, 2),
+(70, '升四-F07區-B棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:58:22', '2024-03-25 05:58:22', 212, 2),
+(71, '升四-F07區-C棟', NULL, NULL, NULL, NULL, NULL, NULL, '2024-03-25 05:58:22', '2024-03-25 05:58:22', 213, 2);
 
 -- --------------------------------------------------------
 
@@ -1781,7 +2221,7 @@ INSERT INTO `project_voltage228k` (`voltage228k_id`, `voltage228k_name`, `planne
 CREATE TABLE `pvbank_progress` (
   `pv_bank_id` int(11) NOT NULL,
   `pv_id` int(11) DEFAULT NULL,
-  `progress_percentage` decimal(5,2) DEFAULT NULL,
+  `progress_percentage` decimal(10,5) DEFAULT NULL,
   `last_update` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `create_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `pv_week_id` int(11) DEFAULT NULL,
@@ -1793,9 +2233,26 @@ CREATE TABLE `pvbank_progress` (
 --
 
 INSERT INTO `pvbank_progress` (`pv_bank_id`, `pv_id`, `progress_percentage`, `last_update`, `create_at`, `pv_week_id`, `user_id`) VALUES
-(1, 1, 0.20, '2024-03-14 11:53:16', '2024-03-14 11:53:16', 1, 0),
-(2, 1, 0.30, '2024-03-14 11:53:16', '2024-03-14 11:53:16', 2, 0),
-(3, 1, 0.30, '2024-03-14 11:53:16', '2024-03-14 11:53:16', 3, 0);
+(1, 17, 0.12600, '2024-03-25 04:14:23', '2024-03-25 04:11:53', 1, 2),
+(2, 17, 0.12600, '2024-03-25 04:22:46', '2024-03-25 04:22:46', 2, 2),
+(3, 17, 0.60900, '2024-03-25 04:23:43', '2024-03-25 04:23:43', 3, 2),
+(4, 17, 0.73900, '2024-03-25 04:24:34', '2024-03-25 04:24:34', 4, 2),
+(5, 17, 0.73900, '2024-03-25 04:25:18', '2024-03-25 04:25:18', 5, 2),
+(6, 17, 0.73900, '2024-03-25 04:25:35', '2024-03-25 04:25:35', 6, 2),
+(7, 17, 0.73900, '2024-03-25 04:25:48', '2024-03-25 04:25:48', 7, 2),
+(8, 17, 0.73900, '2024-03-25 04:25:59', '2024-03-25 04:25:59', 8, 2),
+(9, 17, 0.73900, '2024-03-25 04:26:14', '2024-03-25 04:26:14', 9, 2),
+(10, 18, 0.00000, '2024-03-25 05:15:13', '2024-03-25 05:15:13', 7, 2),
+(11, 20, 0.00000, '2024-03-25 05:16:40', '2024-03-25 05:16:40', 7, 2),
+(12, 21, 0.00000, '2024-03-25 05:16:40', '2024-03-25 05:16:40', 7, 2),
+(13, 18, 0.00000, '2024-03-25 05:19:36', '2024-03-25 05:19:36', 8, 2),
+(14, 20, 0.00000, '2024-03-25 05:19:36', '2024-03-25 05:19:36', 8, 2),
+(15, 21, 0.00000, '2024-03-25 05:19:36', '2024-03-25 05:19:36', 8, 2),
+(16, 18, 0.00000, '2024-03-25 05:20:54', '2024-03-25 05:20:54', 9, 2),
+(17, 20, 0.00000, '2024-03-25 05:20:54', '2024-03-25 05:20:54', 9, 2),
+(18, 21, 0.00000, '2024-03-25 05:20:55', '2024-03-25 05:20:55', 9, 2),
+(19, 4, 0.10500, '2024-03-25 05:36:01', '2024-03-25 05:36:01', 8, 2),
+(20, 4, 0.10500, '2024-03-25 05:36:19', '2024-03-25 05:36:19', 9, 2);
 
 -- --------------------------------------------------------
 
@@ -1808,7 +2265,7 @@ CREATE TABLE `pvbank_progress_expected` (
   `pv_id` int(11) DEFAULT NULL,
   `parameter_id` int(11) DEFAULT NULL,
   `is_parameter_based` tinyint(1) DEFAULT NULL,
-  `progress_percentage` decimal(5,2) DEFAULT NULL,
+  `progress_percentage` decimal(10,5) DEFAULT NULL,
   `last_update` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `create_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `pv_week_id` int(11) DEFAULT NULL,
@@ -1820,9 +2277,26 @@ CREATE TABLE `pvbank_progress_expected` (
 --
 
 INSERT INTO `pvbank_progress_expected` (`pv_bank_expected_id`, `pv_id`, `parameter_id`, `is_parameter_based`, `progress_percentage`, `last_update`, `create_at`, `pv_week_id`, `user_id`) VALUES
-(1, 1, NULL, NULL, 0.40, '2024-03-14 11:53:54', '2024-03-14 11:53:54', 1, 0),
-(2, 1, NULL, NULL, 0.60, '2024-03-14 11:53:54', '2024-03-14 11:53:54', 2, 0),
-(3, 1, NULL, NULL, 0.60, '2024-03-14 11:53:54', '2024-03-14 11:53:54', 3, 0);
+(1, 17, NULL, NULL, 0.00000, '2024-03-25 04:16:05', '2024-03-25 04:11:53', 1, 2),
+(2, 17, NULL, NULL, 0.00000, '2024-03-25 04:24:00', '2024-03-25 04:22:46', 2, 2),
+(3, 17, NULL, NULL, 0.00000, '2024-03-25 04:23:43', '2024-03-25 04:23:43', 3, 2),
+(4, 17, NULL, NULL, 0.00000, '2024-03-25 04:24:34', '2024-03-25 04:24:34', 4, 2),
+(5, 17, NULL, NULL, 0.00000, '2024-03-25 04:25:18', '2024-03-25 04:25:18', 5, 2),
+(6, 17, NULL, NULL, 0.00000, '2024-03-25 04:25:35', '2024-03-25 04:25:35', 6, 2),
+(7, 17, NULL, NULL, 0.00000, '2024-03-25 04:25:48', '2024-03-25 04:25:48', 7, 2),
+(8, 17, NULL, NULL, 0.00000, '2024-03-25 04:25:59', '2024-03-25 04:25:59', 8, 2),
+(9, 17, NULL, NULL, 0.00000, '2024-03-25 04:26:14', '2024-03-25 04:26:14', 9, 2),
+(10, 18, NULL, NULL, 0.02480, '2024-03-25 05:18:12', '2024-03-25 05:15:13', 7, 2),
+(11, 20, NULL, NULL, 0.02480, '2024-03-25 05:18:16', '2024-03-25 05:16:40', 7, 2),
+(12, 21, NULL, NULL, 0.02480, '2024-03-25 05:18:22', '2024-03-25 05:16:40', 7, 2),
+(13, 18, NULL, NULL, 0.03730, '2024-03-25 05:19:36', '2024-03-25 05:19:36', 8, 2),
+(14, 20, NULL, NULL, 0.03730, '2024-03-25 05:19:36', '2024-03-25 05:19:36', 8, 2),
+(15, 21, NULL, NULL, 0.03730, '2024-03-25 05:19:36', '2024-03-25 05:19:36', 8, 2),
+(16, 18, NULL, NULL, 0.05580, '2024-03-25 05:20:54', '2024-03-25 05:20:54', 9, 2),
+(17, 20, NULL, NULL, 0.05580, '2024-03-25 05:20:54', '2024-03-25 05:20:54', 9, 2),
+(18, 21, NULL, NULL, 0.05580, '2024-03-25 05:20:55', '2024-03-25 05:20:55', 9, 2),
+(19, 4, NULL, NULL, 0.00000, '2024-03-25 05:36:01', '2024-03-25 05:36:01', 8, 2),
+(20, 4, NULL, NULL, 0.00000, '2024-03-25 05:36:19', '2024-03-25 05:36:19', 9, 2);
 
 -- --------------------------------------------------------
 
@@ -1874,7 +2348,7 @@ CREATE TABLE `pv_expected_progress` (
   `expected_progress_id` int(11) NOT NULL,
   `pv_id` int(11) DEFAULT NULL,
   `parameter_id` int(11) DEFAULT NULL,
-  `progress_percentage` decimal(5,2) DEFAULT NULL,
+  `progress_percentage` decimal(10,5) DEFAULT NULL,
   `calculation_date` date DEFAULT NULL,
   `last_update` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `create_at` timestamp NOT NULL DEFAULT current_timestamp(),
@@ -1887,9 +2361,26 @@ CREATE TABLE `pv_expected_progress` (
 --
 
 INSERT INTO `pv_expected_progress` (`expected_progress_id`, `pv_id`, `parameter_id`, `progress_percentage`, `calculation_date`, `last_update`, `create_at`, `pv_week_id`, `user_id`) VALUES
-(1, 1, NULL, 0.15, NULL, '2024-03-14 11:48:37', '2024-03-14 11:48:37', 1, 0),
-(2, 1, NULL, 0.25, NULL, '2024-03-14 11:48:37', '2024-03-14 11:48:37', 2, 0),
-(3, 1, NULL, 0.25, NULL, '2024-03-14 11:48:37', '2024-03-14 11:48:37', 3, 0);
+(1, 17, NULL, 0.00000, NULL, '2024-03-25 04:15:58', '2024-03-25 04:11:53', 1, 2),
+(2, 17, NULL, 0.00000, NULL, '2024-03-25 04:23:53', '2024-03-25 04:22:46', 2, 2),
+(3, 17, NULL, 0.00000, NULL, '2024-03-25 04:23:43', '2024-03-25 04:23:43', 3, 2),
+(4, 17, NULL, 0.00000, NULL, '2024-03-25 04:24:34', '2024-03-25 04:24:34', 4, 2),
+(5, 17, NULL, 0.00000, NULL, '2024-03-25 04:25:18', '2024-03-25 04:25:18', 5, 2),
+(6, 17, NULL, 0.00000, NULL, '2024-03-25 04:25:35', '2024-03-25 04:25:35', 6, 2),
+(7, 17, NULL, 0.00000, NULL, '2024-03-25 04:25:48', '2024-03-25 04:25:48', 7, 2),
+(8, 17, NULL, 0.00000, NULL, '2024-03-25 04:25:59', '2024-03-25 04:25:59', 8, 2),
+(9, 17, NULL, 0.00000, NULL, '2024-03-25 04:26:14', '2024-03-25 04:26:14', 9, 2),
+(10, 18, NULL, 0.02480, NULL, '2024-03-25 05:18:33', '2024-03-25 05:15:13', 7, 2),
+(11, 20, NULL, 0.02480, NULL, '2024-03-25 05:18:38', '2024-03-25 05:16:40', 7, 2),
+(12, 21, NULL, 0.02480, NULL, '2024-03-25 05:18:42', '2024-03-25 05:16:40', 7, 2),
+(13, 18, NULL, 0.03730, NULL, '2024-03-25 05:19:36', '2024-03-25 05:19:36', 8, 2),
+(14, 20, NULL, 0.03730, NULL, '2024-03-25 05:19:36', '2024-03-25 05:19:36', 8, 2),
+(15, 21, NULL, 0.03730, NULL, '2024-03-25 05:19:36', '2024-03-25 05:19:36', 8, 2),
+(16, 18, NULL, 0.05580, NULL, '2024-03-25 05:20:54', '2024-03-25 05:20:54', 9, 2),
+(17, 20, NULL, 0.05580, NULL, '2024-03-25 05:20:54', '2024-03-25 05:20:54', 9, 2),
+(18, 21, NULL, 0.05580, NULL, '2024-03-25 05:20:55', '2024-03-25 05:20:55', 9, 2),
+(19, 4, NULL, 0.00000, NULL, '2024-03-25 05:36:01', '2024-03-25 05:36:01', 8, 2),
+(20, 4, NULL, 0.00000, NULL, '2024-03-25 05:36:19', '2024-03-25 05:36:19', 9, 2);
 
 -- --------------------------------------------------------
 
@@ -1901,7 +2392,7 @@ CREATE TABLE `pv_progress` (
   `progress_id` int(11) NOT NULL,
   `pv_id` int(11) DEFAULT NULL,
   `series_id` int(11) DEFAULT NULL,
-  `progress_percentage` decimal(5,2) DEFAULT NULL,
+  `progress_percentage` decimal(10,5) DEFAULT NULL,
   `supervisor` varchar(255) DEFAULT NULL,
   `non_construction_reason` text DEFAULT NULL,
   `progress_calculation_description` text DEFAULT NULL,
@@ -1916,9 +2407,26 @@ CREATE TABLE `pv_progress` (
 --
 
 INSERT INTO `pv_progress` (`progress_id`, `pv_id`, `series_id`, `progress_percentage`, `supervisor`, `non_construction_reason`, `progress_calculation_description`, `last_update`, `create_at`, `pv_week_id`, `user_id`) VALUES
-(1, 1, NULL, 0.10, NULL, NULL, NULL, '2024-03-14 11:47:55', '2024-03-14 11:47:55', 1, 0),
-(2, 1, NULL, 0.30, NULL, NULL, NULL, '2024-03-14 11:47:55', '2024-03-14 11:47:55', 2, 0),
-(3, 1, NULL, 0.30, NULL, NULL, NULL, '2024-03-14 11:47:55', '2024-03-14 11:47:55', 3, 0);
+(1, 17, NULL, 0.12600, NULL, NULL, NULL, '2024-03-25 04:13:39', '2024-03-25 04:11:53', 1, 2),
+(2, 17, NULL, 0.12600, NULL, NULL, NULL, '2024-03-25 04:22:46', '2024-03-25 04:22:46', 2, 2),
+(3, 17, NULL, 0.60900, NULL, NULL, NULL, '2024-03-25 04:23:43', '2024-03-25 04:23:43', 3, 2),
+(4, 17, NULL, 0.73900, NULL, NULL, NULL, '2024-03-25 04:24:34', '2024-03-25 04:24:34', 4, 2),
+(5, 17, NULL, 0.73900, NULL, NULL, NULL, '2024-03-25 04:25:18', '2024-03-25 04:25:18', 5, 2),
+(6, 17, NULL, 0.73900, NULL, NULL, NULL, '2024-03-25 04:25:35', '2024-03-25 04:25:35', 6, 2),
+(7, 17, NULL, 0.73900, NULL, NULL, NULL, '2024-03-25 04:25:48', '2024-03-25 04:25:48', 7, 2),
+(8, 17, NULL, 0.73900, NULL, NULL, NULL, '2024-03-25 04:25:59', '2024-03-25 04:25:59', 8, 2),
+(9, 17, NULL, 0.73900, NULL, NULL, NULL, '2024-03-25 04:26:14', '2024-03-25 04:26:14', 9, 2),
+(10, 18, NULL, 0.00000, NULL, NULL, NULL, '2024-03-25 05:15:12', '2024-03-25 05:15:12', 7, 2),
+(11, 20, NULL, 0.00000, NULL, NULL, NULL, '2024-03-25 05:16:40', '2024-03-25 05:16:40', 7, 2),
+(12, 21, NULL, 0.00000, NULL, NULL, NULL, '2024-03-25 05:16:40', '2024-03-25 05:16:40', 7, 2),
+(13, 18, NULL, 0.00000, NULL, NULL, NULL, '2024-03-25 05:19:36', '2024-03-25 05:19:36', 8, 2),
+(14, 20, NULL, 0.00000, NULL, NULL, NULL, '2024-03-25 05:19:36', '2024-03-25 05:19:36', 8, 2),
+(15, 21, NULL, 0.00000, NULL, NULL, NULL, '2024-03-25 05:19:36', '2024-03-25 05:19:36', 8, 2),
+(16, 18, NULL, 0.00000, NULL, NULL, NULL, '2024-03-25 05:20:54', '2024-03-25 05:20:54', 9, 2),
+(17, 20, NULL, 0.00000, NULL, NULL, NULL, '2024-03-25 05:20:54', '2024-03-25 05:20:54', 9, 2),
+(18, 21, NULL, 0.00000, NULL, NULL, NULL, '2024-03-25 05:20:55', '2024-03-25 05:20:55', 9, 2),
+(19, 4, NULL, 0.10500, NULL, NULL, NULL, '2024-03-25 05:36:01', '2024-03-25 05:36:01', 8, 2),
+(20, 4, NULL, 0.10500, NULL, NULL, NULL, '2024-03-25 05:36:19', '2024-03-25 05:36:19', 9, 2);
 
 -- --------------------------------------------------------
 
@@ -1941,9 +2449,15 @@ CREATE TABLE `pv_week` (
 --
 
 INSERT INTO `pv_week` (`week_id`, `year`, `quarter`, `week`, `start_date`, `end_date`, `user_id`) VALUES
-(1, '2023', 4, 13, '2023-12-31', '2024-01-06', 0),
-(2, '2024', 1, 2, '2024-01-07', '2024-01-13', 0),
-(3, '2024', 2, 1, '2024-03-31', '2024-04-06', 0);
+(1, '2024', 1, 1, '2023-12-31', '2024-01-06', 2),
+(2, '2024', 1, 2, '2024-01-07', '2024-01-13', 2),
+(3, '2024', 1, 3, '2024-01-14', '2024-01-20', 2),
+(4, '2024', 1, 4, '2024-01-21', '2024-01-27', 2),
+(5, '2024', 1, 5, '2024-01-28', '2024-02-03', 2),
+(6, '2024', 1, 6, '2024-02-04', '2024-02-10', 2),
+(7, '2024', 1, 7, '2024-02-11', '2024-02-17', 2),
+(8, '2024', 1, 8, '2024-02-18', '2024-02-24', 2),
+(9, '2024', 1, 9, '2024-02-25', '2024-03-02', 2);
 
 -- --------------------------------------------------------
 
@@ -2032,15 +2546,6 @@ CREATE TABLE `voltage161kbank_progress` (
   `user_id` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- 傾印資料表的資料 `voltage161kbank_progress`
---
-
-INSERT INTO `voltage161kbank_progress` (`voltage161k_bank_id`, `voltage161k_id`, `progress_percentage`, `last_update`, `create_at`, `voltage161k_week_id`, `user_id`) VALUES
-(1, 1, 0.20, '2024-03-14 03:53:16', '2024-03-14 03:53:16', 1, 0),
-(2, 1, 0.30, '2024-03-14 03:53:16', '2024-03-14 03:53:16', 2, 0),
-(3, 1, 0.30, '2024-03-14 03:53:16', '2024-03-14 03:53:16', 3, 0);
-
 -- --------------------------------------------------------
 
 --
@@ -2058,15 +2563,6 @@ CREATE TABLE `voltage161kbank_progress_expected` (
   `voltage161k_week_id` int(11) DEFAULT NULL,
   `user_id` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- 傾印資料表的資料 `voltage161kbank_progress_expected`
---
-
-INSERT INTO `voltage161kbank_progress_expected` (`voltage161k_bank_expected_id`, `voltage161k_id`, `parameter_id`, `is_parameter_based`, `progress_percentage`, `last_update`, `create_at`, `voltage161k_week_id`, `user_id`) VALUES
-(1, 1, NULL, NULL, 0.40, '2024-03-14 11:53:54', '2024-03-14 11:53:54', 1, 0),
-(2, 1, NULL, NULL, 0.60, '2024-03-14 11:53:54', '2024-03-14 11:53:54', 2, 0),
-(3, 1, NULL, NULL, 0.60, '2024-03-14 11:53:54', '2024-03-14 11:53:54', 3, 0);
 
 -- --------------------------------------------------------
 
@@ -2126,15 +2622,6 @@ CREATE TABLE `voltage161k_expected_progress` (
   `user_id` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- 傾印資料表的資料 `voltage161k_expected_progress`
---
-
-INSERT INTO `voltage161k_expected_progress` (`expected_progress_id`, `voltage161k_id`, `parameter_id`, `progress_percentage`, `calculation_date`, `last_update`, `create_at`, `voltage161k_week_id`, `user_id`) VALUES
-(1, 1, NULL, 0.15, NULL, '2024-03-14 11:48:37', '2024-03-14 11:48:37', 1, 0),
-(2, 1, NULL, 0.25, NULL, '2024-03-14 11:48:37', '2024-03-14 11:48:37', 2, 0),
-(3, 1, NULL, 0.25, NULL, '2024-03-14 11:48:37', '2024-03-14 11:48:37', 3, 0);
-
 -- --------------------------------------------------------
 
 --
@@ -2154,15 +2641,6 @@ CREATE TABLE `voltage161k_progress` (
   `voltage161k_week_id` int(11) DEFAULT NULL,
   `user_id` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- 傾印資料表的資料 `voltage161k_progress`
---
-
-INSERT INTO `voltage161k_progress` (`progress_id`, `voltage161k_id`, `series_id`, `progress_percentage`, `supervisor`, `non_construction_reason`, `progress_calculation_description`, `last_update`, `create_at`, `voltage161k_week_id`, `user_id`) VALUES
-(1, 1, NULL, 0.10, NULL, NULL, NULL, '2024-03-14 11:47:55', '2024-03-14 11:47:55', 1, 0),
-(2, 1, NULL, 0.30, NULL, NULL, NULL, '2024-03-14 11:47:55', '2024-03-14 11:47:55', 2, 0),
-(3, 1, NULL, 0.30, NULL, NULL, NULL, '2024-03-14 11:47:55', '2024-03-14 11:47:55', 3, 0);
 
 -- --------------------------------------------------------
 
@@ -2185,9 +2663,15 @@ CREATE TABLE `voltage161k_week` (
 --
 
 INSERT INTO `voltage161k_week` (`week_id`, `year`, `quarter`, `week`, `start_date`, `end_date`, `user_id`) VALUES
-(1, '2023', 4, 13, '2023-12-31', '2024-01-06', 0),
-(2, '2024', 1, 2, '2024-01-07', '2024-01-13', 0),
-(3, '2024', 2, 1, '2024-03-31', '2024-04-06', 0);
+(1, '2024', 1, 1, '2023-12-31', '2024-01-06', 2),
+(2, '2024', 1, 2, '2024-01-07', '2024-01-13', 2),
+(3, '2024', 1, 3, '2024-01-14', '2024-01-20', 2),
+(4, '2024', 1, 4, '2024-01-21', '2024-01-27', 2),
+(5, '2024', 1, 5, '2024-01-28', '2024-02-03', 2),
+(6, '2024', 1, 6, '2024-02-04', '2024-02-10', 2),
+(7, '2024', 1, 7, '2024-02-11', '2024-02-17', 2),
+(8, '2024', 1, 8, '2024-02-18', '2024-02-24', 2),
+(9, '2024', 1, 9, '2024-02-25', '2024-03-02', 2);
 
 -- --------------------------------------------------------
 
@@ -2204,15 +2688,6 @@ CREATE TABLE `voltage228kbank_progress` (
   `voltage228k_week_id` int(11) DEFAULT NULL,
   `user_id` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- 傾印資料表的資料 `voltage228kbank_progress`
---
-
-INSERT INTO `voltage228kbank_progress` (`voltage228k_bank_id`, `voltage228k_id`, `progress_percentage`, `last_update`, `create_at`, `voltage228k_week_id`, `user_id`) VALUES
-(1, 1, 0.20, '2024-03-14 03:53:16', '2024-03-14 03:53:16', 1, 0),
-(2, 1, 0.30, '2024-03-14 03:53:16', '2024-03-14 03:53:16', 2, 0),
-(3, 1, 0.30, '2024-03-14 03:53:16', '2024-03-14 03:53:16', 3, 0);
 
 -- --------------------------------------------------------
 
@@ -2231,15 +2706,6 @@ CREATE TABLE `voltage228kbank_progress_expected` (
   `voltage228k_week_id` int(11) DEFAULT NULL,
   `user_id` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- 傾印資料表的資料 `voltage228kbank_progress_expected`
---
-
-INSERT INTO `voltage228kbank_progress_expected` (`voltage228k_bank_expected_id`, `voltage228k_id`, `parameter_id`, `is_parameter_based`, `progress_percentage`, `last_update`, `create_at`, `voltage228k_week_id`, `user_id`) VALUES
-(1, 1, NULL, NULL, 0.40, '2024-03-14 11:53:54', '2024-03-14 11:53:54', 1, 0),
-(2, 1, NULL, NULL, 0.60, '2024-03-14 11:53:54', '2024-03-14 11:53:54', 2, 0),
-(3, 1, NULL, NULL, 0.60, '2024-03-14 11:53:54', '2024-03-14 11:53:54', 3, 0);
 
 -- --------------------------------------------------------
 
@@ -2299,15 +2765,6 @@ CREATE TABLE `voltage228k_expected_progress` (
   `user_id` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- 傾印資料表的資料 `voltage228k_expected_progress`
---
-
-INSERT INTO `voltage228k_expected_progress` (`expected_progress_id`, `voltage228k_id`, `parameter_id`, `progress_percentage`, `calculation_date`, `last_update`, `create_at`, `voltage228k_week_id`, `user_id`) VALUES
-(1, 1, NULL, 0.15, NULL, '2024-03-14 11:48:37', '2024-03-14 11:48:37', 1, 0),
-(2, 1, NULL, 0.25, NULL, '2024-03-14 11:48:37', '2024-03-14 11:48:37', 2, 0),
-(3, 1, NULL, 0.25, NULL, '2024-03-14 11:48:37', '2024-03-14 11:48:37', 3, 0);
-
 -- --------------------------------------------------------
 
 --
@@ -2327,15 +2784,6 @@ CREATE TABLE `voltage228k_progress` (
   `voltage228k_week_id` int(11) DEFAULT NULL,
   `user_id` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- 傾印資料表的資料 `voltage228k_progress`
---
-
-INSERT INTO `voltage228k_progress` (`progress_id`, `voltage228k_id`, `series_id`, `progress_percentage`, `supervisor`, `non_construction_reason`, `progress_calculation_description`, `last_update`, `create_at`, `voltage228k_week_id`, `user_id`) VALUES
-(1, 1, NULL, 0.10, NULL, NULL, NULL, '2024-03-14 11:47:55', '2024-03-14 11:47:55', 1, 0),
-(2, 1, NULL, 0.30, NULL, NULL, NULL, '2024-03-14 11:47:55', '2024-03-14 11:47:55', 2, 0),
-(3, 1, NULL, 0.30, NULL, NULL, NULL, '2024-03-14 11:47:55', '2024-03-14 11:47:55', 3, 0);
 
 -- --------------------------------------------------------
 
@@ -2358,9 +2806,15 @@ CREATE TABLE `voltage228k_week` (
 --
 
 INSERT INTO `voltage228k_week` (`week_id`, `year`, `quarter`, `week`, `start_date`, `end_date`, `user_id`) VALUES
-(1, '2023', 4, 13, '2023-12-31', '2024-01-06', 0),
-(2, '2024', 1, 2, '2024-01-07', '2024-01-13', 0),
-(3, '2024', 2, 1, '2024-03-31', '2024-04-06', 0);
+(1, '2024', 1, 1, '2023-12-31', '2024-01-06', 2),
+(2, '2024', 1, 2, '2024-01-07', '2024-01-13', 2),
+(3, '2024', 1, 3, '2024-01-14', '2024-01-20', 2),
+(4, '2024', 1, 4, '2024-01-21', '2024-01-27', 2),
+(5, '2024', 1, 5, '2024-01-28', '2024-02-03', 2),
+(6, '2024', 1, 6, '2024-02-04', '2024-02-10', 2),
+(7, '2024', 1, 7, '2024-02-11', '2024-02-17', 2),
+(8, '2024', 1, 8, '2024-02-18', '2024-02-24', 2),
+(9, '2024', 1, 9, '2024-02-25', '2024-03-02', 2);
 
 --
 -- 已傾印資料表的索引
@@ -2551,6 +3005,13 @@ ALTER TABLE `file_progress`
   ADD KEY `fk_file_progress_user_id` (`user_id`);
 
 --
+-- 資料表索引 `file_progress_phase`
+--
+ALTER TABLE `file_progress_phase`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_file_progress_user_id` (`user_id`);
+
+--
 -- 資料表索引 `logistic_parameters`
 --
 ALTER TABLE `logistic_parameters`
@@ -2635,7 +3096,6 @@ ALTER TABLE `master_plan_progress`
 ALTER TABLE `meeting_record`
   ADD PRIMARY KEY (`id`),
   ADD KEY `fk_meeting_record_user_id` (`user_id`);
-
 
 --
 -- 資料表索引 `plans`
@@ -3070,13 +3530,13 @@ ALTER TABLE `auth_user_user_permissions`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `breedingbank_progress`
 --
 ALTER TABLE `breedingbank_progress`
-  MODIFY `breeding_bank_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `breeding_bank_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `breedingbank_progress_expected`
 --
 ALTER TABLE `breedingbank_progress_expected`
-  MODIFY `breeding_bank_expected_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `breeding_bank_expected_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `breeding_bank_expected_history`
@@ -3094,19 +3554,19 @@ ALTER TABLE `breeding_bank_history`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `breeding_expected_progress`
 --
 ALTER TABLE `breeding_expected_progress`
-  MODIFY `expected_progress_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `expected_progress_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `breeding_progress`
 --
 ALTER TABLE `breeding_progress`
-  MODIFY `progress_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `progress_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `breeding_week`
 --
 ALTER TABLE `breeding_week`
-  MODIFY `week_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `week_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `cases_history`
@@ -3160,7 +3620,13 @@ ALTER TABLE `energy_production_series`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `file_progress`
 --
 ALTER TABLE `file_progress`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+
+--
+-- 使用資料表自動遞增(AUTO_INCREMENT) `file_progress_phase`
+--
+ALTER TABLE `file_progress_phase`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `logistic_parameters`
@@ -3232,7 +3698,7 @@ ALTER TABLE `meeting_record`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `plans`
 --
 ALTER TABLE `plans`
-  MODIFY `plan_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `plan_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `plans_history`
@@ -3268,7 +3734,7 @@ ALTER TABLE `plan_weights`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `projects`
 --
 ALTER TABLE `projects`
-  MODIFY `project_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `project_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `projects_progress`
@@ -3286,7 +3752,7 @@ ALTER TABLE `projects_progress_expected`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `project_breeding`
 --
 ALTER TABLE `project_breeding`
-  MODIFY `breeding_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `breeding_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `project_breeding_history`
@@ -3298,7 +3764,7 @@ ALTER TABLE `project_breeding_history`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `project_cases`
 --
 ALTER TABLE `project_cases`
-  MODIFY `case_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `case_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=214;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `project_case_energy_production`
@@ -3310,7 +3776,7 @@ ALTER TABLE `project_case_energy_production`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `project_loops`
 --
 ALTER TABLE `project_loops`
-  MODIFY `loop_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `loop_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `project_loop_energy_production`
@@ -3322,7 +3788,7 @@ ALTER TABLE `project_loop_energy_production`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `project_pv`
 --
 ALTER TABLE `project_pv`
-  MODIFY `pv_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `pv_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `project_pv_history`
@@ -3352,19 +3818,19 @@ ALTER TABLE `project_voltage161k`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `project_voltage228k`
 --
 ALTER TABLE `project_voltage228k`
-  MODIFY `voltage228k_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `voltage228k_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `pvbank_progress`
 --
 ALTER TABLE `pvbank_progress`
-  MODIFY `pv_bank_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `pv_bank_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `pvbank_progress_expected`
 --
 ALTER TABLE `pvbank_progress_expected`
-  MODIFY `pv_bank_expected_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `pv_bank_expected_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `pv_bank_expected_history`
@@ -3382,19 +3848,19 @@ ALTER TABLE `pv_bank_history`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `pv_expected_progress`
 --
 ALTER TABLE `pv_expected_progress`
-  MODIFY `expected_progress_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `expected_progress_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `pv_progress`
 --
 ALTER TABLE `pv_progress`
-  MODIFY `progress_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `progress_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `pv_week`
 --
 ALTER TABLE `pv_week`
-  MODIFY `week_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `week_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `series`
@@ -3424,13 +3890,13 @@ ALTER TABLE `sub_item_percentage_history`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `voltage161kbank_progress`
 --
 ALTER TABLE `voltage161kbank_progress`
-  MODIFY `voltage161k_bank_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `voltage161k_bank_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `voltage161kbank_progress_expected`
 --
 ALTER TABLE `voltage161kbank_progress_expected`
-  MODIFY `voltage161k_bank_expected_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `voltage161k_bank_expected_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `voltage161k_bank_expected_history`
@@ -3448,31 +3914,31 @@ ALTER TABLE `voltage161k_bank_history`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `voltage161k_expected_progress`
 --
 ALTER TABLE `voltage161k_expected_progress`
-  MODIFY `expected_progress_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `expected_progress_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `voltage161k_progress`
 --
 ALTER TABLE `voltage161k_progress`
-  MODIFY `progress_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `progress_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `voltage161k_week`
 --
 ALTER TABLE `voltage161k_week`
-  MODIFY `week_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `week_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `voltage228kbank_progress`
 --
 ALTER TABLE `voltage228kbank_progress`
-  MODIFY `voltage228k_bank_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `voltage228k_bank_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `voltage228kbank_progress_expected`
 --
 ALTER TABLE `voltage228kbank_progress_expected`
-  MODIFY `voltage228k_bank_expected_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `voltage228k_bank_expected_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `voltage228k_bank_expected_history`
@@ -3490,19 +3956,19 @@ ALTER TABLE `voltage228k_bank_history`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `voltage228k_expected_progress`
 --
 ALTER TABLE `voltage228k_expected_progress`
-  MODIFY `expected_progress_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `expected_progress_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `voltage228k_progress`
 --
 ALTER TABLE `voltage228k_progress`
-  MODIFY `progress_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `progress_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `voltage228k_week`
 --
 ALTER TABLE `voltage228k_week`
-  MODIFY `week_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `week_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- 已傾印資料表的限制式

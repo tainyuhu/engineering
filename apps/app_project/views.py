@@ -122,10 +122,11 @@ class ProjectLoopListByProject(generics.ListAPIView):
     serializer_class = ProjectLoopSerializer
 
     def get_queryset(self):
-
-        queryset = ProjectLoop.objects.all()
+        queryset = ProjectLoop.objects.all().order_by('loop_name')
         project_id = self.kwargs.get('project_id')
+
         if project_id is not None:
-            queryset = queryset.filter(project_id=project_id)
+            queryset = queryset.filter(project_id=project_id).order_by('loop_name')
             print(queryset.query)
+
         return queryset

@@ -1,13 +1,13 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from .models import (
-    MeetingRecord, ProjectValueRatio, ProjectValueRatiosHistory, Plan, PlansHistory,  PlansProgress, 
+    FileProgressPhase, MeetingRecord, ProjectValueRatio, ProjectValueRatiosHistory, Plan, PlansHistory,  PlansProgress, 
     MasterPlan, MasterPlansHistory, MasterPlanProgress,
     PlanWeight, PlanAssociation, PlanTotalEnergyProduction,
     ProjectLoopEnergyProduction, ProjectCaseEnergyProduction, EnergyProductionSeries, EnergyProductionRatio, FileProgress
 )
 from .serializers import (
-    MeetingRecordSerializer, ProjectValueRatioSerializer, ProjectValueRatiosHistorySerializer, PlanSerializer, PlansHistorySerializer, PlansProgressSerializer, 
+    FileProgressPhaseSerializer, MeetingRecordSerializer, ProjectValueRatioSerializer, ProjectValueRatiosHistorySerializer, PlanSerializer, PlansHistorySerializer, PlansProgressSerializer, 
     MasterPlanSerializer, MasterPlansHistorySerializer, MasterPlanProgressSerializer,
     PlanWeightSerializer, PlanAssociationSerializer, PlanTotalEnergyProductionSerializer,
     ProjectLoopEnergyProductionSerializer, ProjectCaseEnergyProductionSerializer, 
@@ -172,6 +172,17 @@ class FileProgressList(generics.ListCreateAPIView):
 class FileProgressDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = FileProgress.objects.all()
     serializer_class = FileProgressSerializer
+#endregion
+    
+
+#region 文件連結管理
+class FileProgressPhaseList(generics.ListCreateAPIView):
+    queryset = FileProgressPhase.objects.all()
+    serializer_class = FileProgressPhaseSerializer
+
+class FileProgressPhaseDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = FileProgressPhase.objects.all()
+    serializer_class = FileProgressPhaseSerializer
 #endregion
     
 #region 會議連結管理
