@@ -439,11 +439,15 @@ def get_color_from_name(name):
     hash_obj = hashlib.sha256(name.encode())
     hash_hex = hash_obj.hexdigest()
 
-    # Ensure each color component is not too bright (limit to 127/0x7F)
-    r = int(hash_hex[0:2], 16) % 128
-    g = int(hash_hex[2:4], 16) % 128
-    b = int(hash_hex[4:6], 16) % 128
+    r = int(hash_hex[0:2], 16)
+    g = int(hash_hex[2:4], 16)
+    b = int(hash_hex[4:6], 16)
     
+    max_brightness = 220
+    r = int(r / 255 * max_brightness)
+    g = int(g / 255 * max_brightness)
+    b = int(b / 255 * max_brightness)
+
     color = f'#{r:02x}{g:02x}{b:02x}'
     return color
 

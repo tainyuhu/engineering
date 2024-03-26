@@ -257,6 +257,20 @@ class FileProgress(BaseModel):
         db_table = 'file_progress'
 #endregion
         
+#region 文件管理
+class FileProgressPhase(BaseModel):
+    file_name = models.CharField(max_length=255, blank=False, null=False)
+    file_link = models.CharField(max_length=255, blank=False, null=False)
+    last_update = models.DateTimeField(auto_now=True)
+    create_at = models.DateTimeField(auto_now_add=True)
+    update_description = models.TextField(null=True, blank=True)
+    routeName = models.TextField(null=True, blank=True)
+
+    class Meta:
+        managed = False
+        db_table = 'file_progress_phase'
+#endregion
+        
 #region 會議記錄
 class MeetingRecord(BaseModel):
     file_name = models.CharField(max_length=255, blank=False, null=False)

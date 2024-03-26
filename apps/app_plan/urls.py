@@ -66,6 +66,10 @@ urlpatterns = [
     path('fileprogress/', views.FileProgressList.as_view(), name='fileprogress-list'),
     path('fileprogress/<int:pk>/', views.FileProgressDetail.as_view(), name='fileprogress-detail'),
 
+    # 文件連結管理 URLs
+    path('fileprogressphase/', views.FileProgressPhaseList.as_view(), name='fileprogress-phase-list'),
+    path('fileprogressphase/<int:pk>/', views.FileProgressPhaseDetail.as_view(), name='fileprogress-phase-detail'),
+
     # 會議連結管理 URLs
     path('meetingrecord/', views.MeetingRecordList.as_view(), name='meetingrecord-list'),
     path('meetingrecord/<int:pk>/', views.MeetingRecordDetail.as_view(), name='meetingrecord-detail'),
