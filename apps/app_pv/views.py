@@ -6,9 +6,12 @@ from apps.app_project.models import ProjectCase
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from collections import defaultdict, OrderedDict
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Max
 import hashlib
+from django.db.models.functions import Concat
+from django.db.models import Value as V
+from django.db.models import CharField
 
 #region 工程價金系列
 class SeriesList(generics.ListCreateAPIView):
@@ -949,10 +952,12 @@ class GetPVQuarterChartProgress(APIView):
             return Response({"error": str(e)}, status=500)
 #endregion
 
-class GetPVWeekChartProgress(APIView):
-    def get(self, request, loop_id, project_type, page, page_size):
+#region 計算所有季工程進度報表
+class GetPVAllQuarterChartProgress(APIView):
+    def get(self, request, loop_id, project_type):
         try:
-            # 验证项目类型并获取对应的模型
+            cases = ProjectCase.objects.filter(loop_id=loop_id)
+
             if project_type == "engineering":
                 progress_model = ProjectPVProgress
                 expected_model = ProjectPVExpectedProgress
@@ -962,63 +967,146 @@ class GetPVWeekChartProgress(APIView):
             else:
                 return Response({"error": "Invalid project type."}, status=400)
 
-            # 获取所有案例
-            cases = ProjectCase.objects.filter(loop_id=loop_id)
+            datasets = []
+            all_years = PvWeek.objects.values_list('year', flat=True).order_by('year').distinct()
 
-            # 获取并组织所有相关的周数据
-            date_ranges_with_data = defaultdict(list)
+            labels = [f"{year} Q{quarter}" for year in all_years for quarter in range(1, 5)]
+
             for case in cases:
                 pvs = ProjectPV.objects.filter(case_id=case.case_id)
                 for pv in pvs:
-                    progress_records = progress_model.objects.filter(pv_id=pv.pv_id).order_by('-pv_week_id')
-                    for progress_record in progress_records:
-                        expected_record = expected_model.objects.filter(
-                            pv_id=pv.pv_id, 
-                            pv_week_id=progress_record.pv_week_id
-                        ).first()
-                        week_data = PvWeek.objects.filter(week_id=progress_record.pv_week_id.week_id).first()
-                        if expected_record and week_data:
-                            date_range = f"{week_data.start_date.strftime('%Y-%m-%d')} - {week_data.end_date.strftime('%Y-%m-%d')}"
-                            date_ranges_with_data[date_range].append({
-                                "pv_name": pv.pv_name,
-                                "actual": progress_record.progress_percentage,
-                                "expected": expected_record.progress_percentage
-                            })
+                    actual_data = []
+                    expected_data = []
+                    for year in all_years:
+                        for quarter in range(1, 5):
+                            last_week_of_quarter = PvWeek.objects.filter(
+                                year=year, 
+                                quarter=quarter
+                            ).aggregate(Max('week'))['week__max']
 
-            # 使用分页器进行分页处理
-            sorted_date_ranges = sorted(date_ranges_with_data.items(), key=lambda x: x[0], reverse=True)
-            paginator = Paginator(sorted_date_ranges, page_size)
-            page_obj = paginator.get_page(page)
+                            if last_week_of_quarter:
+                                last_week = PvWeek.objects.get(
+                                    year=year, 
+                                    quarter=quarter, 
+                                    week=last_week_of_quarter
+                                )
 
-            # 准备返回的数据集
-            datasets = []
-            for date_range, data in page_obj.object_list:
-                actual_data = []
-                expected_data = []
-                for item in data:
-                    actual_data.append(item["actual"])
-                    expected_data.append(item["expected"])
+                                progress_record = progress_model.objects.filter(
+                                    pv_id=pv.pv_id, 
+                                    pv_week_id=last_week.week_id
+                                ).first()
 
-                base_color = get_color_from_name(data[0]["pv_name"])  # 假设使用第一个PV名称获取颜色
+                                expected_record = expected_model.objects.filter(
+                                    pv_id=pv.pv_id, 
+                                    pv_week_id=last_week.week_id
+                                ).first() if progress_record else None
 
-                datasets.append({
-                    "label": f"{data[0]['pv_name']} 实际",
-                    "data": actual_data,
-                    "backgroundColor": base_color,
-                    "borderColor": base_color
-                })
-                datasets.append({
-                    "label": f"{data[0]['pv_name']} 预计",
-                    "data": expected_data,
-                    "borderColor": base_color,
-                    "borderDash": [5, 5]
-                })
+                                actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
+                                expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
+
+                                actual_data.append(actual_percentage)
+                                expected_data.append(expected_percentage)
+
+                    base_color = get_color_from_name(pv.pv_name)
+
+                    datasets.append({
+                        "label": f"{pv.pv_name} Actual",
+                        "data": actual_data,
+                        "backgroundColor": base_color,
+                        "borderColor": base_color
+                    })
+                    datasets.append({
+                        "label": f"{pv.pv_name} Expected",
+                        "data": expected_data,
+                        "borderColor": base_color,
+                        "borderDash": [5, 5]
+                    })
 
             return Response({
-                "labels": [date_range for date_range, _ in page_obj.object_list],
-                "datasets": datasets,
-                "totalPages": paginator.num_pages,
-                "currentPage": page
+                "labels": labels,
+                "datasets": datasets
             })
         except Exception as e:
             return Response({"error": str(e)}, status=500)
+#endregion
+
+#region 計算所有周工程進度報表
+class GetPVWeekChartProgress(APIView):
+    def get(self, request, loop_id, currentPage, itemsPerPage, project_type):
+        try:
+            cases = ProjectCase.objects.filter(loop_id=loop_id)
+
+            if project_type == "engineering":
+                progress_model = ProjectPVProgress
+                expected_model = ProjectPVExpectedProgress
+            elif project_type == "bank":
+                progress_model = PVBankProgress
+                expected_model = PVBankProgressExpected
+            else:
+                return Response({"error": "Invalid project type."}, status=400)
+
+            datasets = []
+
+            # 获取所有周的开始和结束日期，然后按日期降序排列
+            all_weeks = PvWeek.objects.annotate(
+                date_range=Concat(
+                    'start_date', V(' - '), 'end_date',
+                    output_field=CharField()
+                )
+            ).order_by('-start_date')
+
+            # 分页
+            paginator = Paginator(all_weeks, itemsPerPage)
+            try:
+                current_weeks = paginator.page(currentPage)
+            except PageNotAnInteger:
+                current_weeks = paginator.page(1)
+            except EmptyPage:
+                current_weeks = paginator.page(paginator.num_pages)
+
+            labels = [week.date_range for week in current_weeks]
+
+            for case in cases:
+                pvs = ProjectPV.objects.filter(case_id=case.case_id)
+                for pv in pvs:
+                    actual_data = []
+                    expected_data = []
+                    for week in current_weeks:
+                        progress_record = progress_model.objects.filter(
+                            pv_id=pv.pv_id,
+                            pv_week_id=week.week_id
+                        ).first()
+
+                        expected_record = expected_model.objects.filter(
+                            pv_id=pv.pv_id,
+                            pv_week_id=week.week_id
+                        ).first()
+
+                        actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
+                        expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
+
+                        actual_data.append(actual_percentage)
+                        expected_data.append(expected_percentage)
+
+                    base_color = get_color_from_name(pv.pv_name)
+
+                    datasets.append({
+                        "label": f"{pv.pv_name} Actual",
+                        "data": actual_data,
+                        "backgroundColor": base_color,
+                        "borderColor": base_color
+                    })
+                    datasets.append({
+                        "label": f"{pv.pv_name} Expected",
+                        "data": expected_data,
+                        "borderColor": base_color,
+                        "borderDash": [5, 5]
+                    })
+
+            return Response({
+                "labels": labels,
+                "datasets": datasets
+            })
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)
+#endregion
