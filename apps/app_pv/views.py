@@ -209,21 +209,36 @@ class GetPVProgress(APIView):
                 
                 for pv in pvs:
                     progress_records = progress_model.objects.filter(pv_id=pv.pv_id).order_by('-pv_week_id')
-                    for progress_record in progress_records:
-                        expected_record = expected_model.objects.filter(
-                            pv_id=pv.pv_id, 
-                            pv_week_id=progress_record.pv_week_id,
-                        ).first()
-                        if expected_record:
-                            print(f"expected_record.pv_week_id: {expected_record.pv_week_id.week_id}")
-                            week_data = PvWeek.objects.filter(week_id=expected_record.pv_week_id.week_id).first()
-                            if week_data:
-                                date_range = f"{week_data.start_date.strftime('%Y-%m-%d')} - {week_data.end_date.strftime('%Y-%m-%d')}"
-                                date_ranges_with_data[date_range].append({
-                                    "pv_name": pv.pv_name,
-                                    "actual": progress_record.progress_percentage,
-                                    "expected": expected_record.progress_percentage
-                                })
+                    if progress_records.exists():
+                        for progress_record in progress_records:
+                            expected_record = expected_model.objects.filter(
+                                pv_id=pv.pv_id, 
+                                pv_week_id=progress_record.pv_week_id,
+                            ).first()
+                            if expected_record:
+                                print(f"expected_record.pv_week_id: {expected_record.pv_week_id.week_id}")
+                                week_data = PvWeek.objects.filter(week_id=expected_record.pv_week_id.week_id).first()
+                                if week_data:
+                                    date_range = f"{week_data.start_date.strftime('%Y-%m-%d')} - {week_data.end_date.strftime('%Y-%m-%d')}"
+                                    date_ranges_with_data[date_range].append({
+                                        "pv_name": pv.pv_name,
+                                        "construction_status": pv.construction_status,
+                                        "actual": progress_record.progress_percentage,
+                                        "expected": expected_record.progress_percentage
+                                    })
+                    else:
+                        today = datetime.datetime.now().strftime("%Y-%m-%d")
+                        week_data = PvWeek.objects.filter(
+                            end_date__lte=today
+                        ).last()
+                        if week_data:
+                            date_range = f"{week_data.start_date.strftime('%Y-%m-%d')} - {week_data.end_date.strftime('%Y-%m-%d')}"
+                            date_ranges_with_data[date_range].append({
+                                "pv_name": pv.pv_name,
+                                "construction_status": pv.construction_status,
+                                "actual": 0,
+                                "expected": 0,
+                            })
 
             # 轉換有序字典並提取最新的 date_range 數據
             ordered_date_ranges = OrderedDict(sorted(date_ranges_with_data.items(), reverse=True))
@@ -243,7 +258,8 @@ class GetPVProgress(APIView):
                 for date_range, data in page_obj.object_list:
                     for item in data:
                         formatted_results.append({
-                            "pv_name": item["pv_name"],
+                            "vb_name": item["pv_name"],
+                            "construction_status": item["construction_status"],
                             "date_range": date_range,
                             "actual": item["actual"],
                             "expected": item["expected"]
@@ -252,7 +268,8 @@ class GetPVProgress(APIView):
                 # 從第二頁開始，在資料頂部都增加最新的 date_range 數據
                 for item in latest_data:
                     formatted_results.append({
-                        "pv_name": item["pv_name"],
+                        "vb_name": item["pv_name"],
+                        "construction_status": item["construction_status"],
                         "date_range": latest_date_range,
                         "actual": item["actual"],
                         "expected": item["expected"]
@@ -261,7 +278,8 @@ class GetPVProgress(APIView):
                 for date_range, data in page_obj.object_list:
                     for item in data:
                         formatted_results.append({
-                            "pv_name": item["pv_name"],
+                            "vb_name": item["pv_name"],
+                            "construction_status": item["construction_status"],
                             "date_range": date_range,
                             "actual": item["actual"],
                             "expected": item["expected"]
@@ -297,7 +315,7 @@ class GetPVAllQuarterProgress(APIView):
                 expected_model = PVBankProgressExpected
             else:
                 return Response({"error": "Invalid project type."}, status=400)
-
+            
             for case in cases:
                 pvs = ProjectPV.objects.filter(case_id=case.case_id)
                 for pv in pvs:
@@ -321,21 +339,34 @@ class GetPVAllQuarterProgress(APIView):
                                     pv_id=pv.pv_id, 
                                     pv_week_id=last_week.week_id
                                 )
-                                for progress_record in progress_records:
-                                    expected_record = expected_model.objects.filter(
-                                        pv_id=pv.pv_id, 
-                                        pv_week_id=progress_record.pv_week_id
-                                    ).first()
-                                    if expected_record:
-                                        date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
-                                        date_ranges_with_data[date_range].append({
-                                            "year": last_week.year,
-                                            "quarter": last_week.quarter,
-                                            "week": last_week.week,
-                                            "pv_name": pv.pv_name,
-                                            "actual": progress_record.progress_percentage,
-                                            "expected": expected_record.progress_percentage
-                                        })
+                                if progress_records.exists():
+                                    for progress_record in progress_records:
+                                        expected_record = expected_model.objects.filter(
+                                            pv_id=pv.pv_id, 
+                                            pv_week_id=progress_record.pv_week_id
+                                        ).first()
+                                        if expected_record:
+                                            date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
+                                            date_ranges_with_data[date_range].append({
+                                                "year": last_week.year,
+                                                "quarter": last_week.quarter,
+                                                "week": last_week.week,
+                                                "pv_name": pv.pv_name,
+                                                "construction_status": pv.construction_status,
+                                                "actual": progress_record.progress_percentage,
+                                                "expected": expected_record.progress_percentage
+                                            })
+                                else:
+                                    date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
+                                    date_ranges_with_data[date_range].append({
+                                        "pv_name": pv.pv_name,
+                                        "construction_status": pv.construction_status,
+                                        "actual": 0,
+                                        "expected": 0,
+                                        "year": last_week.year,
+                                        "quarter": last_week.quarter,
+                                        "week": last_week.week,
+                                    })
 
             # 轉換有序字典並提取最新的 date_range 數據
             ordered_date_ranges = OrderedDict(sorted(date_ranges_with_data.items(), reverse=True))
@@ -358,7 +389,8 @@ class GetPVAllQuarterProgress(APIView):
                             "year": item["year"],
                             "quarter": item["quarter"],
                             "week": item["week"],
-                            "pv_name": item["pv_name"],
+                            "vb_name": item["pv_name"],
+                            "construction_status": item["construction_status"],
                             "date_range": date_range,
                             "actual": item["actual"],
                             "expected": item["expected"]
@@ -370,7 +402,8 @@ class GetPVAllQuarterProgress(APIView):
                         "year": item["year"],
                         "quarter": item["quarter"],
                         "week": item["week"],
-                        "pv_name": item["pv_name"],
+                        "vb_name": item["pv_name"],
+                        "construction_status": item["construction_status"],
                         "date_range": latest_date_range,
                         "actual": item["actual"],
                         "expected": item["expected"]
@@ -382,7 +415,8 @@ class GetPVAllQuarterProgress(APIView):
                             "year": item["year"],
                             "quarter": item["quarter"],
                             "week": item["week"],
-                            "pv_name": item["pv_name"],
+                            "vb_name": item["pv_name"],
+                            "construction_status": item["construction_status"],
                             "date_range": date_range,
                             "actual": item["actual"],
                             "expected": item["expected"]
@@ -441,21 +475,33 @@ class GetPVQuarterProgress(APIView):
                                 pv_id=pv.pv_id, 
                                 pv_week_id=last_week.week_id
                             )
-                            for progress_record in progress_records:
-                                expected_record = expected_model.objects.filter(
-                                    pv_id=pv.pv_id, 
-                                    pv_week_id=progress_record.pv_week_id
-                                ).first()
-                                if expected_record:
-                                    date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
-                                    date_ranges_with_data[date_range].append({
-                                        "year": last_week.year,
-                                        "quarter": last_week.quarter,
-                                        "week": last_week.week,
-                                        "pv_name": pv.pv_name,
-                                        "actual": progress_record.progress_percentage,
-                                        "expected": expected_record.progress_percentage
-                                    })
+                            if progress_records.exists():
+                                for progress_record in progress_records:
+                                    expected_record = expected_model.objects.filter(
+                                        pv_id=pv.pv_id, 
+                                        pv_week_id=progress_record.pv_week_id
+                                    ).first()
+                                    if expected_record:
+                                        date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
+                                        date_ranges_with_data[date_range].append({
+                                            "year": last_week.year,
+                                            "quarter": last_week.quarter,
+                                            "week": last_week.week,
+                                            "pv_name": pv.pv_name,
+                                            "actual": progress_record.progress_percentage,
+                                            "expected": expected_record.progress_percentage
+                                        })
+                            else:
+                                date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
+                                date_ranges_with_data[date_range].append({
+                                    "pv_name": pv.pv_name,
+                                    "construction_status": pv.construction_status,
+                                    "actual": 0,
+                                    "expected": 0,
+                                    "year": last_week.year,
+                                    "quarter": last_week.quarter,
+                                    "week": last_week.week,
+                                })
 
             # 轉換有序字典並提取最新的 date_range 數據
             ordered_date_ranges = OrderedDict(sorted(date_ranges_with_data.items(), reverse=True))
@@ -478,7 +524,7 @@ class GetPVQuarterProgress(APIView):
                             "year": item["year"],
                             "quarter": item["quarter"],
                             "week": item["week"],
-                            "pv_name": item["pv_name"],
+                            "vb_name": item["pv_name"],
                             "date_range": date_range,
                             "actual": item["actual"],
                             "expected": item["expected"]
@@ -490,7 +536,7 @@ class GetPVQuarterProgress(APIView):
                         "year": item["year"],
                         "quarter": item["quarter"],
                         "week": item["week"],
-                        "pv_name": item["pv_name"],
+                        "vb_name": item["pv_name"],
                         "date_range": latest_date_range,
                         "actual": item["actual"],
                         "expected": item["expected"]
@@ -502,7 +548,7 @@ class GetPVQuarterProgress(APIView):
                             "year": item["year"],
                             "quarter": item["quarter"],
                             "week": item["week"],
-                            "pv_name": item["pv_name"],
+                            "vb_name": item["pv_name"],
                             "date_range": date_range,
                             "actual": item["actual"],
                             "expected": item["expected"]
@@ -520,7 +566,7 @@ class GetPVQuarterProgress(APIView):
         
 #region 計算迴路82周工程進度
 class GetLoopProgress(APIView):
-    def get(self, request, loop_id, currentPage, itemsPerPage, project_type):
+   def get(self, request, loop_id, currentPage, itemsPerPage, project_type):
         try:
             print(f"Parameters: loop_id={loop_id}, currentPage={currentPage}, itemsPerPage={itemsPerPage}, project_type={project_type}")
             # 獲取所有 cases
@@ -544,21 +590,36 @@ class GetLoopProgress(APIView):
                 
                 for pv in pvs:
                     progress_records = progress_model.objects.filter(pv_id=pv.pv_id).order_by('-pv_week_id')
-                    for progress_record in progress_records:
-                        expected_record = expected_model.objects.filter(
-                            pv_id=pv.pv_id, 
-                            pv_week_id=progress_record.pv_week_id,
-                        ).first()
-                        if expected_record:
-                            print(f"expected_record.pv_week_id: {expected_record.pv_week_id.week_id}")
-                            week_data = PvWeek.objects.filter(week_id=expected_record.pv_week_id.week_id).first()
-                            if week_data:
-                                date_range = f"{week_data.start_date.strftime('%Y-%m-%d')} - {week_data.end_date.strftime('%Y-%m-%d')}"
-                                date_ranges_with_data[date_range].append({
-                                    "pv_name": pv.pv_name,
-                                    "actual": float(progress_record.progress_percentage) * 0.8,
-                                    "expected": float(expected_record.progress_percentage) * 0.8
-                                })
+                    if progress_records.exists():
+                        for progress_record in progress_records:
+                            expected_record = expected_model.objects.filter(
+                                pv_id=pv.pv_id, 
+                                pv_week_id=progress_record.pv_week_id,
+                            ).first()
+                            if expected_record:
+                                print(f"expected_record.pv_week_id: {expected_record.pv_week_id.week_id}")
+                                week_data = PvWeek.objects.filter(week_id=expected_record.pv_week_id.week_id).first()
+                                if week_data:
+                                    date_range = f"{week_data.start_date.strftime('%Y-%m-%d')} - {week_data.end_date.strftime('%Y-%m-%d')}"
+                                    date_ranges_with_data[date_range].append({
+                                        "pv_name": pv.pv_name,
+                                        "construction_status": pv.construction_status,
+                                        "actual": float(progress_record.progress_percentage) * 0.8,
+                                        "expected": float(expected_record.progress_percentage) * 0.8
+                                    })
+                    else:
+                        today = datetime.datetime.now().strftime("%Y-%m-%d")
+                        week_data = PvWeek.objects.filter(
+                            end_date__lte=today
+                        ).last()
+                        if week_data:
+                            date_range = f"{week_data.start_date.strftime('%Y-%m-%d')} - {week_data.end_date.strftime('%Y-%m-%d')}"
+                            date_ranges_with_data[date_range].append({
+                                "pv_name": pv.pv_name,
+                                "construction_status": pv.construction_status,
+                                "actual": 0,
+                                "expected": 0,
+                            })
 
             # 轉換有序字典並提取最新的 date_range 數據
             ordered_date_ranges = OrderedDict(sorted(date_ranges_with_data.items(), reverse=True))
@@ -578,7 +639,8 @@ class GetLoopProgress(APIView):
                 for date_range, data in page_obj.object_list:
                     for item in data:
                         formatted_results.append({
-                            "pv_name": item["pv_name"],
+                            "vb_name": item["pv_name"],
+                            "construction_status": item["construction_status"],
                             "date_range": date_range,
                             "actual": item["actual"],
                             "expected": item["expected"]
@@ -587,7 +649,8 @@ class GetLoopProgress(APIView):
                 # 從第二頁開始，在資料頂部都增加最新的 date_range 數據
                 for item in latest_data:
                     formatted_results.append({
-                        "pv_name": item["pv_name"],
+                        "vb_name": item["pv_name"],
+                        "construction_status": item["construction_status"],
                         "date_range": latest_date_range,
                         "actual": item["actual"],
                         "expected": item["expected"]
@@ -596,7 +659,8 @@ class GetLoopProgress(APIView):
                 for date_range, data in page_obj.object_list:
                     for item in data:
                         formatted_results.append({
-                            "pv_name": item["pv_name"],
+                            "vb_name": item["pv_name"],
+                            "construction_status": item["construction_status"],
                             "date_range": date_range,
                             "actual": item["actual"],
                             "expected": item["expected"]
@@ -632,7 +696,7 @@ class GetLoopAllQuarterProgress(APIView):
                 expected_model = PVBankProgressExpected
             else:
                 return Response({"error": "Invalid project type."}, status=400)
-
+            
             for case in cases:
                 pvs = ProjectPV.objects.filter(case_id=case.case_id)
                 for pv in pvs:
@@ -656,21 +720,34 @@ class GetLoopAllQuarterProgress(APIView):
                                     pv_id=pv.pv_id, 
                                     pv_week_id=last_week.week_id
                                 )
-                                for progress_record in progress_records:
-                                    expected_record = expected_model.objects.filter(
-                                        pv_id=pv.pv_id, 
-                                        pv_week_id=progress_record.pv_week_id
-                                    ).first()
-                                    if expected_record:
-                                        date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
-                                        date_ranges_with_data[date_range].append({
-                                            "year": last_week.year,
-                                            "quarter": last_week.quarter,
-                                            "week": last_week.week,
-                                            "pv_name": pv.pv_name,
-                                            "actual": float(progress_record.progress_percentage) * 0.8,
-                                            "expected": float(expected_record.progress_percentage) * 0.8
-                                        })
+                                if progress_records.exists():
+                                    for progress_record in progress_records:
+                                        expected_record = expected_model.objects.filter(
+                                            pv_id=pv.pv_id, 
+                                            pv_week_id=progress_record.pv_week_id
+                                        ).first()
+                                        if expected_record:
+                                            date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
+                                            date_ranges_with_data[date_range].append({
+                                                "year": last_week.year,
+                                                "quarter": last_week.quarter,
+                                                "week": last_week.week,
+                                                "pv_name": pv.pv_name,
+                                                "construction_status": pv.construction_status,
+                                                "actual": float(progress_record.progress_percentage) * 0.8,
+                                                "expected": float(expected_record.progress_percentage) * 0.8
+                                            })
+                                else:
+                                    date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
+                                    date_ranges_with_data[date_range].append({
+                                        "pv_name": pv.pv_name,
+                                        "construction_status": pv.construction_status,
+                                        "actual": 0,
+                                        "expected": 0,
+                                        "year": last_week.year,
+                                        "quarter": last_week.quarter,
+                                        "week": last_week.week,
+                                    })
 
             # 轉換有序字典並提取最新的 date_range 數據
             ordered_date_ranges = OrderedDict(sorted(date_ranges_with_data.items(), reverse=True))
@@ -693,7 +770,8 @@ class GetLoopAllQuarterProgress(APIView):
                             "year": item["year"],
                             "quarter": item["quarter"],
                             "week": item["week"],
-                            "pv_name": item["pv_name"],
+                            "vb_name": item["pv_name"],
+                            "construction_status": item["construction_status"],
                             "date_range": date_range,
                             "actual": item["actual"],
                             "expected": item["expected"]
@@ -705,7 +783,8 @@ class GetLoopAllQuarterProgress(APIView):
                         "year": item["year"],
                         "quarter": item["quarter"],
                         "week": item["week"],
-                        "pv_name": item["pv_name"],
+                        "vb_name": item["pv_name"],
+                        "construction_status": item["construction_status"],
                         "date_range": latest_date_range,
                         "actual": item["actual"],
                         "expected": item["expected"]
@@ -717,7 +796,8 @@ class GetLoopAllQuarterProgress(APIView):
                             "year": item["year"],
                             "quarter": item["quarter"],
                             "week": item["week"],
-                            "pv_name": item["pv_name"],
+                            "vb_name": item["pv_name"],
+                            "construction_status": item["construction_status"],
                             "date_range": date_range,
                             "actual": item["actual"],
                             "expected": item["expected"]
@@ -776,21 +856,33 @@ class GetLoopQuarterProgress(APIView):
                                 pv_id=pv.pv_id, 
                                 pv_week_id=last_week.week_id
                             )
-                            for progress_record in progress_records:
-                                expected_record = expected_model.objects.filter(
-                                    pv_id=pv.pv_id, 
-                                    pv_week_id=progress_record.pv_week_id
-                                ).first()
-                                if expected_record:
-                                    date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
-                                    date_ranges_with_data[date_range].append({
-                                        "year": last_week.year,
-                                        "quarter": last_week.quarter,
-                                        "week": last_week.week,
-                                        "pv_name": pv.pv_name,
-                                        "actual": float(progress_record.progress_percentage) * 0.8,
-                                        "expected": float(expected_record.progress_percentage) * 0.8
-                                    })
+                            if progress_records.exists():
+                                for progress_record in progress_records:
+                                    expected_record = expected_model.objects.filter(
+                                        pv_id=pv.pv_id, 
+                                        pv_week_id=progress_record.pv_week_id
+                                    ).first()
+                                    if expected_record:
+                                        date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
+                                        date_ranges_with_data[date_range].append({
+                                            "year": last_week.year,
+                                            "quarter": last_week.quarter,
+                                            "week": last_week.week,
+                                            "pv_name": pv.pv_name,
+                                            "actual": float(progress_record.progress_percentage) * 0.8,
+                                            "expected": float(expected_record.progress_percentage) * 0.8
+                                        })
+                            else:
+                                date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
+                                date_ranges_with_data[date_range].append({
+                                    "pv_name": pv.pv_name,
+                                    "construction_status": pv.construction_status,
+                                    "actual": 0,
+                                    "expected": 0,
+                                    "year": last_week.year,
+                                    "quarter": last_week.quarter,
+                                    "week": last_week.week,
+                                })
 
             # 轉換有序字典並提取最新的 date_range 數據
             ordered_date_ranges = OrderedDict(sorted(date_ranges_with_data.items(), reverse=True))
@@ -813,7 +905,7 @@ class GetLoopQuarterProgress(APIView):
                             "year": item["year"],
                             "quarter": item["quarter"],
                             "week": item["week"],
-                            "pv_name": item["pv_name"],
+                            "vb_name": item["pv_name"],
                             "date_range": date_range,
                             "actual": item["actual"],
                             "expected": item["expected"]
@@ -825,7 +917,7 @@ class GetLoopQuarterProgress(APIView):
                         "year": item["year"],
                         "quarter": item["quarter"],
                         "week": item["week"],
-                        "pv_name": item["pv_name"],
+                        "vb_name": item["pv_name"],
                         "date_range": latest_date_range,
                         "actual": item["actual"],
                         "expected": item["expected"]
@@ -837,7 +929,7 @@ class GetLoopQuarterProgress(APIView):
                             "year": item["year"],
                             "quarter": item["quarter"],
                             "week": item["week"],
-                            "pv_name": item["pv_name"],
+                            "vb_name": item["pv_name"],
                             "date_range": date_range,
                             "actual": item["actual"],
                             "expected": item["expected"]

@@ -126,21 +126,36 @@ class GetBreedingProgress(APIView):
                 
                 for breeding in breedings:
                     progress_records = progress_model.objects.filter(breeding_id=breeding.breeding_id).order_by('-breeding_week_id')
-                    for progress_record in progress_records:
-                        expected_record = expected_model.objects.filter(
-                            breeding_id=breeding.breeding_id, 
-                            breeding_week_id=progress_record.breeding_week_id,
-                        ).first()
-                        if expected_record:
-                            print(f"expected_record.breeding_week_id: {expected_record.breeding_week_id.week_id}")
-                            week_data = BreedingWeek.objects.filter(week_id=expected_record.breeding_week_id.week_id).first()
-                            if week_data:
-                                date_range = f"{week_data.start_date.strftime('%Y-%m-%d')} - {week_data.end_date.strftime('%Y-%m-%d')}"
-                                date_ranges_with_data[date_range].append({
-                                    "breeding_name": breeding.breeding_name,
-                                    "actual": progress_record.progress_percentage,
-                                    "expected": expected_record.progress_percentage
-                                })
+                    if progress_records.exists():
+                        for progress_record in progress_records:
+                            expected_record = expected_model.objects.filter(
+                                breeding_id=breeding.breeding_id, 
+                                breeding_week_id=progress_record.breeding_week_id,
+                            ).first()
+                            if expected_record:
+                                print(f"expected_record.breeding_week_id: {expected_record.breeding_week_id.week_id}")
+                                week_data = BreedingWeek.objects.filter(week_id=expected_record.breeding_week_id.week_id).first()
+                                if week_data:
+                                    date_range = f"{week_data.start_date.strftime('%Y-%m-%d')} - {week_data.end_date.strftime('%Y-%m-%d')}"
+                                    date_ranges_with_data[date_range].append({
+                                        "breeding_name": breeding.breeding_name,
+                                        "construction_status": breeding.construction_status,
+                                        "actual": progress_record.progress_percentage,
+                                        "expected": expected_record.progress_percentage
+                                    })
+                    else:
+                        today = datetime.datetime.now().strftime("%Y-%m-%d")
+                        week_data = BreedingWeek.objects.filter(
+                            end_date__lte=today
+                        ).last()
+                        if week_data:
+                            date_range = f"{week_data.start_date.strftime('%Y-%m-%d')} - {week_data.end_date.strftime('%Y-%m-%d')}"
+                            date_ranges_with_data[date_range].append({
+                                "breeding_name": breeding.breeding_name,
+                                "construction_status": breeding.construction_status,
+                                "actual": 0,
+                                "expected": 0,
+                            })
 
             # 轉換有序字典並提取最新的 date_range 數據
             ordered_date_ranges = OrderedDict(sorted(date_ranges_with_data.items(), reverse=True))
@@ -160,7 +175,8 @@ class GetBreedingProgress(APIView):
                 for date_range, data in page_obj.object_list:
                     for item in data:
                         formatted_results.append({
-                            "breeding_name": item["breeding_name"],
+                            "vb_name": item["breeding_name"],
+                            "construction_status": item["construction_status"],
                             "date_range": date_range,
                             "actual": item["actual"],
                             "expected": item["expected"]
@@ -169,7 +185,8 @@ class GetBreedingProgress(APIView):
                 # 從第二頁開始，在資料頂部都增加最新的 date_range 數據
                 for item in latest_data:
                     formatted_results.append({
-                        "breeding_name": item["breeding_name"],
+                        "vb_name": item["breeding_name"],
+                        "construction_status": item["construction_status"],
                         "date_range": latest_date_range,
                         "actual": item["actual"],
                         "expected": item["expected"]
@@ -178,7 +195,8 @@ class GetBreedingProgress(APIView):
                 for date_range, data in page_obj.object_list:
                     for item in data:
                         formatted_results.append({
-                            "breeding_name": item["breeding_name"],
+                            "vb_name": item["breeding_name"],
+                            "construction_status": item["construction_status"],
                             "date_range": date_range,
                             "actual": item["actual"],
                             "expected": item["expected"]
@@ -214,7 +232,7 @@ class GetBreedingAllQuarterProgress(APIView):
                 expected_model = BreedingBankProgressExpected
             else:
                 return Response({"error": "Invalid project type."}, status=400)
-
+            
             for case in cases:
                 breedings = ProjectBreeding.objects.filter(case_id=case.case_id)
                 for breeding in breedings:
@@ -238,21 +256,34 @@ class GetBreedingAllQuarterProgress(APIView):
                                     breeding_id=breeding.breeding_id, 
                                     breeding_week_id=last_week.week_id
                                 )
-                                for progress_record in progress_records:
-                                    expected_record = expected_model.objects.filter(
-                                        breeding_id=breeding.breeding_id, 
-                                        breeding_week_id=progress_record.breeding_week_id
-                                    ).first()
-                                    if expected_record:
-                                        date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
-                                        date_ranges_with_data[date_range].append({
-                                            "year": last_week.year,
-                                            "quarter": last_week.quarter,
-                                            "week": last_week.week,
-                                            "breeding_name": breeding.breeding_name,
-                                            "actual": progress_record.progress_percentage,
-                                            "expected": expected_record.progress_percentage
-                                        })
+                                if progress_records.exists():
+                                    for progress_record in progress_records:
+                                        expected_record = expected_model.objects.filter(
+                                            breeding_id=breeding.breeding_id, 
+                                            breeding_week_id=progress_record.breeding_week_id
+                                        ).first()
+                                        if expected_record:
+                                            date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
+                                            date_ranges_with_data[date_range].append({
+                                                "year": last_week.year,
+                                                "quarter": last_week.quarter,
+                                                "week": last_week.week,
+                                                "breeding_name": breeding.breeding_name,
+                                                "construction_status": breeding.construction_status,
+                                                "actual": progress_record.progress_percentage,
+                                                "expected": expected_record.progress_percentage
+                                            })
+                                else:
+                                    date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
+                                    date_ranges_with_data[date_range].append({
+                                        "breeding_name": breeding.breeding_name,
+                                        "construction_status": breeding.construction_status,
+                                        "actual": 0,
+                                        "expected": 0,
+                                        "year": last_week.year,
+                                        "quarter": last_week.quarter,
+                                        "week": last_week.week,
+                                    })
 
             # 轉換有序字典並提取最新的 date_range 數據
             ordered_date_ranges = OrderedDict(sorted(date_ranges_with_data.items(), reverse=True))
@@ -275,7 +306,8 @@ class GetBreedingAllQuarterProgress(APIView):
                             "year": item["year"],
                             "quarter": item["quarter"],
                             "week": item["week"],
-                            "breeding_name": item["breeding_name"],
+                            "vb_name": item["breeding_name"],
+                            "construction_status": item["construction_status"],
                             "date_range": date_range,
                             "actual": item["actual"],
                             "expected": item["expected"]
@@ -287,7 +319,8 @@ class GetBreedingAllQuarterProgress(APIView):
                         "year": item["year"],
                         "quarter": item["quarter"],
                         "week": item["week"],
-                        "breeding_name": item["breeding_name"],
+                        "vb_name": item["breeding_name"],
+                        "construction_status": item["construction_status"],
                         "date_range": latest_date_range,
                         "actual": item["actual"],
                         "expected": item["expected"]
@@ -299,7 +332,8 @@ class GetBreedingAllQuarterProgress(APIView):
                             "year": item["year"],
                             "quarter": item["quarter"],
                             "week": item["week"],
-                            "breeding_name": item["breeding_name"],
+                            "vb_name": item["breeding_name"],
+                            "construction_status": item["construction_status"],
                             "date_range": date_range,
                             "actual": item["actual"],
                             "expected": item["expected"]
@@ -358,21 +392,33 @@ class GetBreedingQuarterProgress(APIView):
                                 breeding_id=breeding.breeding_id, 
                                 breeding_week_id=last_week.week_id
                             )
-                            for progress_record in progress_records:
-                                expected_record = expected_model.objects.filter(
-                                    breeding_id=breeding.breeding_id, 
-                                    breeding_week_id=progress_record.breeding_week_id
-                                ).first()
-                                if expected_record:
-                                    date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
-                                    date_ranges_with_data[date_range].append({
-                                        "year": last_week.year,
-                                        "quarter": last_week.quarter,
-                                        "week": last_week.week,
-                                        "breeding_name": breeding.breeding_name,
-                                        "actual": progress_record.progress_percentage,
-                                        "expected": expected_record.progress_percentage
-                                    })
+                            if progress_records.exists():
+                                for progress_record in progress_records:
+                                    expected_record = expected_model.objects.filter(
+                                        breeding_id=breeding.breeding_id, 
+                                        breeding_week_id=progress_record.breeding_week_id
+                                    ).first()
+                                    if expected_record:
+                                        date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
+                                        date_ranges_with_data[date_range].append({
+                                            "year": last_week.year,
+                                            "quarter": last_week.quarter,
+                                            "week": last_week.week,
+                                            "breeding_name": breeding.breeding_name,
+                                            "actual": progress_record.progress_percentage,
+                                            "expected": expected_record.progress_percentage
+                                        })
+                            else:
+                                date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
+                                date_ranges_with_data[date_range].append({
+                                    "breeding_name": breeding.breeding_name,
+                                    "construction_status": breeding.construction_status,
+                                    "actual": 0,
+                                    "expected": 0,
+                                    "year": last_week.year,
+                                    "quarter": last_week.quarter,
+                                    "week": last_week.week,
+                                })
 
             # 轉換有序字典並提取最新的 date_range 數據
             ordered_date_ranges = OrderedDict(sorted(date_ranges_with_data.items(), reverse=True))
@@ -395,7 +441,7 @@ class GetBreedingQuarterProgress(APIView):
                             "year": item["year"],
                             "quarter": item["quarter"],
                             "week": item["week"],
-                            "breeding_name": item["breeding_name"],
+                            "vb_name": item["breeding_name"],
                             "date_range": date_range,
                             "actual": item["actual"],
                             "expected": item["expected"]
@@ -407,7 +453,7 @@ class GetBreedingQuarterProgress(APIView):
                         "year": item["year"],
                         "quarter": item["quarter"],
                         "week": item["week"],
-                        "breeding_name": item["breeding_name"],
+                        "vb_name": item["breeding_name"],
                         "date_range": latest_date_range,
                         "actual": item["actual"],
                         "expected": item["expected"]
@@ -419,7 +465,7 @@ class GetBreedingQuarterProgress(APIView):
                             "year": item["year"],
                             "quarter": item["quarter"],
                             "week": item["week"],
-                            "breeding_name": item["breeding_name"],
+                            "vb_name": item["breeding_name"],
                             "date_range": date_range,
                             "actual": item["actual"],
                             "expected": item["expected"]
