@@ -3,7 +3,7 @@ from rest_framework import generics
 from .models import Voltage228KBankExpectedHistory, Voltage228KBankHistory, Voltage228KBankProgress, Voltage228KBankProgressExpected, ProjectVoltage228K, ProjectVoltage228KExpectedProgress, ProjectVoltage228KHistory, ProjectVoltage228KProgress, Voltage228KWeek
 from .serializers import Voltage228KBankExpectedHistorySerializer, Voltage228KBankHistorySerializer, Voltage228KBankProgressExpectedSerializer, Voltage228KBankProgressSerializer, ProjectVoltage228KExpectedProgressSerializer, ProjectVoltage228KHistorySerializer, ProjectVoltage228KProgressSerializer, ProjectVoltage228KSerializer, Voltage228KWeekSerializer
 from rest_framework.views import APIView
-from apps.app_project.models import ProjectCase
+from apps.app_project.models import ProjectCase, ProjectLoop
 from rest_framework.response import Response
 from collections import defaultdict, OrderedDict
 from django.core.paginator import Paginator
@@ -102,87 +102,66 @@ class Voltage228KBankExpectedHistoryDetail(generics.RetrieveUpdateDestroyAPIView
 
 #region 計算周工程進度
 class GetVoltage228KProgress(APIView):
-    def get(self, request, loop_id, currentPage, itemsPerPage, project_type):
+    def get(self, request, project_id, currentPage, itemsPerPage, project_type):
         try:
-            print(f"Parameters: loop_id={loop_id}, currentPage={currentPage}, itemsPerPage={itemsPerPage}, project_type={project_type}")
-            # 獲取所有 cases
-            cases = ProjectCase.objects.filter(loop_id=loop_id)
-            print(f"Found {cases.count()} cases for loop_id {loop_id} {project_type}")
+            loops = ProjectLoop.objects.filter(project_id=project_id)
+            loop_ids = loops.values_list('loop_id', flat=True)
 
-            date_ranges_with_data = defaultdict(list)
+            civil_projects = ProjectVoltage228K.objects.filter(loop_id__in=loop_ids, engineer=1)
+            cable_projects = ProjectVoltage228K.objects.filter(loop_id__in=loop_ids, engineer=2)
             
-            # 根據 project_type 選擇不同的數據源
-            if project_type == "engineering":
-                progress_model = ProjectVoltage228KProgress
-                expected_model = ProjectVoltage228KExpectedProgress
-            elif project_type == "bank":
-                progress_model = Voltage228KBankProgress
-                expected_model = Voltage228KBankProgressExpected
-            else:
-                return Response({"error": "Invalid project type."}, status=400)
+            # 每個日期範圍存儲數據項目列表
+            date_ranges_with_data = defaultdict(list)
 
-            for case in cases:
-                voltage228ks = ProjectVoltage228K.objects.filter(case_id=case.case_id)
-                
-                for voltage228k in voltage228ks:
-                    progress_records = progress_model.objects.filter(voltage228k_id=voltage228k.voltage228k_id).order_by('-voltage228k_week_id')
+            def process_projects(projects, progress_model, expected_model, weight):
+                for project in projects:
+                    progress_records = progress_model.objects.filter(voltage228k_id=project.voltage228k_id).order_by('-voltage228k_week_id')
                     for progress_record in progress_records:
                         expected_record = expected_model.objects.filter(
-                            voltage228k_id=voltage228k.voltage228k_id, 
-                            voltage228k_week_id=progress_record.voltage228k_week_id,
+                            voltage228k_id=project.voltage228k_id, 
+                            voltage228k_week_id=progress_record.voltage228k_week_id
                         ).first()
                         if expected_record:
-                            print(f"expected_record.voltage228k_week_id: {expected_record.voltage228k_week_id.week_id}")
                             week_data = Voltage228KWeek.objects.filter(week_id=expected_record.voltage228k_week_id.week_id).first()
                             if week_data:
                                 date_range = f"{week_data.start_date.strftime('%Y-%m-%d')} - {week_data.end_date.strftime('%Y-%m-%d')}"
-                                date_ranges_with_data[date_range].append({
-                                    "voltage228k_name": voltage228k.voltage228k_name,
-                                    "actual": progress_record.progress_percentage,
-                                    "expected": expected_record.progress_percentage
-                                })
+                                data_entry = {
+                                    "voltage228k_name": project.voltage228k_name,
+                                    "actual": float(progress_record.progress_percentage) * weight,
+                                    "expected": float(expected_record.progress_percentage) * weight
+                                }
+                                date_ranges_with_data[date_range].append(data_entry)
 
-            # 轉換有序字典並提取最新的 date_range 數據
-            ordered_date_ranges = OrderedDict(sorted(date_ranges_with_data.items(), reverse=True))
-            latest_date_range, latest_data = next(iter(ordered_date_ranges.items()))
+            process_projects(civil_projects, ProjectVoltage228KProgress, ProjectVoltage228KExpectedProgress, 0.5)
+            process_projects(cable_projects, ProjectVoltage228KProgress, ProjectVoltage228KExpectedProgress, 0.5)
 
-            # 準備分頁數據
-            if currentPage > 1:
-                pass
+            # 聚合數據並計算平均值
+            aggregated_data = {}
+            for date_range, entries in date_ranges_with_data.items():
+                total_actual = total_expected = 0
+                for entry in entries:
+                    total_actual += entry["actual"]
+                    total_expected += entry["expected"]
+                count = len(entries)
+                aggregated_data[date_range] = {
+                    "actual_avg": total_actual / count,
+                    "expected_avg": total_expected / count,
+                    "entries": entries  # 存儲原始項目以保留 voltage228k_name
+                }
 
+            ordered_date_ranges = OrderedDict(sorted(aggregated_data.items(), reverse=True))
             paginator = Paginator(list(ordered_date_ranges.items()), itemsPerPage)
             page_obj = paginator.get_page(currentPage)
 
-            # 格式化當前數據
             formatted_results = []
-            if currentPage == 1:
-                # 第一頁直接展示包括最新的 date_range 數據
-                for date_range, data in page_obj.object_list:
-                    for item in data:
-                        formatted_results.append({
-                            "voltage228k_name": item["voltage228k_name"],
-                            "date_range": date_range,
-                            "actual": item["actual"],
-                            "expected": item["expected"]
-                        })
-            else:
-                # 從第二頁開始，在資料頂部都增加最新的 date_range 數據
-                for item in latest_data:
+            for date_range, data in page_obj.object_list:
+                for entry in data['entries']:
                     formatted_results.append({
-                        "voltage228k_name": item["voltage228k_name"],
-                        "date_range": latest_date_range,
-                        "actual": item["actual"],
-                        "expected": item["expected"]
+                        "loop_name": entry["voltage228k_name"],
+                        "date_range": date_range,
+                        "actual": entry["actual"],
+                        "expected": entry["expected"]
                     })
-                # 添加當前頁的其他數據
-                for date_range, data in page_obj.object_list:
-                    for item in data:
-                        formatted_results.append({
-                            "voltage228k_name": item["voltage228k_name"],
-                            "date_range": date_range,
-                            "actual": item["actual"],
-                            "expected": item["expected"]
-                        })
 
             return Response({
                 'results': formatted_results,
@@ -192,6 +171,7 @@ class GetVoltage228KProgress(APIView):
         except Exception as e:
             print(f"Error: {e}")
             return Response({'error': str(e)}, status=500)
+
 #endregion
         
 #region 計算所有季工程進度
@@ -434,7 +414,293 @@ class GetVoltage228KQuarterProgress(APIView):
             print(f"Error: {e}")
             return Response({'error': str(e)}, status=500)
 #endregion
+
+#region 計算所有周土木工程進度
+class GetCivilProgress(APIView):
+    def get(self, request, project_id, currentPage, itemsPerPage, project_type):
+        try:
+
+            loops = ProjectLoop.objects.filter(project_id=project_id)
+            loop_ids = loops.values_list('loop_id', flat=True)
+            print(f"Found loops for project_id {project_id}: {loop_ids}")
+
+            voltage228ks = ProjectVoltage228K.objects.filter(loop_id__in=loop_ids, engineer=1)
+            print(f"Found {voltage228ks.count()} civil engineering projects for project_id {project_id}")
+
+            date_ranges_with_data = defaultdict(list)
+
+            if project_type == "engineering":
+                progress_model = ProjectVoltage228KProgress
+                expected_model = ProjectVoltage228KExpectedProgress
+            elif project_type == "bank":
+                progress_model = Voltage228KBankProgress
+                expected_model = Voltage228KBankProgressExpected
+            else:
+                return Response({"error": "Invalid project type."}, status=400)
+
+            for voltage228k in voltage228ks:
+                progress_records = progress_model.objects.filter(voltage228k_id=voltage228k.voltage228k_id).order_by('-voltage228k_week_id')
+                for progress_record in progress_records:
+                    expected_record = expected_model.objects.filter(
+                        voltage228k_id=voltage228k.voltage228k_id, 
+                        voltage228k_week_id=progress_record.voltage228k_week_id
+                    ).first()
+                    if expected_record:
+                        week_data = Voltage228KWeek.objects.filter(week_id=expected_record.voltage228k_week_id.week_id).first()
+                        if week_data:
+                            date_range = f"{week_data.start_date.strftime('%Y-%m-%d')} - {week_data.end_date.strftime('%Y-%m-%d')}"
+                            date_ranges_with_data[date_range].append({
+                                "loop_name": voltage228k.voltage228k_name,
+                                "actual": progress_record.progress_percentage,
+                                "expected": expected_record.progress_percentage
+                            })
+
+            ordered_date_ranges = OrderedDict(sorted(date_ranges_with_data.items(), reverse=True))
+            latest_date_range, latest_data = next(iter(ordered_date_ranges.items()))
+
+            paginator = Paginator(list(ordered_date_ranges.items()), itemsPerPage)
+            page_obj = paginator.get_page(currentPage)
+
+            formatted_results = []
+            if currentPage == 1:
+                for date_range, data in page_obj.object_list:
+                    for item in data:
+                        formatted_results.append({
+                            "loop_name": item["voltage228k_name"],
+                            "date_range": date_range,
+                            "actual": item["actual"],
+                            "expected": item["expected"]
+                        })
+            else:
+                for item in latest_data:
+                    formatted_results.append({
+                        "loop_name": item["voltage228k_name"],
+                        "date_range": latest_date_range,
+                        "actual": item["actual"],
+                        "expected": item["expected"]
+                    })
+                for date_range, data in page_obj.object_list:
+                    for item in data:
+                        formatted_results.append({
+                            "loop_name": item["voltage228k_name"],
+                            "date_range": date_range,
+                            "actual": item["actual"],
+                            "expected": item["expected"]
+                        })
+
+            return Response({
+                'results': formatted_results,
+                'totalPages': paginator.num_pages,
+                'currentPage': currentPage
+            })
+        except Exception as e:
+            print(f"Error: {e}")
+            return Response({'error': str(e)}, status=500)
+#endregion
         
+#region 計算所有周纜線工程進度
+class GetCableProgress(APIView):
+    def get(self, request, project_id, currentPage, itemsPerPage, project_type):
+        try:
+
+            loops = ProjectLoop.objects.filter(project_id=project_id)
+            loop_ids = loops.values_list('loop_id', flat=True)
+            print(f"Found loops for project_id {project_id}: {loop_ids}")
+
+            voltage228ks = ProjectVoltage228K.objects.filter(loop_id__in=loop_ids, engineer=2)
+            print(f"Found {voltage228ks.count()} cable engineering projects for project_id {project_id}")
+
+            date_ranges_with_data = defaultdict(list)
+
+            if project_type == "engineering":
+                progress_model = ProjectVoltage228KProgress
+                expected_model = ProjectVoltage228KExpectedProgress
+            elif project_type == "bank":
+                progress_model = Voltage228KBankProgress
+                expected_model = Voltage228KBankProgressExpected
+            else:
+                return Response({"error": "Invalid project type."}, status=400)
+
+            for voltage228k in voltage228ks:
+                progress_records = progress_model.objects.filter(voltage228k_id=voltage228k.voltage228k_id).order_by('-voltage228k_week_id')
+                for progress_record in progress_records:
+                    expected_record = expected_model.objects.filter(
+                        voltage228k_id=voltage228k.voltage228k_id, 
+                        voltage228k_week_id=progress_record.voltage228k_week_id
+                    ).first()
+                    if expected_record:
+                        week_data = Voltage228KWeek.objects.filter(week_id=expected_record.voltage228k_week_id.week_id).first()
+                        if week_data:
+                            date_range = f"{week_data.start_date.strftime('%Y-%m-%d')} - {week_data.end_date.strftime('%Y-%m-%d')}"
+                            date_ranges_with_data[date_range].append({
+                                "loop_name": voltage228k.voltage228k_name,
+                                "actual": progress_record.progress_percentage,
+                                "expected": expected_record.progress_percentage
+                            })
+
+            ordered_date_ranges = OrderedDict(sorted(date_ranges_with_data.items(), reverse=True))
+            latest_date_range, latest_data = next(iter(ordered_date_ranges.items()))
+
+            paginator = Paginator(list(ordered_date_ranges.items()), itemsPerPage)
+            page_obj = paginator.get_page(currentPage)
+
+            formatted_results = []
+            if currentPage == 1:
+                for date_range, data in page_obj.object_list:
+                    for item in data:
+                        formatted_results.append({
+                            "loop_name": item["voltage228k_name"],
+                            "date_range": date_range,
+                            "actual": item["actual"],
+                            "expected": item["expected"]
+                        })
+            else:
+                for item in latest_data:
+                    formatted_results.append({
+                        "loop_name": item["voltage228k_name"],
+                        "date_range": latest_date_range,
+                        "actual": item["actual"],
+                        "expected": item["expected"]
+                    })
+                for date_range, data in page_obj.object_list:
+                    for item in data:
+                        formatted_results.append({
+                            "loop_name": item["voltage228k_name"],
+                            "date_range": date_range,
+                            "actual": item["actual"],
+                            "expected": item["expected"]
+                        })
+
+            return Response({
+                'results': formatted_results,
+                'totalPages': paginator.num_pages,
+                'currentPage': currentPage
+            })
+        except Exception as e:
+            print(f"Error: {e}")
+            return Response({'error': str(e)}, status=500)
+#endregion
+
+#region 計算所有季土木工程進度
+class GetCivilAllQuarterProgress(APIView):
+    def get(self, request, project_id, currentPage, itemsPerPage, project_type):
+        try:
+
+            loops = ProjectLoop.objects.filter(project_id=project_id)
+            loop_ids = loops.values_list('loop_id', flat=True)
+            print(f"Found loops for project_id {project_id}: {loop_ids}")
+
+            voltage228ks = ProjectVoltage228K.objects.filter(loop_id__in=loop_ids, engineer=1)
+            print(f"Found {voltage228ks.count()} civil engineering projects for project_id {project_id}")
+
+            date_ranges_with_data = defaultdict(list)
+
+            if project_type == "engineering":
+                progress_model = ProjectVoltage228KProgress
+                expected_model = ProjectVoltage228KExpectedProgress
+            elif project_type == "bank":
+                progress_model = Voltage228KBankProgress
+                expected_model = Voltage228KBankProgressExpected
+            else:
+                return Response({"error": "Invalid project type."}, status=400)
+
+            for voltage228k in voltage228ks:
+               # 找到每一個季度的最後一周
+                all_years = Voltage228KWeek.objects.values_list('year', flat=True).distinct()
+                for year in all_years:
+                    for quarter in range(1, 5):
+                        last_week_of_quarter = Voltage228KWeek.objects.filter(
+                            year=year, 
+                            quarter=quarter
+                        ).aggregate(Max('week'))['week__max']
+
+                        if last_week_of_quarter:
+                            last_week = Voltage228KWeek.objects.get(
+                                year=year, 
+                                quarter=quarter, 
+                                week=last_week_of_quarter
+                            )
+
+                            progress_records = progress_model.objects.filter(
+                                voltage228k_id=voltage228k.voltage228k_id, 
+                                voltage228k_week_id=last_week.week_id
+                            )
+                            for progress_record in progress_records:
+                                expected_record = expected_model.objects.filter(
+                                    voltage228k_id=voltage228k.voltage228k_id, 
+                                    voltage228k_week_id=progress_record.voltage228k_week_id
+                                ).first()
+                                if expected_record:
+                                    date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
+                                    date_ranges_with_data[date_range].append({
+                                        "year": last_week.year,
+                                        "quarter": last_week.quarter,
+                                        "week": last_week.week,
+                                        "voltage228k_name": voltage228k.voltage228k_name,
+                                        "actual": progress_record.progress_percentage,
+                                        "expected": expected_record.progress_percentage
+                                    })
+
+            # 轉換有序字典並提取最新的 date_range 數據
+            ordered_date_ranges = OrderedDict(sorted(date_ranges_with_data.items(), reverse=True))
+            latest_date_range, latest_data = next(iter(ordered_date_ranges.items()))
+
+            # 準備分頁數據
+            if currentPage > 1:
+                pass
+
+            paginator = Paginator(list(ordered_date_ranges.items()), itemsPerPage)
+            page_obj = paginator.get_page(currentPage)
+
+            # 格式化當前數據
+            formatted_results = []
+            if currentPage == 1:
+                # 第一頁直接展示包括最新的 date_range 數據
+                for date_range, data in page_obj.object_list:
+                    for item in data:
+                        formatted_results.append({
+                            "year": item["year"],
+                            "quarter": item["quarter"],
+                            "week": item["week"],
+                            "voltage228k_name": item["voltage228k_name"],
+                            "date_range": date_range,
+                            "actual": item["actual"],
+                            "expected": item["expected"]
+                        })
+            else:
+                # 從第二頁開始，在資料頂部都增加最新的 date_range 數據
+                for item in latest_data:
+                    formatted_results.append({
+                        "year": item["year"],
+                        "quarter": item["quarter"],
+                        "week": item["week"],
+                        "voltage228k_name": item["voltage228k_name"],
+                        "date_range": latest_date_range,
+                        "actual": item["actual"],
+                        "expected": item["expected"]
+                    })
+                # 添加當前頁的其他數據
+                for date_range, data in page_obj.object_list:
+                    for item in data:
+                        formatted_results.append({
+                            "year": item["year"],
+                            "quarter": item["quarter"],
+                            "week": item["week"],
+                            "voltage228k_name": item["voltage228k_name"],
+                            "date_range": date_range,
+                            "actual": item["actual"],
+                            "expected": item["expected"]
+                        })
+
+            return Response({
+                'results': formatted_results,
+                'totalPages': paginator.num_pages,
+                'currentPage': currentPage
+            })
+        except Exception as e:
+            print(f"Error: {e}")
+            return Response({'error': str(e)}, status=500)
+#endregion
 def get_color_from_name(name):
     hash_obj = hashlib.sha256(name.encode())
     hash_hex = hash_obj.hexdigest()
@@ -527,3 +793,5 @@ class GetVoltage228KQuarterChartProgress(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=500)
 #endregion
+        
+

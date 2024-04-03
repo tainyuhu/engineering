@@ -40,11 +40,19 @@ urlpatterns = [
     path('voltage228k-week/<int:pk>/', views.Voltage228KWeekDetail.as_view(), name='voltage228k-week-detail'),
 
     # 計算周進度
-    path('get_voltage228k_progress/<int:loop_id>/<int:currentPage>/<int:itemsPerPage>/<str:project_type>/', views.GetVoltage228KProgress.as_view(), name='get_voltage228k_progress'),
+    path('get_voltage228k_progress/<int:project_id>/<int:currentPage>/<int:itemsPerPage>/<str:project_type>/', views.GetVoltage228KProgress.as_view(), name='get_voltage228k_progress'),
     # 計算所有季進度
     path('get_voltage228k_all_quarter_progress/<int:loop_id>/<int:currentPage>/<int:itemsPerPage>/<str:project_type>/', views.GetVoltage228KAllQuarterProgress.as_view(), name='get_voltage228k_all_quarter_progress'),
-    # 計算所有季進度
+    # 計算即時進度
     path('get_voltage228k_quarter_progress/<int:loop_id>/<int:currentPage>/<int:itemsPerPage>/<str:project_type>/', views.GetVoltage228KQuarterProgress.as_view(), name='get_voltage228k_quarter_progress'),
+    # 計算周土木工程進度
+    path('get_civil_progress/<int:project_id>/<int:currentPage>/<int:itemsPerPage>/<str:project_type>/', views.GetCivilProgress.as_view(), name='get_civil_progress'),  
+    # 計算周纜線工程進度
+    path('get_cable_progress/<int:project_id>/<int:currentPage>/<int:itemsPerPage>/<str:project_type>/', views.GetCableProgress.as_view(), name='get_cable_progress'),      
+    # 計算所有季土木工程進度
+    path('get_civil_all_quarter_progress/<int:project_id>/<int:currentPage>/<int:itemsPerPage>/<str:project_type>/', views.GetCivilAllQuarterProgress.as_view(), name='get_civil_all_quarter_progress'),  
+    # 計算所有季纜線工程進度
+    path('get_cable_all_quarter_progress/<int:project_id>/<int:currentPage>/<int:itemsPerPage>/<str:project_type>/', views.GetCableProgress.as_view(), name='get_cable_all_quarter_progress'),      
     # 計算季進度報表
     path('get_voltage228k_quarter_chart_progress/<int:loop_id>/<str:project_type>/', views.GetVoltage228KQuarterChartProgress.as_view(), name='get_voltage228k_quarter_chart_progress'),
 

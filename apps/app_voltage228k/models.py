@@ -26,8 +26,9 @@ class ProjectVoltage228K(BaseModel):
     actual_start_date = models.DateField(null=True, blank=True)
     actual_end_date = models.DateField(null=True, blank=True)
     construction_status = models.CharField(max_length=255)
+    engineer = models.IntegerField(null=True)
     series_id = models.ForeignKey('app_pv.Series', on_delete=models.CASCADE, db_column='series_id')
-    case_id = models.ForeignKey('app_project.ProjectCase', on_delete=models.CASCADE, db_column='case_id')
+    loop_id = models.ForeignKey('app_project.ProjectLoop', on_delete=models.CASCADE, db_column='loop_id')
     last_update = models.DateTimeField(auto_now=True)
     create_at = models.DateTimeField(auto_now_add=True)
 
