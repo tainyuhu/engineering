@@ -944,12 +944,6 @@ class GetLoopQuarterProgress(APIView):
             print(f"Error: {e}")
             return Response({'error': str(e)}, status=500)
 #endregion
-
-
-
-
-
-
         
 def get_color_from_name(name):
     hash_obj = hashlib.sha256(name.encode())
@@ -1137,9 +1131,7 @@ class GetPVWeekChartProgress(APIView):
             else:
                 return Response({"error": "Invalid project type."}, status=400)
 
-            datasets = []
-
-            # 获取所有周的开始和结束日期，然后按日期降序排列
+            # 獲取所有周，並由新到舊排序
             all_weeks = PvWeek.objects.annotate(
                 date_range=Concat(
                     'start_date', V(' - '), 'end_date',
@@ -1147,7 +1139,7 @@ class GetPVWeekChartProgress(APIView):
                 )
             ).order_by('-start_date')
 
-            # 分页
+            # 分頁處理
             paginator = Paginator(all_weeks, itemsPerPage)
             try:
                 current_weeks = paginator.page(currentPage)
@@ -1156,14 +1148,17 @@ class GetPVWeekChartProgress(APIView):
             except EmptyPage:
                 current_weeks = paginator.page(paginator.num_pages)
 
-            labels = [week.date_range for week in current_weeks]
+            sorted_weeks = sorted(list(current_weeks), key=lambda week: week.date_range.split(' - ')[0])
 
+            labels = [week.date_range for week in sorted_weeks]
+
+            datasets = []
             for case in cases:
                 pvs = ProjectPV.objects.filter(case_id=case.case_id)
                 for pv in pvs:
                     actual_data = []
                     expected_data = []
-                    for week in current_weeks:
+                    for week in sorted_weeks:
                         progress_record = progress_model.objects.filter(
                             pv_id=pv.pv_id,
                             pv_week_id=week.week_id
@@ -1174,8 +1169,8 @@ class GetPVWeekChartProgress(APIView):
                             pv_week_id=week.week_id
                         ).first()
 
-                        actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
-                        expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
+                        actual_percentage = progress_record.progress_percentage * 100 if progress_record else 0
+                        expected_percentage = expected_record.progress_percentage * 100 if expected_record else 0
 
                         actual_data.append(actual_percentage)
                         expected_data.append(expected_percentage)
@@ -1194,6 +1189,7 @@ class GetPVWeekChartProgress(APIView):
                         "borderColor": base_color,
                         "borderDash": [5, 5]
                     })
+
 
             return Response({
                 "labels": labels,

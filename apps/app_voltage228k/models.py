@@ -16,8 +16,7 @@ class Voltage228KWeek(BaseModel):
 
 #endregion
            
-#region 專案養殖
-# 專案養殖
+#region 專案
 class ProjectVoltage228K(BaseModel):
     voltage228k_id = models.AutoField(primary_key=True)
     voltage228k_name = models.CharField(max_length=255)
@@ -25,7 +24,7 @@ class ProjectVoltage228K(BaseModel):
     planned_end_date = models.DateField()
     actual_start_date = models.DateField(null=True, blank=True)
     actual_end_date = models.DateField(null=True, blank=True)
-    construction_status = models.CharField(max_length=255)
+    construction_status = models.IntegerField()
     engineer = models.IntegerField(null=True)
     series_id = models.ForeignKey('app_pv.Series', on_delete=models.CASCADE, db_column='series_id')
     loop_id = models.ForeignKey('app_project.ProjectLoop', on_delete=models.CASCADE, db_column='loop_id')

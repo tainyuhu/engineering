@@ -6,9 +6,12 @@ from rest_framework.views import APIView
 from apps.app_project.models import ProjectCase
 from rest_framework.response import Response
 from collections import defaultdict, OrderedDict
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Max
 import hashlib
+from django.db.models.functions import Concat
+from django.db.models import Value as V
+from django.db.models import CharField
 
 #region 專案Breeding周
 class BreedingWeekList(generics.ListCreateAPIView):
@@ -565,6 +568,169 @@ class GetBreedingQuarterChartProgress(APIView):
                         "borderColor": base_color,
                         "borderDash": [5, 5]
                     })
+
+            return Response({
+                "labels": labels,
+                "datasets": datasets
+            })
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)
+#endregion
+
+#region 計算所有季工程進度報表
+class GetBreedingAllQuarterChartProgress(APIView):
+    def get(self, request, loop_id, project_type):
+        try:
+            cases = ProjectCase.objects.filter(loop_id=loop_id)
+
+            if project_type == "engineering":
+                progress_model = ProjectBreedingProgress
+                expected_model = ProjectBreedingExpectedProgress
+            elif project_type == "bank":
+                progress_model = BreedingBankProgress
+                expected_model = BreedingBankProgressExpected
+            else:
+                return Response({"error": "Invalid project type."}, status=400)
+
+            datasets = []
+            all_years = BreedingWeek.objects.values_list('year', flat=True).order_by('year').distinct()
+
+            labels = [f"{year} Q{quarter}" for year in all_years for quarter in range(1, 5)]
+
+            for case in cases:
+                breedings = ProjectBreeding.objects.filter(case_id=case.case_id)
+                for breeding in breedings:
+                    actual_data = []
+                    expected_data = []
+                    for year in all_years:
+                        for quarter in range(1, 5):
+                            last_week_of_quarter = BreedingWeek.objects.filter(
+                                year=year, 
+                                quarter=quarter
+                            ).aggregate(Max('week'))['week__max']
+
+                            if last_week_of_quarter:
+                                last_week = BreedingWeek.objects.get(
+                                    year=year, 
+                                    quarter=quarter, 
+                                    week=last_week_of_quarter
+                                )
+
+                                progress_record = progress_model.objects.filter(
+                                    breeding_id=breeding.breeding_id, 
+                                    breeding_week_id=last_week.week_id
+                                ).first()
+
+                                expected_record = expected_model.objects.filter(
+                                    breeding_id=breeding.breeding_id, 
+                                    breeding_week_id=last_week.week_id
+                                ).first() if progress_record else None
+
+                                actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
+                                expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
+
+                                actual_data.append(actual_percentage)
+                                expected_data.append(expected_percentage)
+
+                    base_color = get_color_from_name(breeding.breeding_name)
+
+                    datasets.append({
+                        "label": f"{breeding.breeding_name} Actual",
+                        "data": actual_data,
+                        "backgroundColor": base_color,
+                        "borderColor": base_color
+                    })
+                    datasets.append({
+                        "label": f"{breeding.breeding_name} Expected",
+                        "data": expected_data,
+                        "borderColor": base_color,
+                        "borderDash": [5, 5]
+                    })
+
+            return Response({
+                "labels": labels,
+                "datasets": datasets
+            })
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)
+#endregion
+
+#region 計算所有周工程進度報表
+class GetBreedingWeekChartProgress(APIView):
+    def get(self, request, loop_id, currentPage, itemsPerPage, project_type):
+        try:
+            cases = ProjectCase.objects.filter(loop_id=loop_id)
+
+            if project_type == "engineering":
+                progress_model = ProjectBreedingProgress
+                expected_model = ProjectBreedingExpectedProgress
+            elif project_type == "bank":
+                progress_model = BreedingBankProgress
+                expected_model = BreedingBankProgressExpected
+            else:
+                return Response({"error": "Invalid project type."}, status=400)
+
+            datasets = []
+
+            # 獲取所有周，並由新到舊排序
+            all_weeks = BreedingWeek.objects.annotate(
+                date_range=Concat(
+                    'start_date', V(' - '), 'end_date',
+                    output_field=CharField()
+                )
+            ).order_by('-start_date')
+
+            # 分頁處理
+            paginator = Paginator(all_weeks, itemsPerPage)
+            try:
+                current_weeks = paginator.page(currentPage)
+            except PageNotAnInteger:
+                current_weeks = paginator.page(1)
+            except EmptyPage:
+                current_weeks = paginator.page(paginator.num_pages)
+
+            sorted_weeks = sorted(list(current_weeks), key=lambda week: week.date_range.split(' - ')[0])
+
+            labels = [week.date_range for week in sorted_weeks]
+
+            datasets = []
+            for case in cases:
+                breedings = ProjectBreeding.objects.filter(case_id=case.case_id)
+                for breeding in breedings:
+                    actual_data = []
+                    expected_data = []
+                    for week in sorted_weeks:
+                        progress_record = progress_model.objects.filter(
+                            breeding_id=breeding.breeding_id,
+                            breeding_week_id=week.week_id
+                        ).first()
+
+                        expected_record = expected_model.objects.filter(
+                            breeding_id=breeding.breeding_id,
+                            breeding_week_id=week.week_id
+                        ).first()
+
+                        actual_percentage = progress_record.progress_percentage * 100 if progress_record else 0
+                        expected_percentage = expected_record.progress_percentage * 100 if expected_record else 0
+
+                        actual_data.append(actual_percentage)
+                        expected_data.append(expected_percentage)
+
+                    base_color = get_color_from_name(breeding.breeding_name)
+
+                    datasets.append({
+                        "label": f"{breeding.breeding_name} Actual",
+                        "data": actual_data,
+                        "backgroundColor": base_color,
+                        "borderColor": base_color
+                    })
+                    datasets.append({
+                        "label": f"{breeding.breeding_name} Expected",
+                        "data": expected_data,
+                        "borderColor": base_color,
+                        "borderDash": [5, 5]
+                    })
+
 
             return Response({
                 "labels": labels,
