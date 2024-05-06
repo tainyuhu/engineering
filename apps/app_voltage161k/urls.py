@@ -40,12 +40,16 @@ urlpatterns = [
     path('voltage161k-week/<int:pk>/', views.Voltage161KWeekDetail.as_view(), name='voltage161k-week-detail'),
 
     # 計算周進度
-    path('get_voltage161k_progress/<int:loop_id>/<int:currentPage>/<int:itemsPerPage>/<str:project_type>/', views.GetVoltage161KProgress.as_view(), name='get_voltage161k_progress'),
+    path('get_voltage161k_progress/<int:project_id>/<int:currentPage>/<int:itemsPerPage>/<str:project_type>/', views.GetVoltage161KProgress.as_view(), name='get_voltage161k_progress'),
     # 計算所有季進度
-    path('get_voltage161k_all_quarter_progress/<int:loop_id>/<int:currentPage>/<int:itemsPerPage>/<str:project_type>/', views.GetVoltage161KAllQuarterProgress.as_view(), name='get_voltage161k_all_quarter_progress'),
+    path('get_voltage161k_all_quarter_progress/<int:project_id>/<int:currentPage>/<int:itemsPerPage>/<str:project_type>/', views.GetVoltage161KAllQuarterProgress.as_view(), name='get_voltage161k_all_quarter_progress'),
     # 計算所有季進度
-    path('get_voltage161k_quarter_progress/<int:loop_id>/<int:currentPage>/<int:itemsPerPage>/<str:project_type>/', views.GetVoltage161KQuarterProgress.as_view(), name='get_voltage161k_quarter_progress'),
-    # 計算季進度報表
-    path('get_voltage161k_quarter_chart_progress/<int:loop_id>/<str:project_type>/', views.GetVoltage161KQuarterChartProgress.as_view(), name='get_voltage161k_quarter_chart_progress'),
+    path('get_voltage161k_quarter_progress/<int:project_id>/<int:currentPage>/<int:itemsPerPage>/<str:project_type>/', views.GetVoltage161KQuarterProgress.as_view(), name='get_voltage161k_quarter_progress'),
+    # 計算即時季進度報表
+    path('get_voltage161k_quarter_chart_progress/<int:project_id>/<str:project_type>/', views.GetVoltage161KQuarterChartProgress.as_view(), name='get_voltage161k_quarter_chart_progress'),
+    # 計算所有季進度報表
+    path('get_voltage161k_all_quarter_chart_progress/<int:project_id>/<str:project_type>/', views.GetVoltage161KAllQuarterChartProgress.as_view(), name='get_voltage161k_all_quarter_chart_progress'),
+    # 計算所有周進度報表
+    path('get_voltage161k_week_chart_progress/<int:project_id>/<int:currentPage>/<int:itemsPerPage>/<str:project_type>/', views.GetVoltage161KWeekChartProgress.as_view(), name='get_voltage161k_week_chart_progress'),
 
 ]
