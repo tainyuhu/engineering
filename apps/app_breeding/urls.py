@@ -47,5 +47,9 @@ urlpatterns = [
     path('get_breeding_quarter_progress/<int:loop_id>/<int:currentPage>/<int:itemsPerPage>/<str:project_type>/', views.GetBreedingQuarterProgress.as_view(), name='get_breeding_quarter_progress'),
     # 計算季進度報表
     path('get_breeding_quarter_chart_progress/<int:loop_id>/<str:project_type>/', views.GetBreedingQuarterChartProgress.as_view(), name='get_breeding_quarter_chart_progress'),
+    # 計算所有季進度報表
+    path('get_breeding_all_quarter_chart_progress/<int:loop_id>/<str:project_type>/', views.GetBreedingAllQuarterChartProgress.as_view(), name='get_breeding_all_quarter_chart_progress'),
+    # 計算周進度報表
+    path('get_breeding_week_chart_progress/<int:loop_id>/<int:currentPage>/<int:itemsPerPage>/<str:project_type>/', views.GetBreedingWeekChartProgress.as_view(), name='get_breeding_week_chart_progress'),
 
 ]
