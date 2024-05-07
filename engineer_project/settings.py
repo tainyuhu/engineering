@@ -114,7 +114,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql', # 使用的資料庫引擎
         'NAME': 'engineer_system', # MySQL 資料庫的名稱
         'USER': 'root', # 使用者名稱
-        'PASSWORD': 'Ru,6e.4vu4wj/3', # 密碼
+        # 'PASSWORD': 'Ru,6e.4vu4wj/3', # 密碼
         'HOST': 'localhost', # IP 地址
         'PORT': '3306', # 埠號(mysql為 3306)
         'OPTIONS': { # 避免發生『MariaDB Strict Mode』問題

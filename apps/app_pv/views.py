@@ -1397,3 +1397,4 @@ class GetPVWeekChartProgress(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=500)
 #endregion
+
