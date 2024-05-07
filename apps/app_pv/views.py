@@ -655,9 +655,6 @@ class GetLoopProgress(APIView):
                                 "expected": 0,
                             })
 
-            print("pv_date_ranges_with_data",pv_date_ranges_with_data)
-            print("breeding_date_ranges_with_data",breeding_date_ranges_with_data)
-
             for date_range in set(pv_date_ranges_with_data.keys()).union(breeding_date_ranges_with_data.keys()):
                 pv_entries = {entry['loop_name']: entry for entry in pv_date_ranges_with_data.get(date_range, [])}
                 breeding_entries = {entry['loop_name']: entry for entry in breeding_date_ranges_with_data.get(date_range, [])}
@@ -680,8 +677,6 @@ class GetLoopProgress(APIView):
                         "expected": combined_expected,
                         "construction_status": construction_status
                     })
-
-            print("date_ranges_with_data",date_ranges_with_data)
 
             ordered_date_ranges = OrderedDict(sorted(date_ranges_with_data.items(), reverse=True))
             latest_date_range, latest_data = next(iter(ordered_date_ranges.items()))
@@ -1398,3 +1393,187 @@ class GetPVWeekChartProgress(APIView):
             return Response({"error": str(e)}, status=500)
 #endregion
 
+#region 計算迴路82周工作進度報表
+class GetLoopChartProgress(APIView):
+    def get(self, request, loop_id, currentPage, itemsPerPage, project_type):
+        try:
+            cases = ProjectCase.objects.filter(loop_id=loop_id)
+
+            pv_date_ranges_with_data = defaultdict(list)
+            breeding_date_ranges_with_data = defaultdict(list)
+
+            if project_type not in ["engineering", "bank"]:
+                return Response({"error": "Invalid project type."}, status=400)
+
+            pv_progress_model = ProjectPVProgress if project_type == "engineering" else PVBankProgress
+            pv_expected_model = ProjectPVExpectedProgress if project_type == "engineering" else PVBankProgressExpected
+
+            breeding_progress_model = ProjectBreedingProgress if project_type == "engineering" else BreedingBankProgress
+            breeding_expected_model = ProjectBreedingExpectedProgress if project_type == "engineering" else BreedingBankProgressExpected
+
+            # 獲取所有周，並由新到舊排序
+            all_pv_weeks = PvWeek.objects.annotate(
+                date_range=Concat(
+                    'start_date', V(' - '), 'end_date',
+                    output_field=CharField()
+                )
+            ).order_by('-start_date').values_list('date_range', flat=True).distinct()
+
+            all_breeding_weeks = BreedingWeek.objects.annotate(
+                date_range=Concat(
+                    'start_date', V(' - '), 'end_date',
+                    output_field=CharField()
+                )
+            ).order_by('-start_date').values_list('date_range', flat=True).distinct()
+
+            # 使用set去重並轉換為列表進行排序
+            all_weeks = sorted(set(all_pv_weeks) | set(all_breeding_weeks), reverse=True)
+
+            # 分頁處理
+            paginator = Paginator(all_weeks, itemsPerPage)
+            try:
+                current_weeks = paginator.page(currentPage)
+            except PageNotAnInteger:
+                current_weeks = paginator.page(1)
+            except EmptyPage:
+                current_weeks = paginator.page(paginator.num_pages)
+
+            sorted_weeks = sorted(list(current_weeks), key=lambda week: week.split(' - ')[0])
+
+            labels = [week for week in sorted_weeks]
+
+            print("Displayed weeks:", labels)
+
+            today = datetime.datetime.now().strftime("%Y-%m-%d")
+
+            datasets = []
+
+            for case in cases:
+                pvs = ProjectPV.objects.filter(case_id=case.case_id)
+                breedings = ProjectBreeding.objects.filter(case_id=case.case_id)
+
+                for pv in pvs:
+                    progress_records = pv_progress_model.objects.filter(pv_id=pv.pv_id).order_by('-pv_week_id')
+                    last_progress_record = progress_records.first()
+                    if progress_records.exists():
+                        for progress_record in progress_records:
+                            week_data = PvWeek.objects.filter(week_id=progress_record.pv_week_id.week_id).first()
+                            if week_data and week_data.end_date.strftime("%Y-%m-%d") <= today:
+                                expected_record = pv_expected_model.objects.filter(
+                                    pv_id=pv.pv_id, 
+                                    pv_week_id=progress_record.pv_week_id,
+                                ).first()
+                                actual = progress_record.progress_percentage if progress_record else last_progress_record.progress_percentage
+                                expected = expected_record.progress_percentage if expected_record else 0  # Assuming zero if no expected record found
+                                date_range = f"{week_data.start_date.strftime('%Y-%m-%d')} - {week_data.end_date.strftime('%Y-%m-%d')}"
+                                pv_date_ranges_with_data[date_range].append({
+                                    "loop_name": pv.pv_name,
+                                    "construction_status": pv.construction_status,
+                                    "actual": actual,
+                                    "expected": expected
+                                })
+                    else:
+                        max_pv_week_id = pv_progress_model.objects.aggregate(Max('pv_week_id'))['pv_week_id__max']
+                        week_data = PvWeek.objects.filter(week_id=max_pv_week_id).first()
+                        if week_data:
+                            date_range = f"{week_data.start_date.strftime('%Y-%m-%d')} - {week_data.end_date.strftime('%Y-%m-%d')}"
+                            pv_date_ranges_with_data[date_range].append({
+                                "loop_name": pv.pv_name,
+                                "construction_status": pv.construction_status,
+                                "actual": 0,
+                                "expected": 0,
+                            })
+
+
+                for breeding in breedings:
+                    progress_records = breeding_progress_model.objects.filter(breeding_id=breeding.breeding_id).order_by('-breeding_week_id')
+                    last_progress_record = progress_records.first()
+                    if progress_records.exists():
+                        for progress_record in progress_records:
+                            week_data = BreedingWeek.objects.filter(week_id=progress_record.breeding_week_id.week_id).first()
+                            if week_data and week_data.end_date.strftime("%Y-%m-%d") <= today:
+                                expected_record = breeding_expected_model.objects.filter(
+                                    breeding_id=breeding.breeding_id, 
+                                    breeding_week_id=progress_record.breeding_week_id,
+                                ).first()
+                                actual = progress_record.progress_percentage if progress_record else last_progress_record.progress_percentage
+                                expected = expected_record.progress_percentage if expected_record else 0  # Assuming zero if no expected record found
+                                date_range = f"{week_data.start_date.strftime('%Y-%m-%d')} - {week_data.end_date.strftime('%Y-%m-%d')}"
+                                breeding_date_ranges_with_data[date_range].append({
+                                    "loop_name": breeding.breeding_name,
+                                    "construction_status": breeding.construction_status,
+                                    "actual": actual,
+                                    "expected": expected
+                                })
+                    else:
+                        max_breeding_week_id = breeding_progress_model.objects.aggregate(Max('breeding_week_id'))['breeding_week_id__max']
+                        week_data = BreedingWeek.objects.filter(week_id=max_breeding_week_id).first()
+                        if week_data:
+                            date_range = f"{week_data.start_date.strftime('%Y-%m-%d')} - {week_data.end_date.strftime('%Y-%m-%d')}"
+                            breeding_date_ranges_with_data[date_range].append({
+                                "loop_name": breeding.breeding_name,
+                                "construction_status": breeding.construction_status,
+                                "actual": 0,
+                                "expected": 0,
+                            })
+
+            loop_data = {}
+            all_loop_names = set() 
+
+            for date_range, entries in pv_date_ranges_with_data.items():
+                for entry in entries:
+                    all_loop_names.add(entry['loop_name'])
+
+            for date_range, entries in breeding_date_ranges_with_data.items():
+                for entry in entries:
+                    all_loop_names.add(entry['loop_name'])
+
+
+            for date_range in sorted_weeks:
+                pv_entries = {entry['loop_name']: entry for entry in pv_date_ranges_with_data.get(date_range, [])}
+                breeding_entries = {entry['loop_name']: entry for entry in breeding_date_ranges_with_data.get(date_range, [])}
+
+                for loop_name in all_loop_names:
+                    if loop_name not in loop_data:
+                        loop_data[loop_name] = {'actual': [], 'expected': []}
+                        
+                    pv_actual = pv_entries.get(loop_name, {}).get('actual', 0)
+                    pv_expected = pv_entries.get(loop_name, {}).get('expected', 0)
+                    breeding_actual = breeding_entries.get(loop_name, {}).get('actual', 0)
+                    breeding_expected = breeding_entries.get(loop_name, {}).get('expected', 0)
+                
+                    combined_actual = float(pv_actual) * 100 * 0.8 + float(breeding_actual) * 100 * 0.2
+                    combined_expected = float(pv_expected) * 100 * 0.8 + float(breeding_expected) * 100 * 0.2
+
+                    loop_data[loop_name]['actual'].append(combined_actual)
+                    loop_data[loop_name]['expected'].append(combined_expected)
+
+            for loop_name, data in loop_data.items():
+                base_color = get_color_from_name(loop_name)
+                datasets.append({
+                    "label": f"{loop_name} Actual",
+                    "data": data['actual'],
+                    "backgroundColor": base_color,
+                    "borderColor": base_color
+                })
+                datasets.append({
+                    "label": f"{loop_name} Expected",
+                    "data": data['expected'],
+                    "borderColor": base_color,
+                    "borderDash": [5, 5]
+                })
+            return Response({
+                "labels": labels,
+                "datasets": datasets
+            })
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)
+#endregion
+
+#region 計算迴路82季工作進度
+
+#endregion
+
+#region 計算迴路82所有季工作進度
+
+#endregion
