@@ -1,8 +1,20 @@
 from rest_framework import serializers
 from .models import (
     Project, ProjectsProgress, ProjectsProgressExpected, ProjectLoop, LoopsHistory,
-    LoopsProgress, LoopsProgressExpected, ProjectCase, CasesHistory, CasesProgress, CasesProgressExpected
+    LoopsProgress, LoopsProgressExpected, ProjectCase, CasesHistory, CasesProgress, CasesProgressExpected, ProportionBlocks, ProportionHistory
 )
+
+# 比例
+class ProportionBlocksSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProportionBlocks
+        fields = '__all__'
+
+# 比例歷史
+class ProportionHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProportionHistory
+        fields = '__all__'
 
 # 專案
 class ProjectSerializer(serializers.ModelSerializer):

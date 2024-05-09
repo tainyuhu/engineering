@@ -3,6 +3,7 @@ from . import views
 
 
 urlpatterns = [
+
     # 工程價金系列 Series URLs
     path('series/', views.SeriesList.as_view(), name='series-list'),
     path('series/<int:pk>/', views.SeriesDetail.as_view(), name='series-detail'),
