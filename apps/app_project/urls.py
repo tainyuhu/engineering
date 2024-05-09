@@ -1,4 +1,5 @@
 from django.urls import path
+from . import views
 from .views import (
     ProjectList, ProjectDetail, ProjectLoopListByProject, ProjectsProgressList, ProjectsProgressDetail,
     ProjectsProgressExpectedList, ProjectsProgressExpectedDetail, ProjectLoopList, ProjectLoopDetail,
@@ -9,6 +10,13 @@ from .views import (
 )
 
 urlpatterns = [
+    # 比例
+    path('proportionblocks/', views.ProportionBlocksList.as_view(), name='proportionblocks-list'),
+    path('proportionblocks/<int:pk>/', views.ProportionBlocksDetail.as_view(), name='proportionblocks-detail'),
+    
+    # 歷史比例
+    path('proportionhistory/', views.ProportionHistoryList.as_view(), name='proportionhistory-list'),
+    path('proportionhistory/<int:pk>/', views.ProportionHistoryDetail.as_view(), name='proportionhistory-detail'),
     
     # 專案 Project URLs
     path('projects/', ProjectList.as_view(), name='project-list'),
@@ -54,5 +62,24 @@ urlpatterns = [
     path('cases-progress-expected/', CasesProgressExpectedList.as_view(), name='casesprogressexpected-list'),
     path('cases-progress-expected/<int:pk>/', CasesProgressExpectedDetail.as_view(), name='casesprogressexpected-detail'),
 
-     path('project-loops-by-project/<int:project_id>/', ProjectLoopListByProject.as_view(), name='project-loops-by-project'),
+    path('project-loops-by-project/<int:project_id>/', ProjectLoopListByProject.as_view(), name='project-loops-by-project'),
+
+    # 抓取迴路中所有案場的比例
+    path('get_loop_percentage_data/<int:loop_id>/', views.GetLoopPercentageData.as_view(), name='get_loop_percentage_data'),
+
+    # 抓取專案中所有迴路的比例
+    path('get_project_percentage_data/<int:project_id>/', views.GetProjectPercentageDataView.as_view(), name='get_project_percentage_data'),
+
+    # 計算周進度
+    path('get_gloop_progress/<int:project_id>/<int:currentPage>/<int:itemsPerPage>/', views.GetLoopProgress.as_view(), name='get_loop_progress'),
+    # 計算所有季進度
+    path('get_gloop_all_quarter_progress/<int:project_id>/<int:currentPage>/<int:itemsPerPage>/', views.GetLoopAllQuarterProgress.as_view(), name='get_gloop_all_quarter_progress'),
+    # 計算所有季進度
+    path('get_gloop_quarter_progress/<int:project_id>/<int:currentPage>/<int:itemsPerPage>/', views.GetLoopQuarterProgress.as_view(), name='get_gloop_quarter_progress'),
+    # 計算即時季進度報表
+    path('get_gloop_quarter_chart_progress/<int:project_id>/', views.GetLoopQuarterChartProgress.as_view(), name='get_gloop_quarter_chart_progress'),
+    # 計算所有季進度報表
+    path('get_gloop_all_quarter_chart_progress/<int:project_id>/', views.GetLoopAllQuarterChartProgress.as_view(), name='get_gloop_all_quarter_chart_progress'),
+    # 計算所有周進度報表
+    path('get_gloop_week_chart_progress/<int:project_id>/<int:currentPage>/<int:itemsPerPage>/', views.GetLoopWeekChartProgress.as_view(), name='get_gloop_week_chart_progress'),
 ]

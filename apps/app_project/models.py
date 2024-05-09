@@ -1,6 +1,32 @@
 from django.db import models
 from common.models import BaseModel
 
+#region 比例
+# 比例
+class ProportionBlocks(BaseModel):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=255)
+    parent_id = models.IntegerField(blank=True, null=True)
+    updated_at = models.DateTimeField(blank=True, null=True)
+    type = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'proportionblocks'
+
+# 比例歷史
+class ProportionHistory(BaseModel):
+    history_id = models.AutoField(primary_key=True)
+    block_id = models.ForeignKey('ProportionBlocks', on_delete=models.CASCADE, db_column='block_id')
+    quantity = models.FloatField()
+    percentage = models.FloatField()
+    effective_date = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'proportionhistory'
+#endregion
+
 #region 專案
 # 專案
 class Project(BaseModel):
@@ -15,6 +41,7 @@ class Project(BaseModel):
     notes = models.TextField()
     last_update = models.DateTimeField(auto_now=True)
     create_at = models.DateTimeField(auto_now_add=True)
+    block_id = models.ForeignKey('ProportionBlocks', on_delete=models.CASCADE, db_column='block_id')
 
     class Meta:
         managed = False
@@ -66,6 +93,7 @@ class ProjectLoop(BaseModel):
     notes = models.TextField()
     last_update = models.DateTimeField(auto_now=True)
     create_at = models.DateTimeField(auto_now_add=True)
+    block_id = models.ForeignKey('ProportionBlocks', on_delete=models.CASCADE, db_column='block_id')
 
     class Meta:
         managed = False
@@ -88,6 +116,19 @@ class LoopsHistory(BaseModel):
         managed = False
         db_table = 'loops_history'
 
+# 專案迴路週
+class LoopWeek(BaseModel):
+    week_id = models.AutoField(primary_key=True)
+    year = models.IntegerField(blank=True, null=True)
+    quarter = models.IntegerField(blank=True, null=True)
+    week = models.IntegerField(blank=True, null=True)
+    start_date = models.DateField(blank=True, null=True)
+    end_date = models.DateField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'loop_week'
+
 # 專案迴路進度
 class LoopsProgress(BaseModel):
     progress_id = models.AutoField(primary_key=True)
@@ -97,6 +138,7 @@ class LoopsProgress(BaseModel):
     progress_description = models.TextField()
     last_update = models.DateTimeField(auto_now=True)
     create_at = models.DateTimeField(auto_now_add=True)
+    loop_week_id = models.ForeignKey('LoopWeek', on_delete=models.CASCADE, db_column='loop_week_id')
 
     class Meta:
         managed = False
@@ -110,7 +152,8 @@ class LoopsProgressExpected(BaseModel):
     progress_description = models.TextField()
     last_update = models.DateTimeField(auto_now=True)
     create_at = models.DateTimeField(auto_now_add=True)
-
+    loop_week_id = models.ForeignKey('LoopWeek', on_delete=models.CASCADE, db_column='loop_week_id')
+    
     class Meta:
         managed = False
         db_table = 'loops_progress_expected'
@@ -133,6 +176,7 @@ class ProjectCase(BaseModel):
     notes = models.TextField()
     last_update = models.DateTimeField(auto_now=True)
     create_at = models.DateTimeField(auto_now_add=True)
+    block_id = models.ForeignKey('ProportionBlocks', on_delete=models.CASCADE, db_column='block_id')
 
     class Meta:
         managed = False
