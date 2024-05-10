@@ -73,5 +73,18 @@ urlpatterns = [
     # 會議連結管理 URLs
     path('meetingrecord/', views.MeetingRecordList.as_view(), name='meetingrecord-list'),
     path('meetingrecord/<int:pk>/', views.MeetingRecordDetail.as_view(), name='meetingrecord-detail'),
+
+    # 計算總體計畫周進度
+    path('get_plan_progress/<int:master_plan_id>/<int:currentPage>/<int:itemsPerPage>/', views.GetPlanProgress.as_view(), name='get_plan_progress'),
+    # 計算總體計畫所有季進度
+    path('get_plan_all_quarter_progress/<int:master_plan_id>/<int:currentPage>/<int:itemsPerPage>/', views.GetPlanAllQuarterProgress.as_view(), name='get_plan_all_quarter_progress'),
+    # 計算總體計畫所有季進度
+    path('get_plan_quarter_progress/<int:master_plan_id>/<int:currentPage>/<int:itemsPerPage>/', views.GetPlanQuarterProgress.as_view(), name='get_plan_quarter_progress'),
+    # 計算總體計畫即時季進度報表
+    path('get_plan_quarter_chart_progress/<int:master_plan_id>/', views.GetPlanQuarterChartProgress.as_view(), name='get_plan_quarter_chart_progress'),
+    # 計算總體計畫所有季進度報表
+    path('get_plan_all_quarter_chart_progress/<int:master_plan_id>/', views.GetPlanAllQuarterChartProgress.as_view(), name='get_plan_all_quarter_chart_progress'),
+    # 計算總體計畫所有周進度報表
+    path('get_plan_week_chart_progress/<int:master_plan_id>/<int:currentPage>/<int:itemsPerPage>/', views.GetPlanWeekChartProgress.as_view(), name='get_gloop_week_chart_progress'),
     
 ]

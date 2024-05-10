@@ -37,6 +37,19 @@ class ProjectValueRatiosHistory(BaseModel):
 #endregion
         
 #region 計畫
+# 計畫週
+class PlanWeek(BaseModel):
+    week_id = models.AutoField(primary_key=True)
+    year = models.IntegerField(blank=True, null=True)
+    quarter = models.IntegerField(blank=True, null=True)
+    week = models.IntegerField(blank=True, null=True)
+    start_date = models.DateField(blank=True, null=True)
+    end_date = models.DateField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'plans_week'
+
 # 計畫
 class Plan(BaseModel):
     plan_id = models.AutoField(primary_key=True)
@@ -46,11 +59,13 @@ class Plan(BaseModel):
     actual_start_date = models.DateField(null=True, blank=True)
     actual_end_date = models.DateField(null=True, blank=True)
     plan_manager = models.CharField(max_length=255,null=True, blank=True)
-    plan_status = models.CharField(max_length=255,null=True, blank=True)
+    construction_status = models.CharField(max_length=255,null=True, blank=True)
     plan_description = models.TextField(null=True, blank=True)
     last_update = models.DateTimeField(auto_now=True)
     create_at = models.DateTimeField(auto_now_add=True)
-
+    master_plan_id =models.ForeignKey('MasterPlan', on_delete=models.CASCADE, db_column='master_plan_id')
+    block_id = models.ForeignKey('app_project.ProportionBlocks', on_delete=models.CASCADE, db_column='block_id')
+    
     class Meta:
         managed = False
         db_table = 'plans'
@@ -77,14 +92,27 @@ class PlansProgress(BaseModel):
     progress_id = models.AutoField(primary_key=True)
     plan_id = models.ForeignKey('Plan', on_delete=models.CASCADE, db_column='plan_id')
     ratio_id = models.ForeignKey('ProjectValueRatio', on_delete=models.CASCADE, db_column='ratio_id')
-    progress_percentage = models.DecimalField(max_digits=5, decimal_places=2)
+    progress_percentage = models.FloatField()
     progress_description = models.TextField()
     last_update = models.DateTimeField(auto_now=True)
     create_at = models.DateTimeField(auto_now_add=True)
-
+    plan_week_id = models.ForeignKey('PlanWeek', on_delete=models.CASCADE, db_column='plan_week_id')
     class Meta:
         managed = False
         db_table = 'plans_progress'
+
+# 計畫預計進度
+class PlansProgressExpected(BaseModel):
+    progress_id = models.AutoField(primary_key=True)
+    plan_id = models.ForeignKey('Plan', on_delete=models.CASCADE, db_column='plan_id')
+    progress_percentage = models.FloatField()
+    progress_description = models.TextField()
+    last_update = models.DateTimeField(auto_now=True)
+    create_at = models.DateTimeField(auto_now_add=True)
+    plan_week_id = models.ForeignKey('PlanWeek', on_delete=models.CASCADE, db_column='plan_week_id')
+    class Meta:
+        managed = False
+        db_table = 'plans_progress_expected'
 #endregion
 
 #region 統體計畫
