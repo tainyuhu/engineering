@@ -66,20 +66,36 @@ urlpatterns = [
 
     # 抓取迴路中所有案場的比例
     path('get_loop_percentage_data/<int:loop_id>/', views.GetLoopPercentageData.as_view(), name='get_loop_percentage_data'),
-
     # 抓取專案中所有迴路的比例
     path('get_project_percentage_data/<int:project_id>/', views.GetProjectPercentageDataView.as_view(), name='get_project_percentage_data'),
+    # 抓取計畫中所有專案的比例
+    path('get_plan_percentage_data/<int:plan_id>/', views.GetPlanPercentageDataView.as_view(), name='get_plan_percentage_data'),
+    # 抓取總體計畫中所有計畫的比例
+    path('get_master_plan_percentage_data/<int:master_plan_id>/', views.GetMasterPlanPercentageDataView.as_view(), name='get_master_plan_percentage_data'),
 
-    # 計算周進度
-    path('get_gloop_progress/<int:project_id>/<int:currentPage>/<int:itemsPerPage>/', views.GetLoopProgress.as_view(), name='get_loop_progress'),
-    # 計算所有季進度
+    # 計算總迴路周進度
+    path('get_gloop_progress/<int:project_id>/<int:currentPage>/<int:itemsPerPage>/', views.GetLoopProgress.as_view(), name='get_gloop_progress'),
+    # 計算總迴路所有季進度
     path('get_gloop_all_quarter_progress/<int:project_id>/<int:currentPage>/<int:itemsPerPage>/', views.GetLoopAllQuarterProgress.as_view(), name='get_gloop_all_quarter_progress'),
-    # 計算所有季進度
+    # 計算總迴路所有季進度
     path('get_gloop_quarter_progress/<int:project_id>/<int:currentPage>/<int:itemsPerPage>/', views.GetLoopQuarterProgress.as_view(), name='get_gloop_quarter_progress'),
-    # 計算即時季進度報表
+    # 計算總迴路即時季進度報表
     path('get_gloop_quarter_chart_progress/<int:project_id>/', views.GetLoopQuarterChartProgress.as_view(), name='get_gloop_quarter_chart_progress'),
-    # 計算所有季進度報表
+    # 計算總迴路所有季進度報表
     path('get_gloop_all_quarter_chart_progress/<int:project_id>/', views.GetLoopAllQuarterChartProgress.as_view(), name='get_gloop_all_quarter_chart_progress'),
-    # 計算所有周進度報表
+    # 計算總迴路所有周進度報表
     path('get_gloop_week_chart_progress/<int:project_id>/<int:currentPage>/<int:itemsPerPage>/', views.GetLoopWeekChartProgress.as_view(), name='get_gloop_week_chart_progress'),
+
+    # 計算管理總表周進度
+    path('get_project_progress/<int:plan_id>/<int:currentPage>/<int:itemsPerPage>/', views.GetProjectProgress.as_view(), name='get_project_progress'),
+    # 計算管理總表所有季進度
+    path('get_project_all_quarter_progress/<int:plan_id>/<int:currentPage>/<int:itemsPerPage>/', views.GetProjectAllQuarterProgress.as_view(), name='get_project_all_quarter_progress'),
+    # 計算管理總表所有季進度
+    path('get_project_quarter_progress/<int:plan_id>/<int:currentPage>/<int:itemsPerPage>/', views.GetProjectQuarterProgress.as_view(), name='get_project_quarter_progress'),
+    # 計算管理總表即時季進度報表
+    path('get_project_quarter_chart_progress/<int:plan_id>/', views.GetProjectQuarterChartProgress.as_view(), name='get_project_quarter_chart_progress'),
+    # 計算管理總表所有季進度報表
+    path('get_project_all_quarter_chart_progress/<int:plan_id>/', views.GetProjectAllQuarterChartProgress.as_view(), name='get_project_all_quarter_chart_progress'),
+    # 計算管理總表所有周進度報表
+    path('get_project_week_chart_progress/<int:plan_id>/<int:currentPage>/<int:itemsPerPage>/', views.GetProjectWeekChartProgress.as_view(), name='get_gloop_week_chart_progress'),
 ]

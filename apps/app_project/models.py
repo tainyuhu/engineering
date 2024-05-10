@@ -28,6 +28,19 @@ class ProportionHistory(BaseModel):
 #endregion
 
 #region 專案
+# 專案週
+class ProjectWeek(BaseModel):
+    week_id = models.AutoField(primary_key=True)
+    year = models.IntegerField(blank=True, null=True)
+    quarter = models.IntegerField(blank=True, null=True)
+    week = models.IntegerField(blank=True, null=True)
+    start_date = models.DateField(blank=True, null=True)
+    end_date = models.DateField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'projects_week'
+
 # 專案
 class Project(BaseModel):
     project_id = models.AutoField(primary_key=True)
@@ -52,10 +65,11 @@ class ProjectsProgress(BaseModel):
     progress_id = models.AutoField(primary_key=True)
     project_id = models.ForeignKey('Project', on_delete=models.CASCADE, db_column='project_id')
     ratio_id = models.ForeignKey('app_plan.ProjectValueRatio', on_delete=models.CASCADE, db_column='ratio_id')
-    progress_percentage = models.DecimalField(max_digits=5, decimal_places=2)
+    progress_percentage = models.FloatField()
     progress_description = models.TextField()
     last_update = models.DateTimeField(auto_now=True)
     create_at = models.DateTimeField(auto_now_add=True)
+    project_week_id = models.ForeignKey('ProjectWeek', on_delete=models.CASCADE, db_column='project_week_id')
 
     class Meta:
         managed = False
@@ -65,10 +79,11 @@ class ProjectsProgress(BaseModel):
 class ProjectsProgressExpected(BaseModel):
     progress_id = models.AutoField(primary_key=True)
     project_id = models.ForeignKey('Project', on_delete=models.CASCADE, db_column='project_id')
-    progress_percentage = models.DecimalField(max_digits=5, decimal_places=2)
+    progress_percentage = models.FloatField()
     progress_description = models.TextField()
     last_update = models.DateTimeField(auto_now=True)
     create_at = models.DateTimeField(auto_now_add=True)
+    project_week_id = models.ForeignKey('ProjectWeek', on_delete=models.CASCADE, db_column='project_week_id')
 
     class Meta:
         managed = False
@@ -134,7 +149,7 @@ class LoopsProgress(BaseModel):
     progress_id = models.AutoField(primary_key=True)
     loop_id = models.ForeignKey('ProjectLoop', on_delete=models.CASCADE, db_column='loop_id')
     series_id = models.ForeignKey('app_plan.EnergyProductionSeries', on_delete=models.CASCADE, db_column='series_id')
-    progress_percentage = models.DecimalField(max_digits=5, decimal_places=2)
+    progress_percentage = models.FloatField()
     progress_description = models.TextField()
     last_update = models.DateTimeField(auto_now=True)
     create_at = models.DateTimeField(auto_now_add=True)
@@ -148,7 +163,7 @@ class LoopsProgress(BaseModel):
 class LoopsProgressExpected(BaseModel):
     progress_id = models.AutoField(primary_key=True)
     loop_id = models.ForeignKey('ProjectLoop', on_delete=models.CASCADE, db_column='loop_id')
-    progress_percentage = models.DecimalField(max_digits=5, decimal_places=2)
+    progress_percentage = models.FloatField()
     progress_description = models.TextField()
     last_update = models.DateTimeField(auto_now=True)
     create_at = models.DateTimeField(auto_now_add=True)
