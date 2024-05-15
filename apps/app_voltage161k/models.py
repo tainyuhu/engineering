@@ -91,6 +91,7 @@ class Voltage161KBankProgress(BaseModel):
     progress_percentage = models.DecimalField(max_digits=5, decimal_places=2)
     last_update = models.DateTimeField(auto_now=True)
     create_at = models.DateTimeField(auto_now_add=True)
+    lag_status = models.SmallIntegerField(default=0)
     voltage161k_week_id = models.ForeignKey(Voltage161KWeek, on_delete=models.CASCADE, db_column='voltage161k_week_id')
 
     class Meta:
@@ -123,6 +124,7 @@ class Voltage161KBankProgressExpected(BaseModel):
     progress_percentage = models.DecimalField(max_digits=5, decimal_places=2)
     last_update = models.DateTimeField(auto_now=True)
     create_at = models.DateTimeField(auto_now_add=True)
+    lag_status = models.SmallIntegerField(default=0)
     voltage161k_week_id = models.ForeignKey('Voltage161KWeek', on_delete=models.CASCADE, db_column='voltage161k_week_id')
    
 

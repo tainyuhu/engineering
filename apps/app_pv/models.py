@@ -216,6 +216,7 @@ class PVBankProgress(BaseModel):
     progress_percentage = models.DecimalField(max_digits=5, decimal_places=2)
     last_update = models.DateTimeField(auto_now=True)
     create_at = models.DateTimeField(auto_now_add=True)
+    lag_status = models.SmallIntegerField(default=0)
     pv_week_id = models.ForeignKey(PvWeek, on_delete=models.CASCADE, db_column='pv_week_id')
 
     class Meta:
@@ -248,6 +249,7 @@ class PVBankProgressExpected(BaseModel):
     progress_percentage = models.DecimalField(max_digits=5, decimal_places=2)
     last_update = models.DateTimeField(auto_now=True)
     create_at = models.DateTimeField(auto_now_add=True)
+    lag_status = models.SmallIntegerField(default=0)
     pv_week_id = models.ForeignKey('PvWeek', on_delete=models.CASCADE, db_column='pv_week_id')
    
 
