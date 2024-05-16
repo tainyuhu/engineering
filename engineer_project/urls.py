@@ -25,6 +25,7 @@ if( DEBUG ):
         path('api/v1/', include('apps.app_breeding.urls')),
         path('api/v1/', include('apps.app_voltage228k.urls')),
         path('api/v1/', include('apps.app_voltage161k.urls')),
+        path('api/v1/', include('apps.app_electricity.urls')),
 
         # 【解決Vue-Router History mode刷新頁面404的問題】https://blog.csdn.net/lucky__peng/article/details/124950853
         re_path(r'.*', TemplateView.as_view(template_name="index.html")), # 新增的(加在最後一段，這樣如果有找不到的內容都會被導引到index.html)
@@ -45,7 +46,7 @@ else:
         path('api/v1/', include('apps.app_breeding.urls')),
         path('api/v1/', include('apps.app_voltage228k.urls')),
         path('api/v1/', include('apps.app_voltage161k.urls')),
-
+        path('api/v1/', include('apps.app_electricity.urls')),
 
         # 【解決Vue-Router History mode刷新頁面404的問題】https://blog.csdn.net/lucky__peng/article/details/124950853
         re_path(r'.*', TemplateView.as_view(template_name="index.html")), # 新增的(加在最後一段，這樣如果有找不到的內容都會被導引到index.html)
