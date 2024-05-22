@@ -57,7 +57,7 @@ class ProjectBreedingProgress(BaseModel):
     progress_id = models.AutoField(primary_key=True)
     breeding_id = models.ForeignKey(ProjectBreeding, on_delete=models.CASCADE, db_column='breeding_id')
     series_id = models.ForeignKey('app_pv.Series', on_delete=models.CASCADE, db_column='series_id')
-    progress_percentage = models.DecimalField(max_digits=5, decimal_places=2)
+    progress_percentage = models.FloatField(null=True, blank=True)
     supervisor = models.CharField(max_length=255)
     non_construction_reason = models.TextField()
     progress_calculation_description = models.TextField()
@@ -74,7 +74,7 @@ class ProjectBreedingExpectedProgress(BaseModel):
     expected_progress_id = models.AutoField(primary_key=True)
     breeding_id = models.ForeignKey('ProjectBreeding', on_delete=models.CASCADE, db_column='breeding_id')
     parameter_id = models.ForeignKey('app_pv.LogisticParameters', on_delete=models.CASCADE, db_column='parameter_id')
-    progress_percentage = models.DecimalField(max_digits=5, decimal_places=2)
+    progress_percentage = models.FloatField(null=True, blank=True)
     calculation_date = models.DateField()
     last_update = models.DateTimeField(auto_now=True)
     create_at = models.DateTimeField(auto_now_add=True)
@@ -88,9 +88,10 @@ class ProjectBreedingExpectedProgress(BaseModel):
 class BreedingBankProgress(BaseModel):
     breeding_bank_id = models.AutoField(primary_key=True)
     breeding_id = models.ForeignKey('ProjectBreeding', on_delete=models.CASCADE, db_column='breeding_id')
-    progress_percentage = models.DecimalField(max_digits=5, decimal_places=2)
+    progress_percentage = models.FloatField(null=True, blank=True)
     last_update = models.DateTimeField(auto_now=True)
     create_at = models.DateTimeField(auto_now_add=True)
+    lag_status = models.SmallIntegerField(default=0)
     breeding_week_id = models.ForeignKey(BreedingWeek, on_delete=models.CASCADE, db_column='breeding_week_id')
 
     class Meta:
@@ -120,9 +121,10 @@ class BreedingBankProgressExpected(BaseModel):
     breeding_id = models.ForeignKey('ProjectBreeding', on_delete=models.CASCADE, db_column='breeding_id')
     parameter_id = models.ForeignKey('app_pv.LogisticParameters', on_delete=models.CASCADE, db_column='parameter_id')
     is_parameter_based = models.BooleanField(default=True)
-    progress_percentage = models.DecimalField(max_digits=5, decimal_places=2)
+    progress_percentage = models.FloatField(null=True, blank=True)
     last_update = models.DateTimeField(auto_now=True)
     create_at = models.DateTimeField(auto_now_add=True)
+    lag_status = models.SmallIntegerField(default=0)
     breeding_week_id = models.ForeignKey('BreedingWeek', on_delete=models.CASCADE, db_column='breeding_week_id')
    
 
