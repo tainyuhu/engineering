@@ -241,12 +241,22 @@ class GetPVProgress(APIView):
                         ).last()
                         if week_data:
                             date_range = f"{week_data.start_date.strftime('%Y-%m-%d')} - {week_data.end_date.strftime('%Y-%m-%d')}"
-                            date_ranges_with_data[date_range].append({
-                                "pv_name": pv.pv_name,
-                                "construction_status": pv.construction_status,
-                                "actual": 0,
-                                "expected": 0,
-                            })
+                            if project_type == "bank":
+                                date_ranges_with_data[date_range].append({
+                                    "pv_name": pv.pv_name,
+                                    "construction_status": pv.construction_status,
+                                    "actual": 0,
+                                    "expected": 0,
+                                    "actual_lag_status": 0,
+                                    "expected_lag_status": 0,
+                                })
+                            else:
+                                date_ranges_with_data[date_range].append({
+                                    "pv_name": pv.pv_name,
+                                    "construction_status": pv.construction_status,
+                                    "actual": 0,
+                                    "expected": 0,
+                                })
 
             # 轉換有序字典並提取最新的 date_range 數據
             ordered_date_ranges = OrderedDict(sorted(date_ranges_with_data.items(), reverse=True))
@@ -386,26 +396,52 @@ class GetPVAllQuarterProgress(APIView):
                                         ).first()
                                         if expected_record:
                                             date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
-                                            date_ranges_with_data[date_range].append({
-                                                "year": last_week.year,
-                                                "quarter": last_week.quarter,
-                                                "week": last_week.week,
-                                                "pv_name": pv.pv_name,
-                                                "construction_status": pv.construction_status,
-                                                "actual": progress_record.progress_percentage,
-                                                "expected": expected_record.progress_percentage
-                                            })
+                                            if project_type == "bank":
+                                                date_ranges_with_data[date_range].append({
+                                                    "year": last_week.year,
+                                                    "quarter": last_week.quarter,
+                                                    "week": last_week.week,
+                                                    "pv_name": pv.pv_name,
+                                                    "construction_status": pv.construction_status,
+                                                    "actual": progress_record.progress_percentage,
+                                                    "expected": expected_record.progress_percentage,
+                                                    "actual_lag_status": progress_record.lag_status,
+                                                    "expected_lag_status": expected_record.lag_status,
+                                                })
+                                            else:
+                                                date_ranges_with_data[date_range].append({
+                                                    "year": last_week.year,
+                                                    "quarter": last_week.quarter,
+                                                    "week": last_week.week,
+                                                    "pv_name": pv.pv_name,
+                                                    "construction_status": pv.construction_status,
+                                                    "actual": progress_record.progress_percentage,
+                                                    "expected": expected_record.progress_percentage,
+                                                })
                                 else:
                                     date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
-                                    date_ranges_with_data[date_range].append({
-                                        "pv_name": pv.pv_name,
-                                        "construction_status": pv.construction_status,
-                                        "actual": 0,
-                                        "expected": 0,
-                                        "year": last_week.year,
-                                        "quarter": last_week.quarter,
-                                        "week": last_week.week,
-                                    })
+                                    if project_type == "bank":
+                                        date_ranges_with_data[date_range].append({
+                                            "year": last_week.year,
+                                            "quarter": last_week.quarter,
+                                            "week": last_week.week,
+                                            "pv_name": pv.pv_name,
+                                            "construction_status": pv.construction_status,
+                                            "actual": 0,
+                                            "expected": 0,
+                                            "actual_lag_status": 0,
+                                            "expected_lag_status": 0,
+                                        })
+                                    else:
+                                        date_ranges_with_data[date_range].append({
+                                            "year": last_week.year,
+                                            "quarter": last_week.quarter,
+                                            "week": last_week.week,
+                                            "pv_name": pv.pv_name,
+                                            "construction_status": pv.construction_status,
+                                            "actual": 0,
+                                            "expected": 0,
+                                        })
 
             # 轉換有序字典並提取最新的 date_range 數據
             ordered_date_ranges = OrderedDict(sorted(date_ranges_with_data.items(), reverse=True))
@@ -424,32 +460,47 @@ class GetPVAllQuarterProgress(APIView):
                 # 第一頁直接展示包括最新的 date_range 數據
                 for date_range, data in page_obj.object_list:
                     for item in data:
-                        formatted_results.append({
-                            "year": item["year"],
-                            "quarter": item["quarter"],
-                            "week": item["week"],
-                            "vb_name": item["pv_name"],
-                            "construction_status": item["construction_status"],
-                            "date_range": date_range,
-                            "actual": item["actual"],
-                            "expected": item["expected"]
-                        })
+                        if project_type == "bank":
+                            formatted_results.append({
+                                "year": item["year"],
+                                "quarter": item["quarter"],
+                                "week": item["week"],
+                                "vb_name": item["pv_name"],
+                                "construction_status": item["construction_status"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"],
+                                "actual_lag_status": item["actual_lag_status"],
+                                "expected_lag_status": item["expected_lag_status"],
+                            })
+                        else:
+                            formatted_results.append({
+                                "year": item["year"],
+                                "quarter": item["quarter"],
+                                "week": item["week"],
+                                "vb_name": item["pv_name"],
+                                "construction_status": item["construction_status"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"]
+                            })
             else:
                 # 從第二頁開始，在資料頂部都增加最新的 date_range 數據
                 for item in latest_data:
-                    formatted_results.append({
-                        "year": item["year"],
-                        "quarter": item["quarter"],
-                        "week": item["week"],
-                        "vb_name": item["pv_name"],
-                        "construction_status": item["construction_status"],
-                        "date_range": latest_date_range,
-                        "actual": item["actual"],
-                        "expected": item["expected"]
-                    })
-                # 添加當前頁的其他數據
-                for date_range, data in page_obj.object_list:
-                    for item in data:
+                    if project_type == "bank":
+                        formatted_results.append({
+                            "year": item["year"],
+                            "quarter": item["quarter"],
+                            "week": item["week"],
+                            "vb_name": item["pv_name"],
+                            "construction_status": item["construction_status"],
+                            "date_range": date_range,
+                            "actual": item["actual"],
+                            "expected": item["expected"],
+                            "actual_lag_status": item["actual_lag_status"],
+                            "expected_lag_status": item["expected_lag_status"],
+                        })
+                    else:
                         formatted_results.append({
                             "year": item["year"],
                             "quarter": item["quarter"],
@@ -460,6 +511,33 @@ class GetPVAllQuarterProgress(APIView):
                             "actual": item["actual"],
                             "expected": item["expected"]
                         })
+                # 添加當前頁的其他數據
+                for date_range, data in page_obj.object_list:
+                    for item in data:
+                        if project_type == "bank":
+                            formatted_results.append({
+                                "year": item["year"],
+                                "quarter": item["quarter"],
+                                "week": item["week"],
+                                "vb_name": item["pv_name"],
+                                "construction_status": item["construction_status"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"],
+                                "actual_lag_status": item["actual_lag_status"],
+                                "expected_lag_status": item["expected_lag_status"],
+                            })
+                        else:
+                            formatted_results.append({
+                                "year": item["year"],
+                                "quarter": item["quarter"],
+                                "week": item["week"],
+                                "vb_name": item["pv_name"],
+                                "construction_status": item["construction_status"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"]
+                            })
 
             return Response({
                 'results': formatted_results,
@@ -520,25 +598,52 @@ class GetPVQuarterProgress(APIView):
                                     ).first()
                                     if expected_record:
                                         date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
-                                        date_ranges_with_data[date_range].append({
-                                            "year": last_week.year,
-                                            "quarter": last_week.quarter,
-                                            "week": last_week.week,
-                                            "pv_name": pv.pv_name,
-                                            "actual": progress_record.progress_percentage,
-                                            "expected": expected_record.progress_percentage
-                                        })
+                                        if project_type == "bank":
+                                            date_ranges_with_data[date_range].append({
+                                                "year": last_week.year,
+                                                "quarter": last_week.quarter,
+                                                "week": last_week.week,
+                                                "pv_name": pv.pv_name,
+                                                "construction_status": pv.construction_status,
+                                                "actual": progress_record.progress_percentage,
+                                                "expected": expected_record.progress_percentage,
+                                                "actual_lag_status": progress_record.lag_status,
+                                                "expected_lag_status": expected_record.lag_status,
+                                            })
+                                        else:
+                                            date_ranges_with_data[date_range].append({
+                                                "year": last_week.year,
+                                                "quarter": last_week.quarter,
+                                                "week": last_week.week,
+                                                "pv_name": pv.pv_name,
+                                                "construction_status": pv.construction_status,
+                                                "actual": progress_record.progress_percentage,
+                                                "expected": expected_record.progress_percentage,
+                                            })
                             else:
                                 date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
-                                date_ranges_with_data[date_range].append({
-                                    "pv_name": pv.pv_name,
-                                    "construction_status": pv.construction_status,
-                                    "actual": 0,
-                                    "expected": 0,
-                                    "year": last_week.year,
-                                    "quarter": last_week.quarter,
-                                    "week": last_week.week,
-                                })
+                                if project_type == "bank":
+                                    date_ranges_with_data[date_range].append({
+                                        "year": last_week.year,
+                                        "quarter": last_week.quarter,
+                                        "week": last_week.week,
+                                        "pv_name": pv.pv_name,
+                                        "construction_status": pv.construction_status,
+                                        "actual": 0,
+                                        "expected": 0,
+                                        "actual_lag_status": 0,
+                                        "expected_lag_status": 0,
+                                    })
+                                else:
+                                    date_ranges_with_data[date_range].append({
+                                        "year": last_week.year,
+                                        "quarter": last_week.quarter,
+                                        "week": last_week.week,
+                                        "pv_name": pv.pv_name,
+                                        "construction_status": pv.construction_status,
+                                        "actual": 0,
+                                        "expected": 0,
+                                    })
 
             # 轉換有序字典並提取最新的 date_range 數據
             ordered_date_ranges = OrderedDict(sorted(date_ranges_with_data.items(), reverse=True))
@@ -557,40 +662,84 @@ class GetPVQuarterProgress(APIView):
                 # 第一頁直接展示包括最新的 date_range 數據
                 for date_range, data in page_obj.object_list:
                     for item in data:
-                        formatted_results.append({
-                            "year": item["year"],
-                            "quarter": item["quarter"],
-                            "week": item["week"],
-                            "vb_name": item["pv_name"],
-                            "date_range": date_range,
-                            "actual": item["actual"],
-                            "expected": item["expected"]
-                        })
+                        if project_type == "bank":
+                            formatted_results.append({
+                                "year": item["year"],
+                                "quarter": item["quarter"],
+                                "week": item["week"],
+                                "vb_name": item["pv_name"],
+                                "construction_status": item["construction_status"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"],
+                                "actual_lag_status": item["actual_lag_status"],
+                                "expected_lag_status": item["expected_lag_status"],
+                            })
+                        else:
+                            formatted_results.append({
+                                "year": item["year"],
+                                "quarter": item["quarter"],
+                                "week": item["week"],
+                                "vb_name": item["pv_name"],
+                                "construction_status": item["construction_status"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"]
+                            })
             else:
                 # 從第二頁開始，在資料頂部都增加最新的 date_range 數據
                 for item in latest_data:
-                    formatted_results.append({
-                        "year": item["year"],
-                        "quarter": item["quarter"],
-                        "week": item["week"],
-                        "vb_name": item["pv_name"],
-                        "date_range": latest_date_range,
-                        "actual": item["actual"],
-                        "expected": item["expected"]
-                    })
+                        if project_type == "bank":
+                            formatted_results.append({
+                                "year": item["year"],
+                                "quarter": item["quarter"],
+                                "week": item["week"],
+                                "vb_name": item["pv_name"],
+                                "construction_status": item["construction_status"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"],
+                                "actual_lag_status": item["actual_lag_status"],
+                                "expected_lag_status": item["expected_lag_status"],
+                            })
+                        else:
+                            formatted_results.append({
+                                "year": item["year"],
+                                "quarter": item["quarter"],
+                                "week": item["week"],
+                                "vb_name": item["pv_name"],
+                                "construction_status": item["construction_status"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"]
+                            })
                 # 添加當前頁的其他數據
                 for date_range, data in page_obj.object_list:
                     for item in data:
-                        formatted_results.append({
-                            "year": item["year"],
-                            "quarter": item["quarter"],
-                            "week": item["week"],
-                            "vb_name": item["pv_name"],
-                            "date_range": date_range,
-                            "actual": item["actual"],
-                            "expected": item["expected"]
-                        })
-
+                        if project_type == "bank":
+                            formatted_results.append({
+                                "year": item["year"],
+                                "quarter": item["quarter"],
+                                "week": item["week"],
+                                "vb_name": item["pv_name"],
+                                "construction_status": item["construction_status"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"],
+                                "actual_lag_status": item["actual_lag_status"],
+                                "expected_lag_status": item["expected_lag_status"],
+                            })
+                        else:
+                            formatted_results.append({
+                                "year": item["year"],
+                                "quarter": item["quarter"],
+                                "week": item["week"],
+                                "vb_name": item["pv_name"],
+                                "construction_status": item["construction_status"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"]
+                            })
             return Response({
                 'results': formatted_results,
                 'totalPages': paginator.num_pages,

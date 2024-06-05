@@ -112,10 +112,8 @@ class GetCivilProgress(APIView):
 
             loops = ProjectLoop.objects.filter(project_id=project_id)
             loop_ids = loops.values_list('loop_id', flat=True)
-            print(f"Found loops for project_id {project_id}: {loop_ids}")
 
             voltage228ks = ProjectVoltage228K.objects.filter(loop_id__in=loop_ids, engineer=1)
-            print(f"Found {voltage228ks.count()} civil engineering projects for project_id {project_id}")
 
             date_ranges_with_data = defaultdict(list)
 
@@ -140,12 +138,22 @@ class GetCivilProgress(APIView):
                             week_data = Voltage228KWeek.objects.filter(week_id=expected_record.voltage228k_week_id.week_id).first()
                             if week_data:
                                 date_range = f"{week_data.start_date.strftime('%Y-%m-%d')} - {week_data.end_date.strftime('%Y-%m-%d')}"
-                                date_ranges_with_data[date_range].append({
-                                    "loop_name": voltage228k.voltage228k_name,
-                                    "actual": progress_record.progress_percentage,
-                                    "expected": expected_record.progress_percentage,
-                                    "construction_status": voltage228k.construction_status,
-                                })
+                                if project_type == "bank":
+                                    date_ranges_with_data[date_range].append({
+                                        "loop_name": voltage228k.voltage228k_name,
+                                        "actual": progress_record.progress_percentage,
+                                        "expected": expected_record.progress_percentage,
+                                        "construction_status": voltage228k.construction_status,
+                                        "actual_lag_status": progress_record.lag_status,
+                                        "expected_lag_status": expected_record.lag_status,
+                                    })
+                                else:
+                                    date_ranges_with_data[date_range].append({
+                                        "loop_name": voltage228k.voltage228k_name,
+                                        "actual": progress_record.progress_percentage,
+                                        "expected": expected_record.progress_percentage,
+                                        "construction_status": voltage228k.construction_status,
+                                    })
                 else:
                     today = datetime.datetime.now().strftime("%Y-%m-%d")
                     week_data = Voltage228KWeek.objects.filter(
@@ -153,12 +161,22 @@ class GetCivilProgress(APIView):
                     ).last()
                     if week_data:
                         date_range = f"{week_data.start_date.strftime('%Y-%m-%d')} - {week_data.end_date.strftime('%Y-%m-%d')}"
-                        date_ranges_with_data[date_range].append({
-                            "loop_name": voltage228k.voltage228k_name,
-                            "construction_status": voltage228k.construction_status,
-                            "actual": 0,
-                            "expected": 0,
-                        })
+                        if project_type == "bank":
+                            date_ranges_with_data[date_range].append({
+                                "loop_name": voltage228k.voltage228k_name,
+                                "actual": 0,
+                                "expected": 0,
+                                "construction_status": voltage228k.construction_status,
+                                "actual_lag_status": 0,
+                                "expected_lag_status": 0,
+                            })
+                        else:
+                            date_ranges_with_data[date_range].append({
+                                "loop_name": voltage228k.voltage228k_name,
+                                "actual": 0,
+                                "expected": 0,
+                                "construction_status": voltage228k.construction_status,
+                            })
 
             ordered_date_ranges = OrderedDict(sorted(date_ranges_with_data.items(), reverse=True))
             latest_date_range, latest_data = next(iter(ordered_date_ranges.items()))
@@ -170,24 +188,37 @@ class GetCivilProgress(APIView):
             if currentPage == 1:
                 for date_range, data in page_obj.object_list:
                     for item in data:
-                        formatted_results.append({
-                            "loop_name": item["loop_name"],
-                            "date_range": date_range,
-                            "actual": item["actual"],
-                            "expected": item["expected"],
-                            "construction_status": item["construction_status"],
-                        })
+                        if project_type == "bank":
+                            formatted_results.append({
+                                "loop_name": item["loop_name"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"],
+                                "construction_status": item["construction_status"],
+                                "actual_lag_status": item["actual_lag_status"],
+                                "expected_lag_status": item["expected_lag_status"],
+                            })
+                        else:
+                            formatted_results.append({
+                                "loop_name": item["loop_name"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"],
+                                "construction_status": item["construction_status"],
+                            })
             else:
                 for item in latest_data:
-                    formatted_results.append({
-                        "loop_name": item["loop_name"],
-                        "date_range": latest_date_range,
-                        "actual": item["actual"],
-                        "expected": item["expected"],
-                        "construction_status": item["construction_status"],
-                    })
-                for date_range, data in page_obj.object_list:
-                    for item in data:
+                    if project_type == "bank":
+                        formatted_results.append({
+                            "loop_name": item["loop_name"],
+                            "date_range": date_range,
+                            "actual": item["actual"],
+                            "expected": item["expected"],
+                            "construction_status": item["construction_status"],
+                            "actual_lag_status": item["actual_lag_status"],
+                            "expected_lag_status": item["expected_lag_status"],
+                        })
+                    else:
                         formatted_results.append({
                             "loop_name": item["loop_name"],
                             "date_range": date_range,
@@ -195,6 +226,26 @@ class GetCivilProgress(APIView):
                             "expected": item["expected"],
                             "construction_status": item["construction_status"],
                         })
+                for date_range, data in page_obj.object_list:
+                    for item in data:
+                        if project_type == "bank":
+                            formatted_results.append({
+                                "loop_name": item["loop_name"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"],
+                                "construction_status": item["construction_status"],
+                                "actual_lag_status": item["actual_lag_status"],
+                                "expected_lag_status": item["expected_lag_status"],
+                            })
+                        else:
+                            formatted_results.append({
+                                "loop_name": item["loop_name"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"],
+                                "construction_status": item["construction_status"],
+                            })
 
             return Response({
                 'results': formatted_results,
@@ -213,10 +264,8 @@ class GetCableProgress(APIView):
 
             loops = ProjectLoop.objects.filter(project_id=project_id)
             loop_ids = loops.values_list('loop_id', flat=True)
-            print(f"Found loops for project_id {project_id}: {loop_ids}")
 
             voltage228ks = ProjectVoltage228K.objects.filter(loop_id__in=loop_ids, engineer=2)
-            print(f"Found {voltage228ks.count()} civil engineering projects for project_id {project_id}")
 
             date_ranges_with_data = defaultdict(list)
 
@@ -241,12 +290,22 @@ class GetCableProgress(APIView):
                             week_data = Voltage228KWeek.objects.filter(week_id=expected_record.voltage228k_week_id.week_id).first()
                             if week_data:
                                 date_range = f"{week_data.start_date.strftime('%Y-%m-%d')} - {week_data.end_date.strftime('%Y-%m-%d')}"
-                                date_ranges_with_data[date_range].append({
-                                    "loop_name": voltage228k.voltage228k_name,
-                                    "actual": progress_record.progress_percentage,
-                                    "expected": expected_record.progress_percentage,
-                                    "construction_status": voltage228k.construction_status,
-                                })
+                                if project_type == "bank":
+                                    date_ranges_with_data[date_range].append({
+                                        "loop_name": voltage228k.voltage228k_name,
+                                        "actual": progress_record.progress_percentage,
+                                        "expected": expected_record.progress_percentage,
+                                        "construction_status": voltage228k.construction_status,
+                                        "actual_lag_status": progress_record.lag_status,
+                                        "expected_lag_status": expected_record.lag_status,
+                                    })
+                                else:
+                                    date_ranges_with_data[date_range].append({
+                                        "loop_name": voltage228k.voltage228k_name,
+                                        "actual": progress_record.progress_percentage,
+                                        "expected": expected_record.progress_percentage,
+                                        "construction_status": voltage228k.construction_status,
+                                    })
                 else:
                     today = datetime.datetime.now().strftime("%Y-%m-%d")
                     week_data = Voltage228KWeek.objects.filter(
@@ -254,12 +313,22 @@ class GetCableProgress(APIView):
                     ).last()
                     if week_data:
                         date_range = f"{week_data.start_date.strftime('%Y-%m-%d')} - {week_data.end_date.strftime('%Y-%m-%d')}"
-                        date_ranges_with_data[date_range].append({
-                            "loop_name": voltage228k.voltage228k_name,
-                            "construction_status": voltage228k.construction_status,
-                            "actual": 0,
-                            "expected": 0,
-                        })
+                        if project_type == "bank":
+                            date_ranges_with_data[date_range].append({
+                                "loop_name": voltage228k.voltage228k_name,
+                                "actual": 0,
+                                "expected": 0,
+                                "construction_status": voltage228k.construction_status,
+                                "actual_lag_status": 0,
+                                "expected_lag_status": 0,
+                            })
+                        else:
+                            date_ranges_with_data[date_range].append({
+                                "loop_name": voltage228k.voltage228k_name,
+                                "actual": 0,
+                                "expected": 0,
+                                "construction_status": voltage228k.construction_status,
+                            })
 
             ordered_date_ranges = OrderedDict(sorted(date_ranges_with_data.items(), reverse=True))
             latest_date_range, latest_data = next(iter(ordered_date_ranges.items()))
@@ -271,24 +340,37 @@ class GetCableProgress(APIView):
             if currentPage == 1:
                 for date_range, data in page_obj.object_list:
                     for item in data:
-                        formatted_results.append({
-                            "loop_name": item["loop_name"],
-                            "date_range": date_range,
-                            "actual": item["actual"],
-                            "expected": item["expected"],
-                            "construction_status": item["construction_status"],
-                        })
+                        if project_type == "bank":
+                            formatted_results.append({
+                                "loop_name": item["loop_name"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"],
+                                "construction_status": item["construction_status"],
+                                "actual_lag_status": item["actual_lag_status"],
+                                "expected_lag_status": item["expected_lag_status"],
+                            })
+                        else:
+                            formatted_results.append({
+                                "loop_name": item["loop_name"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"],
+                                "construction_status": item["construction_status"],
+                            })
             else:
                 for item in latest_data:
-                    formatted_results.append({
-                        "loop_name": item["loop_name"],
-                        "date_range": latest_date_range,
-                        "actual": item["actual"],
-                        "expected": item["expected"],
-                        "construction_status": item["construction_status"],
-                    })
-                for date_range, data in page_obj.object_list:
-                    for item in data:
+                    if project_type == "bank":
+                        formatted_results.append({
+                            "loop_name": item["loop_name"],
+                            "date_range": date_range,
+                            "actual": item["actual"],
+                            "expected": item["expected"],
+                            "construction_status": item["construction_status"],
+                            "actual_lag_status": item["actual_lag_status"],
+                            "expected_lag_status": item["expected_lag_status"],
+                        })
+                    else:
                         formatted_results.append({
                             "loop_name": item["loop_name"],
                             "date_range": date_range,
@@ -296,6 +378,26 @@ class GetCableProgress(APIView):
                             "expected": item["expected"],
                             "construction_status": item["construction_status"],
                         })
+                for date_range, data in page_obj.object_list:
+                    for item in data:
+                        if project_type == "bank":
+                            formatted_results.append({
+                                "loop_name": item["loop_name"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"],
+                                "construction_status": item["construction_status"],
+                                "actual_lag_status": item["actual_lag_status"],
+                                "expected_lag_status": item["expected_lag_status"],
+                            })
+                        else:
+                            formatted_results.append({
+                                "loop_name": item["loop_name"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"],
+                                "construction_status": item["construction_status"],
+                            })
 
             return Response({
                 'results': formatted_results,
@@ -314,10 +416,8 @@ class GetCivilAllQuarterProgress(APIView):
 
             loops = ProjectLoop.objects.filter(project_id=project_id)
             loop_ids = loops.values_list('loop_id', flat=True)
-            print(f"Found loops for project_id {project_id}: {loop_ids}")
 
             voltage228ks = ProjectVoltage228K.objects.filter(loop_id__in=loop_ids, engineer=1)
-            print(f"Found {voltage228ks.count()} civil engineering projects for project_id {project_id}")
 
             date_ranges_with_data = defaultdict(list)
 
@@ -359,79 +459,111 @@ class GetCivilAllQuarterProgress(APIView):
                                     ).first()
                                     if expected_record:
                                         date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
-                                        date_ranges_with_data[date_range].append({
-                                            "year": last_week.year,
-                                            "quarter": last_week.quarter,
-                                            "week": last_week.week,
-                                            "voltage228k_name": voltage228k.voltage228k_name,
-                                            "actual": progress_record.progress_percentage,
-                                            "expected": expected_record.progress_percentage,
-                                            "construction_status": voltage228k.construction_status,
-                                        })
+                                        if project_type == "bank":
+                                            date_ranges_with_data[date_range].append({
+                                                "year": last_week.year,
+                                                "quarter": last_week.quarter,
+                                                "week": last_week.week,
+                                                "voltage228k_name": voltage228k.voltage228k_name,
+                                                "actual": progress_record.progress_percentage,
+                                                "expected": expected_record.progress_percentage,
+                                                "construction_status": voltage228k.construction_status,
+                                                "actual_lag_status": progress_record.lag_status,
+                                                "expected_lag_status": expected_record.lag_status,
+                                            })
+                                        else:
+                                            date_ranges_with_data[date_range].append({
+                                                "year": last_week.year,
+                                                "quarter": last_week.quarter,
+                                                "week": last_week.week,
+                                                "voltage228k_name": voltage228k.voltage228k_name,
+                                                "actual": progress_record.progress_percentage,
+                                                "expected": expected_record.progress_percentage,
+                                                "construction_status": voltage228k.construction_status,
+                                            })
                             else:
                                 date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
-                                date_ranges_with_data[date_range].append({
-                                    "voltage228k_name": voltage228k.voltage228k_name,
-                                    "construction_status": voltage228k.construction_status,
-                                    "actual": 0,
-                                    "expected": 0,
-                                    "year": last_week.year,
-                                    "quarter": last_week.quarter,
-                                    "week": last_week.week,
-                                })
+                                if project_type == "bank":
+                                    date_ranges_with_data[date_range].append({
+                                        "year": last_week.year,
+                                        "quarter": last_week.quarter,
+                                        "week": last_week.week,
+                                        "voltage228k_name": voltage228k.voltage228k_name,
+                                        "actual": 0,
+                                        "expected": 0,
+                                        "construction_status": voltage228k.construction_status,
+                                        "actual_lag_status": 0,
+                                        "expected_lag_status": 0,
+                                    })
+                                else:
+                                    date_ranges_with_data[date_range].append({
+                                        "year": last_week.year,
+                                        "quarter": last_week.quarter,
+                                        "week": last_week.week,
+                                        "voltage228k_name": voltage228k.voltage228k_name,
+                                        "actual": 0,
+                                        "expected": 0,
+                                        "construction_status": voltage228k.construction_status,
+                                    })
 
-            process_projects(civil_projects, ProjectVoltage228KProgress, ProjectVoltage228KExpectedProgress, 0.5)
-            process_projects(cable_projects, ProjectVoltage228KProgress, ProjectVoltage228KExpectedProgress, 0.5)
+            # 轉換有序字典並提取最新的 date_range 數據
+            ordered_date_ranges = OrderedDict(sorted(date_ranges_with_data.items(), reverse=True))
+            latest_date_range, latest_data = next(iter(ordered_date_ranges.items()))
 
-            # 聚合數據並計算平均值
-            aggregated_data = {}
-            for date_range, entries in date_ranges_with_data.items():
-                total_actual = total_expected = 0
-                for entry in entries:
-                    total_actual += entry["actual"]
-                    total_expected += entry["expected"]
-                count = len(entries)
-                aggregated_data[date_range] = {
-                    "actual_avg": total_actual / count,
-                    "expected_avg": total_expected / count,
-                    "entries": entries  # 存儲原始項目以保留 voltage228k_name
-                }
+            # 準備分頁數據
+            if currentPage > 1:
+                pass
 
-            ordered_date_ranges = OrderedDict(sorted(aggregated_data.items(), reverse=True))
             paginator = Paginator(list(ordered_date_ranges.items()), itemsPerPage)
             page_obj = paginator.get_page(currentPage)
 
+            # 格式化當前數據
             formatted_results = []
             if currentPage == 1:
                 # 第一頁直接展示包括最新的 date_range 數據
                 for date_range, data in page_obj.object_list:
                     for item in data:
-                        formatted_results.append({
-                            "year": item["year"],
-                            "quarter": item["quarter"],
-                            "week": item["week"],
-                            "loop_name": item["voltage228k_name"],
-                            "date_range": date_range,
-                            "actual": item["actual"],
-                            "expected": item["expected"],
-                            "construction_status": item["construction_status"],
-                        })
+                        if project_type == "bank":
+                            formatted_results.append({
+                                "year": item["year"],
+                                "quarter": item["quarter"],
+                                "week": item["week"],
+                                "loop_name": item["voltage228k_name"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"],
+                                "construction_status": item["construction_status"],
+                                "actual_lag_status": item["actual_lag_status"],
+                                "expected_lag_status": item["expected_lag_status"],
+                            })
+                        else:
+                            formatted_results.append({
+                                "year": item["year"],
+                                "quarter": item["quarter"],
+                                "week": item["week"],
+                                "loop_name": item["voltage228k_name"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"],
+                                "construction_status": item["construction_status"],
+                            })
             else:
                 # 從第二頁開始，在資料頂部都增加最新的 date_range 數據
                 for item in latest_data:
-                    formatted_results.append({
-                        "year": item["year"],
-                        "quarter": item["quarter"],
-                        "week": item["week"],
-                        "loop_name": item["voltage228k_name"],
-                        "date_range": latest_date_range,
-                        "actual": item["actual"],
-                        "expected": item["expected"],
-                        "construction_status": item["construction_status"],
-                    })
-                # 添加當前頁的其他數據
-                for date_range, data in page_obj.object_list:
-                    for item in data:
+                    if project_type == "bank":
+                        formatted_results.append({
+                            "year": item["year"],
+                            "quarter": item["quarter"],
+                            "week": item["week"],
+                            "loop_name": item["voltage228k_name"],
+                            "date_range": date_range,
+                            "actual": item["actual"],
+                            "expected": item["expected"],
+                            "construction_status": item["construction_status"],
+                            "actual_lag_status": item["actual_lag_status"],
+                            "expected_lag_status": item["expected_lag_status"],
+                        })
+                    else:
                         formatted_results.append({
                             "year": item["year"],
                             "quarter": item["quarter"],
@@ -442,6 +574,33 @@ class GetCivilAllQuarterProgress(APIView):
                             "expected": item["expected"],
                             "construction_status": item["construction_status"],
                         })
+                # 添加當前頁的其他數據
+                for date_range, data in page_obj.object_list:
+                    for item in data:
+                        if project_type == "bank":
+                            formatted_results.append({
+                                "year": item["year"],
+                                "quarter": item["quarter"],
+                                "week": item["week"],
+                                "loop_name": item["voltage228k_name"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"],
+                                "construction_status": item["construction_status"],
+                                "actual_lag_status": item["actual_lag_status"],
+                                "expected_lag_status": item["expected_lag_status"],
+                            })
+                        else:
+                            formatted_results.append({
+                                "year": item["year"],
+                                "quarter": item["quarter"],
+                                "week": item["week"],
+                                "loop_name": item["voltage228k_name"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"],
+                                "construction_status": item["construction_status"],
+                            })
 
             return Response({
                 'results': formatted_results,
@@ -460,10 +619,8 @@ class GetCableAllQuarterProgress(APIView):
 
             loops = ProjectLoop.objects.filter(project_id=project_id)
             loop_ids = loops.values_list('loop_id', flat=True)
-            print(f"Found loops for project_id {project_id}: {loop_ids}")
 
             voltage228ks = ProjectVoltage228K.objects.filter(loop_id__in=loop_ids, engineer=2)
-            print(f"Found {voltage228ks.count()} civil engineering projects for project_id {project_id}")
 
             date_ranges_with_data = defaultdict(list)
 
@@ -497,7 +654,6 @@ class GetCableAllQuarterProgress(APIView):
                                 voltage228k_id=voltage228k.voltage228k_id, 
                                 voltage228k_week_id=last_week.week_id
                             )
-                            print(f" {progress_records}")
                             if progress_records.exists():
                                 for progress_record in progress_records:
                                     expected_record = expected_model.objects.filter(
@@ -506,6 +662,219 @@ class GetCableAllQuarterProgress(APIView):
                                     ).first()
                                     if expected_record:
                                         date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
+                                        if project_type == "bank":
+                                            date_ranges_with_data[date_range].append({
+                                                "year": last_week.year,
+                                                "quarter": last_week.quarter,
+                                                "week": last_week.week,
+                                                "voltage228k_name": voltage228k.voltage228k_name,
+                                                "actual": progress_record.progress_percentage,
+                                                "expected": expected_record.progress_percentage,
+                                                "construction_status": voltage228k.construction_status,
+                                                "actual_lag_status": progress_record.lag_status,
+                                                "expected_lag_status": expected_record.lag_status,
+                                            })
+                                        else:
+                                            date_ranges_with_data[date_range].append({
+                                                "year": last_week.year,
+                                                "quarter": last_week.quarter,
+                                                "week": last_week.week,
+                                                "voltage228k_name": voltage228k.voltage228k_name,
+                                                "actual": progress_record.progress_percentage,
+                                                "expected": expected_record.progress_percentage,
+                                                "construction_status": voltage228k.construction_status,
+                                            })
+                            else:
+                                date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
+                                if project_type == "bank":
+                                    date_ranges_with_data[date_range].append({
+                                        "year": last_week.year,
+                                        "quarter": last_week.quarter,
+                                        "week": last_week.week,
+                                        "voltage228k_name": voltage228k.voltage228k_name,
+                                        "actual": 0,
+                                        "expected": 0,
+                                        "construction_status": voltage228k.construction_status,
+                                        "actual_lag_status": 0,
+                                        "expected_lag_status": 0,
+                                    })
+                                else:
+                                    date_ranges_with_data[date_range].append({
+                                        "year": last_week.year,
+                                        "quarter": last_week.quarter,
+                                        "week": last_week.week,
+                                        "voltage228k_name": voltage228k.voltage228k_name,
+                                        "actual": 0,
+                                        "expected": 0,
+                                        "construction_status": voltage228k.construction_status,
+                                    })
+
+            # 轉換有序字典並提取最新的 date_range 數據
+            ordered_date_ranges = OrderedDict(sorted(date_ranges_with_data.items(), reverse=True))
+            latest_date_range, latest_data = next(iter(ordered_date_ranges.items()))
+
+            # 準備分頁數據
+            if currentPage > 1:
+                pass
+
+            paginator = Paginator(list(ordered_date_ranges.items()), itemsPerPage)
+            page_obj = paginator.get_page(currentPage)
+
+            # 格式化當前數據
+            formatted_results = []
+            if currentPage == 1:
+                # 第一頁直接展示包括最新的 date_range 數據
+                for date_range, data in page_obj.object_list:
+                    for item in data:
+                        if project_type == "bank":
+                            formatted_results.append({
+                                "year": item["year"],
+                                "quarter": item["quarter"],
+                                "week": item["week"],
+                                "loop_name": item["voltage228k_name"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"],
+                                "construction_status": item["construction_status"],
+                                "actual_lag_status": item["actual_lag_status"],
+                                "expected_lag_status": item["expected_lag_status"],
+                            })
+                        else:
+                            formatted_results.append({
+                                "year": item["year"],
+                                "quarter": item["quarter"],
+                                "week": item["week"],
+                                "loop_name": item["voltage228k_name"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"],
+                                "construction_status": item["construction_status"],
+                            })
+            else:
+                # 從第二頁開始，在資料頂部都增加最新的 date_range 數據
+                for item in latest_data:
+                    if project_type == "bank":
+                        formatted_results.append({
+                            "year": item["year"],
+                            "quarter": item["quarter"],
+                            "week": item["week"],
+                            "loop_name": item["voltage228k_name"],
+                            "date_range": date_range,
+                            "actual": item["actual"],
+                            "expected": item["expected"],
+                            "construction_status": item["construction_status"],
+                            "actual_lag_status": item["actual_lag_status"],
+                            "expected_lag_status": item["expected_lag_status"],
+                        })
+                    else:
+                        formatted_results.append({
+                            "year": item["year"],
+                            "quarter": item["quarter"],
+                            "week": item["week"],
+                            "loop_name": item["voltage228k_name"],
+                            "date_range": date_range,
+                            "actual": item["actual"],
+                            "expected": item["expected"],
+                            "construction_status": item["construction_status"],
+                        })
+                # 添加當前頁的其他數據
+                for date_range, data in page_obj.object_list:
+                    for item in data:
+                        if project_type == "bank":
+                            formatted_results.append({
+                                "year": item["year"],
+                                "quarter": item["quarter"],
+                                "week": item["week"],
+                                "loop_name": item["voltage228k_name"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"],
+                                "construction_status": item["construction_status"],
+                                "actual_lag_status": item["actual_lag_status"],
+                                "expected_lag_status": item["expected_lag_status"],
+                            })
+                        else:
+                            formatted_results.append({
+                                "year": item["year"],
+                                "quarter": item["quarter"],
+                                "week": item["week"],
+                                "loop_name": item["voltage228k_name"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"],
+                                "construction_status": item["construction_status"],
+                            })
+
+            return Response({
+                'results': formatted_results,
+                'totalPages': paginator.num_pages,
+                'currentPage': currentPage
+            })
+        except Exception as e:
+            print(f"Error: {e}")
+            return Response({'error': str(e)}, status=500)
+#endregion
+
+#region 計算即時土木工程進度
+class GetCivilQuarterProgress(APIView):
+    def get(self, request, project_id, currentPage, itemsPerPage, project_type):
+        try:
+            current_year = datetime.datetime.now().year
+            loops = ProjectLoop.objects.filter(project_id=project_id)
+            loop_ids = loops.values_list('loop_id', flat=True)
+
+            voltage228ks = ProjectVoltage228K.objects.filter(loop_id__in=loop_ids, engineer=1)
+
+            date_ranges_with_data = defaultdict(list)
+
+            if project_type == "engineering":
+                progress_model = ProjectVoltage228KProgress
+                expected_model = ProjectVoltage228KExpectedProgress
+            elif project_type == "bank":
+                progress_model = Voltage228KBankProgress
+                expected_model = Voltage228KBankProgressExpected
+            else:
+                return Response({"error": "Invalid project type."}, status=400)
+
+            for voltage228k in voltage228ks:
+                for quarter in range(1, 5):
+                    last_week_of_quarter = Voltage228KWeek.objects.filter(
+                        year=current_year, 
+                        quarter=quarter
+                    ).aggregate(Max('week'))['week__max']
+
+                    if last_week_of_quarter:
+                        last_week = Voltage228KWeek.objects.get(
+                            year=current_year, 
+                            quarter=quarter, 
+                            week=last_week_of_quarter
+                        )
+
+                        progress_records = progress_model.objects.filter(
+                            voltage228k_id=voltage228k.voltage228k_id, 
+                            voltage228k_week_id=last_week.week_id
+                        )
+                        if progress_records.exists():
+                            for progress_record in progress_records:
+                                expected_record = expected_model.objects.filter(
+                                    voltage228k_id=voltage228k.voltage228k_id, 
+                                    voltage228k_week_id=progress_record.voltage228k_week_id
+                                ).first()
+                                if expected_record:
+                                    date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
+                                    if project_type == "bank":
+                                        date_ranges_with_data[date_range].append({
+                                            "year": last_week.year,
+                                            "quarter": last_week.quarter,
+                                            "week": last_week.week,
+                                            "voltage228k_name": voltage228k.voltage228k_name,
+                                            "actual": progress_record.progress_percentage,
+                                            "expected": expected_record.progress_percentage,
+                                            "construction_status": voltage228k.construction_status,
+                                            "actual_lag_status": progress_record.lag_status,
+                                            "expected_lag_status": expected_record.lag_status,
+                                        })
+                                    else:
                                         date_ranges_with_data[date_range].append({
                                             "year": last_week.year,
                                             "quarter": last_week.quarter,
@@ -515,16 +884,29 @@ class GetCableAllQuarterProgress(APIView):
                                             "expected": expected_record.progress_percentage,
                                             "construction_status": voltage228k.construction_status,
                                         })
-                            else:
-                                date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
+                        else:
+                            date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
+                            if project_type == "bank":
                                 date_ranges_with_data[date_range].append({
-                                    "voltage228k_name": voltage228k.voltage228k_name,
-                                    "construction_status": voltage228k.construction_status,
-                                    "actual": 0,
-                                    "expected": 0,
                                     "year": last_week.year,
                                     "quarter": last_week.quarter,
                                     "week": last_week.week,
+                                    "voltage228k_name": voltage228k.voltage228k_name,
+                                    "actual": 0,
+                                    "expected": 0,
+                                    "construction_status": voltage228k.construction_status,
+                                    "actual_lag_status": 0,
+                                    "expected_lag_status": 0,
+                                })
+                            else:
+                                date_ranges_with_data[date_range].append({
+                                    "year": last_week.year,
+                                    "quarter": last_week.quarter,
+                                    "week": last_week.week,
+                                    "voltage228k_name": voltage228k.voltage228k_name,
+                                    "actual": 0,
+                                    "expected": 0,
+                                    "construction_status": voltage228k.construction_status,
                                 })
 
             # 轉換有序字典並提取最新的 date_range 數據
@@ -544,166 +926,47 @@ class GetCableAllQuarterProgress(APIView):
                 # 第一頁直接展示包括最新的 date_range 數據
                 for date_range, data in page_obj.object_list:
                     for item in data:
-                        formatted_results.append({
-                            "year": item["year"],
-                            "quarter": item["quarter"],
-                            "week": item["week"],
-                            "loop_name": item["voltage228k_name"],
-                            "date_range": date_range,
-                            "actual": item["actual"],
-                            "expected": item["expected"],
-                            "construction_status": item["construction_status"],
-                        })
-            else:
-                # 從第二頁開始，在資料頂部都增加最新的 date_range 數據
-                for item in latest_data:
-                    formatted_results.append({
-                        "year": item["year"],
-                        "quarter": item["quarter"],
-                        "week": item["week"],
-                        "loop_name": item["voltage228k_name"],
-                        "date_range": latest_date_range,
-                        "actual": item["actual"],
-                        "expected": item["expected"],
-                        "construction_status": item["construction_status"],
-                    })
-                # 添加當前頁的其他數據
-                for date_range, data in page_obj.object_list:
-                    for item in data:
-                        formatted_results.append({
-                            "year": item["year"],
-                            "quarter": item["quarter"],
-                            "week": item["week"],
-                            "loop_name": item["voltage228k_name"],
-                            "date_range": date_range,
-                            "actual": item["actual"],
-                            "expected": item["expected"],
-                            "construction_status": item["construction_status"],
-                        })
-
-            return Response({
-                'results': formatted_results,
-                'totalPages': paginator.num_pages,
-                'currentPage': currentPage
-            })
-        except Exception as e:
-            print(f"Error: {e}")
-            return Response({'error': str(e)}, status=500)
-#endregion
-
-#region 計算即時土木工程進度
-class GetCivilQuarterProgress(APIView):
-    def get(self, request, project_id, currentPage, itemsPerPage, project_type):
-        try:
-            current_year = datetime.datetime.now().year
-            loops = ProjectLoop.objects.filter(project_id=project_id)
-            loop_ids = loops.values_list('loop_id', flat=True)
-            print(f"Found loops for project_id {project_id}: {loop_ids}")
-
-            voltage228ks = ProjectVoltage228K.objects.filter(loop_id__in=loop_ids, engineer=1)
-            print(f"Found {voltage228ks.count()} civil engineering projects for project_id {project_id}")
-
-            date_ranges_with_data = defaultdict(list)
-
-            if project_type == "engineering":
-                progress_model = ProjectVoltage228KProgress
-                expected_model = ProjectVoltage228KExpectedProgress
-            elif project_type == "bank":
-                progress_model = Voltage228KBankProgress
-                expected_model = Voltage228KBankProgressExpected
-            else:
-                return Response({"error": "Invalid project type."}, status=400)
-
-            for voltage228k in voltage228ks:
-                for quarter in range(1, 5):
-                    last_week_of_quarter = Voltage228KWeek.objects.filter(
-                        year=current_year, 
-                        quarter=quarter
-                    ).aggregate(Max('week'))['week__max']
-
-                    if last_week_of_quarter:
-                        last_week = Voltage228KWeek.objects.get(
-                            year=current_year, 
-                            quarter=quarter, 
-                            week=last_week_of_quarter
-                        )
-
-                        progress_records = progress_model.objects.filter(
-                            voltage228k_id=voltage228k.voltage228k_id, 
-                            voltage228k_week_id=last_week.week_id
-                        )
-                        if progress_records.exists():
-                            for progress_record in progress_records:
-                                expected_record = expected_model.objects.filter(
-                                    voltage228k_id=voltage228k.voltage228k_id, 
-                                    voltage228k_week_id=progress_record.voltage228k_week_id
-                                ).first()
-                                if expected_record:
-                                    date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
-                                    date_ranges_with_data[date_range].append({
-                                        "year": last_week.year,
-                                        "quarter": last_week.quarter,
-                                        "week": last_week.week,
-                                        "voltage228k_name": voltage228k.voltage228k_name,
-                                        "actual": progress_record.progress_percentage,
-                                        "expected": expected_record.progress_percentage,
-                                        "construction_status": voltage228k.construction_status,
-                                    })
-                        else:
-                            date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
-                            date_ranges_with_data[date_range].append({
-                                "voltage228k_name": voltage228k.voltage228k_name,
-                                "construction_status": voltage228k.construction_status,
-                                "actual": 0,
-                                "expected": 0,
-                                "year": last_week.year,
-                                "quarter": last_week.quarter,
-                                "week": last_week.week,
+                        if project_type == "bank":
+                            formatted_results.append({
+                                "year": item["year"],
+                                "quarter": item["quarter"],
+                                "week": item["week"],
+                                "loop_name": item["voltage228k_name"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"],
+                                "construction_status": item["construction_status"],
+                                "actual_lag_status": item["actual_lag_status"],
+                                "expected_lag_status": item["expected_lag_status"],
                             })
-
-            # 轉換有序字典並提取最新的 date_range 數據
-            ordered_date_ranges = OrderedDict(sorted(date_ranges_with_data.items(), reverse=True))
-            latest_date_range, latest_data = next(iter(ordered_date_ranges.items()))
-
-            # 準備分頁數據
-            if currentPage > 1:
-                pass
-
-            paginator = Paginator(list(ordered_date_ranges.items()), itemsPerPage)
-            page_obj = paginator.get_page(currentPage)
-
-            # 格式化當前數據
-            formatted_results = []
-            if currentPage == 1:
-                # 第一頁直接展示包括最新的 date_range 數據
-                for date_range, data in page_obj.object_list:
-                    for item in data:
-                        formatted_results.append({
-                            "year": item["year"],
-                            "quarter": item["quarter"],
-                            "week": item["week"],
-                            "loop_name": item["voltage228k_name"],
-                            "date_range": date_range,
-                            "actual": item["actual"],
-                            "expected": item["expected"],
-                            "construction_status": item["construction_status"],
-                        })
+                        else:
+                            formatted_results.append({
+                                "year": item["year"],
+                                "quarter": item["quarter"],
+                                "week": item["week"],
+                                "loop_name": item["voltage228k_name"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"],
+                                "construction_status": item["construction_status"],
+                            })
             else:
                 # 從第二頁開始，在資料頂部都增加最新的 date_range 數據
                 for item in latest_data:
-                    formatted_results.append({
-                        "year": item["year"],
-                        "quarter": item["quarter"],
-                        "week": item["week"],
-                        "loop_name": item["voltage228k_name"],
-                        "date_range": latest_date_range,
-                        "actual": item["actual"],
-                        "expected": item["expected"],
-                        "construction_status": item["construction_status"],
-                    })
-                # 添加當前頁的其他數據
-                for date_range, data in page_obj.object_list:
-                    for item in data:
+                    if project_type == "bank":
+                        formatted_results.append({
+                            "year": item["year"],
+                            "quarter": item["quarter"],
+                            "week": item["week"],
+                            "loop_name": item["voltage228k_name"],
+                            "date_range": date_range,
+                            "actual": item["actual"],
+                            "expected": item["expected"],
+                            "construction_status": item["construction_status"],
+                            "actual_lag_status": item["actual_lag_status"],
+                            "expected_lag_status": item["expected_lag_status"],
+                        })
+                    else:
                         formatted_results.append({
                             "year": item["year"],
                             "quarter": item["quarter"],
@@ -714,6 +977,33 @@ class GetCivilQuarterProgress(APIView):
                             "expected": item["expected"],
                             "construction_status": item["construction_status"],
                         })
+                # 添加當前頁的其他數據
+                for date_range, data in page_obj.object_list:
+                    for item in data:
+                        if project_type == "bank":
+                            formatted_results.append({
+                                "year": item["year"],
+                                "quarter": item["quarter"],
+                                "week": item["week"],
+                                "loop_name": item["voltage228k_name"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"],
+                                "construction_status": item["construction_status"],
+                                "actual_lag_status": item["actual_lag_status"],
+                                "expected_lag_status": item["expected_lag_status"],
+                            })
+                        else:
+                            formatted_results.append({
+                                "year": item["year"],
+                                "quarter": item["quarter"],
+                                "week": item["week"],
+                                "loop_name": item["voltage228k_name"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"],
+                                "construction_status": item["construction_status"],
+                            })
 
             return Response({
                 'results': formatted_results,
@@ -732,10 +1022,8 @@ class GetCableQuarterProgress(APIView):
             current_year = datetime.datetime.now().year
             loops = ProjectLoop.objects.filter(project_id=project_id)
             loop_ids = loops.values_list('loop_id', flat=True)
-            print(f"Found loops for project_id {project_id}: {loop_ids}")
 
             voltage228ks = ProjectVoltage228K.objects.filter(loop_id__in=loop_ids, engineer=2)
-            print(f"Found {voltage228ks.count()} civil engineering projects for project_id {project_id}")
 
             date_ranges_with_data = defaultdict(list)
 
@@ -774,26 +1062,52 @@ class GetCableQuarterProgress(APIView):
                                 ).first()
                                 if expected_record:
                                     date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
-                                    date_ranges_with_data[date_range].append({
-                                        "year": last_week.year,
-                                        "quarter": last_week.quarter,
-                                        "week": last_week.week,
-                                        "voltage228k_name": voltage228k.voltage228k_name,
-                                        "actual": progress_record.progress_percentage,
-                                        "expected": expected_record.progress_percentage,
-                                        "construction_status": voltage228k.construction_status,
-                                    })
+                                    if project_type == "bank":
+                                        date_ranges_with_data[date_range].append({
+                                            "year": last_week.year,
+                                            "quarter": last_week.quarter,
+                                            "week": last_week.week,
+                                            "voltage228k_name": voltage228k.voltage228k_name,
+                                            "actual": progress_record.progress_percentage,
+                                            "expected": expected_record.progress_percentage,
+                                            "construction_status": voltage228k.construction_status,
+                                            "actual_lag_status": progress_record.lag_status,
+                                            "expected_lag_status": expected_record.lag_status,
+                                        })
+                                    else:
+                                        date_ranges_with_data[date_range].append({
+                                            "year": last_week.year,
+                                            "quarter": last_week.quarter,
+                                            "week": last_week.week,
+                                            "voltage228k_name": voltage228k.voltage228k_name,
+                                            "actual": progress_record.progress_percentage,
+                                            "expected": expected_record.progress_percentage,
+                                            "construction_status": voltage228k.construction_status,
+                                        })
                         else:
                             date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
-                            date_ranges_with_data[date_range].append({
-                                "voltage228k_name": voltage228k.voltage228k_name,
-                                "construction_status": voltage228k.construction_status,
-                                "actual": 0,
-                                "expected": 0,
-                                "year": last_week.year,
-                                "quarter": last_week.quarter,
-                                "week": last_week.week,
-                            })
+                            if project_type == "bank":
+                                date_ranges_with_data[date_range].append({
+                                    "year": last_week.year,
+                                    "quarter": last_week.quarter,
+                                    "week": last_week.week,
+                                    "voltage228k_name": voltage228k.voltage228k_name,
+                                    "actual": 0,
+                                    "expected": 0,
+                                    "construction_status": voltage228k.construction_status,
+                                    "actual_lag_status": 0,
+                                    "expected_lag_status": 0,
+                                })
+                            else:
+                                date_ranges_with_data[date_range].append({
+                                    "year": last_week.year,
+                                    "quarter": last_week.quarter,
+                                    "week": last_week.week,
+                                    "voltage228k_name": voltage228k.voltage228k_name,
+                                    "actual": 0,
+                                    "expected": 0,
+                                    "construction_status": voltage228k.construction_status,
+                                })
 
             # 轉換有序字典並提取最新的 date_range 數據
             ordered_date_ranges = OrderedDict(sorted(date_ranges_with_data.items(), reverse=True))
@@ -812,32 +1126,47 @@ class GetCableQuarterProgress(APIView):
                 # 第一頁直接展示包括最新的 date_range 數據
                 for date_range, data in page_obj.object_list:
                     for item in data:
-                        formatted_results.append({
-                            "year": item["year"],
-                            "quarter": item["quarter"],
-                            "week": item["week"],
-                            "loop_name": item["voltage228k_name"],
-                            "date_range": date_range,
-                            "actual": item["actual"],
-                            "expected": item["expected"],
-                            "construction_status": item["construction_status"],
-                        })
+                        if project_type == "bank":
+                            formatted_results.append({
+                                "year": item["year"],
+                                "quarter": item["quarter"],
+                                "week": item["week"],
+                                "loop_name": item["voltage228k_name"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"],
+                                "construction_status": item["construction_status"],
+                                "actual_lag_status": item["actual_lag_status"],
+                                "expected_lag_status": item["expected_lag_status"],
+                            })
+                        else:
+                            formatted_results.append({
+                                "year": item["year"],
+                                "quarter": item["quarter"],
+                                "week": item["week"],
+                                "loop_name": item["voltage228k_name"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"],
+                                "construction_status": item["construction_status"],
+                            })
             else:
                 # 從第二頁開始，在資料頂部都增加最新的 date_range 數據
                 for item in latest_data:
-                    formatted_results.append({
-                        "year": item["year"],
-                        "quarter": item["quarter"],
-                        "week": item["week"],
-                        "loop_name": item["voltage228k_name"],
-                        "date_range": latest_date_range,
-                        "actual": item["actual"],
-                        "expected": item["expected"],
-                        "construction_status": item["construction_status"],
-                    })
-                # 添加當前頁的其他數據
-                for date_range, data in page_obj.object_list:
-                    for item in data:
+                    if project_type == "bank":
+                        formatted_results.append({
+                            "year": item["year"],
+                            "quarter": item["quarter"],
+                            "week": item["week"],
+                            "loop_name": item["voltage228k_name"],
+                            "date_range": date_range,
+                            "actual": item["actual"],
+                            "expected": item["expected"],
+                            "construction_status": item["construction_status"],
+                            "actual_lag_status": item["actual_lag_status"],
+                            "expected_lag_status": item["expected_lag_status"],
+                        })
+                    else:
                         formatted_results.append({
                             "year": item["year"],
                             "quarter": item["quarter"],
@@ -848,6 +1177,33 @@ class GetCableQuarterProgress(APIView):
                             "expected": item["expected"],
                             "construction_status": item["construction_status"],
                         })
+                # 添加當前頁的其他數據
+                for date_range, data in page_obj.object_list:
+                    for item in data:
+                        if project_type == "bank":
+                            formatted_results.append({
+                                "year": item["year"],
+                                "quarter": item["quarter"],
+                                "week": item["week"],
+                                "loop_name": item["voltage228k_name"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"],
+                                "construction_status": item["construction_status"],
+                                "actual_lag_status": item["actual_lag_status"],
+                                "expected_lag_status": item["expected_lag_status"],
+                            })
+                        else:
+                            formatted_results.append({
+                                "year": item["year"],
+                                "quarter": item["quarter"],
+                                "week": item["week"],
+                                "loop_name": item["voltage228k_name"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"],
+                                "construction_status": item["construction_status"],
+                            })
 
             return Response({
                 'results': formatted_results,
@@ -893,12 +1249,22 @@ class GetVoltage228KProgress(APIView):
                             week_data = Voltage228KWeek.objects.filter(week_id=expected_record.voltage228k_week_id.week_id).first()
                             if week_data:
                                 date_range = f"{week_data.start_date.strftime('%Y-%m-%d')} - {week_data.end_date.strftime('%Y-%m-%d')}"
-                                civil_date_ranges_with_data[date_range].append({
-                                    "loop_name": civil_data.voltage228k_name,
-                                    "actual": progress_record.progress_percentage,
-                                    "expected": expected_record.progress_percentage,
-                                    "construction_status": civil_data.construction_status,
-                                })
+                                if project_type == "bank":
+                                    civil_date_ranges_with_data[date_range].append({
+                                        "loop_name": civil_data.voltage228k_name,
+                                        "actual": progress_record.progress_percentage,
+                                        "expected": expected_record.progress_percentage,
+                                        "construction_status": civil_data.construction_status,
+                                        "actual_lag_status": progress_record.lag_status,
+                                        "expected_lag_status": expected_record.lag_status,
+                                    })
+                                else:
+                                    civil_date_ranges_with_data[date_range].append({
+                                        "loop_name": civil_data.voltage228k_name,
+                                        "actual": progress_record.progress_percentage,
+                                        "expected": expected_record.progress_percentage,
+                                        "construction_status": civil_data.construction_status,
+                                    })
                 else:
                     today = datetime.datetime.now().strftime("%Y-%m-%d")
                     week_data = Voltage228KWeek.objects.filter(
@@ -906,12 +1272,22 @@ class GetVoltage228KProgress(APIView):
                     ).last()
                     if week_data:
                         date_range = f"{week_data.start_date.strftime('%Y-%m-%d')} - {week_data.end_date.strftime('%Y-%m-%d')}"
-                        civil_date_ranges_with_data[date_range].append({
-                            "loop_name": civil_data.voltage228k_name,
-                            "construction_status": civil_data.construction_status,
-                            "actual": 0,
-                            "expected": 0,
-                        })
+                        if project_type == "bank":
+                            civil_date_ranges_with_data[date_range].append({
+                                "loop_name": civil_data.voltage228k_name,
+                                "actual": 0,
+                                "expected": 0,
+                                "construction_status": civil_data.construction_status,
+                                "actual_lag_status": 0,
+                                "expected_lag_status": 0,
+                            })
+                        else:
+                            civil_date_ranges_with_data[date_range].append({
+                                "loop_name": civil_data.voltage228k_name,
+                                "actual": 0,
+                                "expected": 0,
+                                "construction_status": civil_data.construction_status,
+                            })
                 
             for cable_data in cable_datas:
                 progress_records = progress_model.objects.filter(voltage228k_id=cable_data.voltage228k_id).order_by('-voltage228k_week_id')
@@ -925,12 +1301,22 @@ class GetVoltage228KProgress(APIView):
                             week_data = Voltage228KWeek.objects.filter(week_id=expected_record.voltage228k_week_id.week_id).first()
                             if week_data:
                                 date_range = f"{week_data.start_date.strftime('%Y-%m-%d')} - {week_data.end_date.strftime('%Y-%m-%d')}"
-                                cable_date_ranges_with_data[date_range].append({
-                                    "loop_name": cable_data.voltage228k_name,
-                                    "actual": progress_record.progress_percentage,
-                                    "expected": expected_record.progress_percentage,
-                                    "construction_status": cable_data.construction_status,
-                                })
+                                if project_type == "bank":
+                                    cable_date_ranges_with_data[date_range].append({
+                                        "loop_name": cable_data.voltage228k_name,
+                                        "actual": progress_record.progress_percentage,
+                                        "expected": expected_record.progress_percentage,
+                                        "construction_status": cable_data.construction_status,
+                                        "actual_lag_status": progress_record.lag_status,
+                                        "expected_lag_status": expected_record.lag_status,
+                                    })
+                                else:
+                                    cable_date_ranges_with_data[date_range].append({
+                                        "loop_name": cable_data.voltage228k_name,
+                                        "actual": progress_record.progress_percentage,
+                                        "expected": expected_record.progress_percentage,
+                                        "construction_status": cable_data.construction_status,
+                                    })
                 else:
                     today = datetime.datetime.now().strftime("%Y-%m-%d")
                     week_data = Voltage228KWeek.objects.filter(
@@ -938,12 +1324,22 @@ class GetVoltage228KProgress(APIView):
                     ).last()
                     if week_data:
                         date_range = f"{week_data.start_date.strftime('%Y-%m-%d')} - {week_data.end_date.strftime('%Y-%m-%d')}"
-                        cable_date_ranges_with_data[date_range].append({
-                            "loop_name": cable_data.voltage228k_name,
-                            "construction_status": cable_data.construction_status,
-                            "actual": 0,
-                            "expected": 0,
-                        })
+                        if project_type == "bank":
+                            cable_date_ranges_with_data[date_range].append({
+                                "loop_name": cable_data.voltage228k_name,
+                                "actual": 0,
+                                "expected": 0,
+                                "construction_status": cable_data.construction_status,
+                                "actual_lag_status": 0,
+                                "expected_lag_status": 0,
+                            })
+                        else:
+                            cable_date_ranges_with_data[date_range].append({
+                                "loop_name": cable_data.voltage228k_name,
+                                "actual": 0,
+                                "expected": 0,
+                                "construction_status": cable_data.construction_status,
+                            })
 
             date_ranges_with_data = defaultdict(list)
 
@@ -962,13 +1358,24 @@ class GetVoltage228KProgress(APIView):
                     combined_expected = (civil_expected + cable_expected) / 2
 
                     construction_status = civil_entries.get(loop_name, {}).get('construction_status', 0) or cable_entries.get(loop_name, {}).get('construction_status', 0)
-
-                    date_ranges_with_data[date_range].append({
-                        "loop_name": loop_name,
-                        "actual": combined_actual,
-                        "expected": combined_expected,
-                        "construction_status": construction_status
-                    })
+                    if project_type == "bank":
+                        actual_lag_status = civil_entries.get(loop_name, {}).get('actual_lag_status', 0) or cable_entries.get(loop_name, {}).get('actual_lag_status', 0)
+                        expected_lag_status = civil_entries.get(loop_name, {}).get('expected_lag_status', 0) or cable_entries.get(loop_name, {}).get('expected_lag_status', 0)
+                        date_ranges_with_data[date_range].append({
+                            "loop_name": loop_name,
+                            "actual": combined_actual,
+                            "expected": combined_expected,
+                            "construction_status": construction_status,
+                            "actual_lag_status": actual_lag_status,
+                            "expected_lag_status": expected_lag_status
+                        })
+                    else:
+                        date_ranges_with_data[date_range].append({
+                            "loop_name": loop_name,
+                            "actual": combined_actual,
+                            "expected": combined_expected,
+                            "construction_status": construction_status,
+                        })
 
             ordered_date_ranges = OrderedDict(sorted(date_ranges_with_data.items(), reverse=True))
             latest_date_range, latest_data = next(iter(ordered_date_ranges.items()))
@@ -980,24 +1387,37 @@ class GetVoltage228KProgress(APIView):
             if currentPage == 1:
                 for date_range, data in page_obj.object_list:
                     for item in data:
-                        formatted_results.append({
-                            "loop_name": item["loop_name"],
-                            "date_range": date_range,
-                            "actual": item["actual"],
-                            "expected": item["expected"],
-                            "construction_status": item["construction_status"],
-                        })
+                        if project_type == "bank":
+                            formatted_results.append({
+                                "loop_name": item["loop_name"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"],
+                                "construction_status": item["construction_status"],
+                                "actual_lag_status": item["actual_lag_status"],
+                                "expected_lag_status": item["expected_lag_status"],
+                            })
+                        else:
+                            formatted_results.append({
+                                "loop_name": item["loop_name"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"],
+                                "construction_status": item["construction_status"],
+                            })
             else:
                 for item in latest_data:
-                    formatted_results.append({
-                        "loop_name": item["loop_name"],
-                        "date_range": latest_date_range,
-                        "actual": item["actual"],
-                        "expected": item["expected"],
-                        "construction_status": item["construction_status"],
-                    })
-                for date_range, data in page_obj.object_list:
-                    for item in data:
+                    if project_type == "bank":
+                        formatted_results.append({
+                            "loop_name": item["loop_name"],
+                            "date_range": date_range,
+                            "actual": item["actual"],
+                            "expected": item["expected"],
+                            "construction_status": item["construction_status"],
+                            "actual_lag_status": item["actual_lag_status"],
+                            "expected_lag_status": item["expected_lag_status"],
+                        })
+                    else:
                         formatted_results.append({
                             "loop_name": item["loop_name"],
                             "date_range": date_range,
@@ -1005,6 +1425,26 @@ class GetVoltage228KProgress(APIView):
                             "expected": item["expected"],
                             "construction_status": item["construction_status"],
                         })
+                for date_range, data in page_obj.object_list:
+                    for item in data:
+                        if project_type == "bank":
+                            formatted_results.append({
+                                "loop_name": item["loop_name"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"],
+                                "construction_status": item["construction_status"],
+                                "actual_lag_status": item["actual_lag_status"],
+                                "expected_lag_status": item["expected_lag_status"],
+                            })
+                        else:
+                            formatted_results.append({
+                                "loop_name": item["loop_name"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"],
+                                "construction_status": item["construction_status"],
+                            })
 
             return Response({
                 'results': formatted_results,
@@ -1069,26 +1509,52 @@ class GetVoltage228KAllQuarterProgress(APIView):
                                     ).first()
                                     if expected_record:
                                         date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
-                                        civil_date_ranges_with_data[date_range].append({
-                                            "year": last_week.year,
-                                            "quarter": last_week.quarter,
-                                            "week": last_week.week,
-                                            "voltage228k_name": civil_data.voltage228k_name,
-                                            "actual": progress_record.progress_percentage,
-                                            "expected": expected_record.progress_percentage,
-                                            "construction_status": civil_data.construction_status,
-                                        })
+                                        if project_type == "bank":
+                                            civil_date_ranges_with_data[date_range].append({
+                                                "year": last_week.year,
+                                                "quarter": last_week.quarter,
+                                                "week": last_week.week,
+                                                "voltage228k_name": civil_data.voltage228k_name,
+                                                "actual": progress_record.progress_percentage,
+                                                "expected": expected_record.progress_percentage,
+                                                "construction_status": civil_data.construction_status,
+                                                "actual_lag_status": progress_record.lag_status,
+                                                "expected_lag_status": expected_record.lag_status,
+                                            })
+                                        else:
+                                            civil_date_ranges_with_data[date_range].append({
+                                                "year": last_week.year,
+                                                "quarter": last_week.quarter,
+                                                "week": last_week.week,
+                                                "voltage228k_name": civil_data.voltage228k_name,
+                                                "actual": progress_record.progress_percentage,
+                                                "expected": expected_record.progress_percentage,
+                                                "construction_status": civil_data.construction_status,
+                                            })
                             else:
                                 date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
-                                civil_date_ranges_with_data[date_range].append({
-                                    "voltage228k_name": civil_data.voltage228k_name,
-                                    "construction_status": civil_data.construction_status,
-                                    "actual": 0,
-                                    "expected": 0,
-                                    "year": last_week.year,
-                                    "quarter": last_week.quarter,
-                                    "week": last_week.week,
-                                })
+                                if project_type == "bank":
+                                    civil_date_ranges_with_data[date_range].append({
+                                        "year": last_week.year,
+                                        "quarter": last_week.quarter,
+                                        "week": last_week.week,
+                                        "voltage228k_name": civil_data.voltage228k_name,
+                                        "actual": 0,
+                                        "expected": 0,
+                                        "construction_status": civil_data.construction_status,
+                                        "actual_lag_status": 0,
+                                        "expected_lag_status": 0,
+                                    })
+                                else:
+                                    civil_date_ranges_with_data[date_range].append({
+                                        "year": last_week.year,
+                                        "quarter": last_week.quarter,
+                                        "week": last_week.week,
+                                        "voltage228k_name": civil_data.voltage228k_name,
+                                        "actual": 0,
+                                        "expected": 0,
+                                        "construction_status": civil_data.construction_status,
+                                    })
                                 
             for voltage228k in cable_datas:
                # 找到每一個季度的最後一周
@@ -1119,26 +1585,52 @@ class GetVoltage228KAllQuarterProgress(APIView):
                                     ).first()
                                     if expected_record:
                                         date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
-                                        cable_date_ranges_with_data[date_range].append({
-                                            "year": last_week.year,
-                                            "quarter": last_week.quarter,
-                                            "week": last_week.week,
-                                            "voltage228k_name": voltage228k.voltage228k_name,
-                                            "actual": progress_record.progress_percentage,
-                                            "expected": expected_record.progress_percentage,
-                                            "construction_status": voltage228k.construction_status,
-                                        })
+                                        if project_type == "bank":
+                                            cable_date_ranges_with_data[date_range].append({
+                                                "year": last_week.year,
+                                                "quarter": last_week.quarter,
+                                                "week": last_week.week,
+                                                "voltage228k_name": voltage228k.voltage228k_name,
+                                                "actual": progress_record.progress_percentage,
+                                                "expected": expected_record.progress_percentage,
+                                                "construction_status": voltage228k.construction_status,
+                                                "actual_lag_status": progress_record.lag_status,
+                                                "expected_lag_status": expected_record.lag_status,
+                                            })
+                                        else:    
+                                            cable_date_ranges_with_data[date_range].append({
+                                                "year": last_week.year,
+                                                "quarter": last_week.quarter,
+                                                "week": last_week.week,
+                                                "voltage228k_name": voltage228k.voltage228k_name,
+                                                "actual": progress_record.progress_percentage,
+                                                "expected": expected_record.progress_percentage,
+                                                "construction_status": voltage228k.construction_status,
+                                            })
                             else:
                                 date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
-                                cable_date_ranges_with_data[date_range].append({
-                                    "voltage228k_name": voltage228k.voltage228k_name,
-                                    "construction_status": voltage228k.construction_status,
-                                    "actual": 0,
-                                    "expected": 0,
-                                    "year": last_week.year,
-                                    "quarter": last_week.quarter,
-                                    "week": last_week.week,
-                                })
+                                if project_type == "bank":
+                                    cable_date_ranges_with_data[date_range].append({
+                                        "year": last_week.year,
+                                        "quarter": last_week.quarter,
+                                        "week": last_week.week,
+                                        "voltage228k_name": voltage228k.voltage228k_name,
+                                        "actual": 0,
+                                        "expected": 0,
+                                        "construction_status": voltage228k.construction_status,
+                                        "actual_lag_status": 0,
+                                        "expected_lag_status": 0,
+                                    })
+                                else:
+                                    cable_date_ranges_with_data[date_range].append({
+                                        "year": last_week.year,
+                                        "quarter": last_week.quarter,
+                                        "week": last_week.week,
+                                        "voltage228k_name": voltage228k.voltage228k_name,
+                                        "actual": 0,
+                                        "expected": 0,
+                                        "construction_status": voltage228k.construction_status,
+                                    })
 
             date_ranges_with_data = defaultdict(list)
 
@@ -1161,16 +1653,32 @@ class GetVoltage228KAllQuarterProgress(APIView):
                     year = civil_entries.get(loop_name, {}).get('year', 0) or cable_entries.get(loop_name, {}).get('year', 0)
                     quarter = civil_entries.get(loop_name, {}).get('quarter', 0) or cable_entries.get(loop_name, {}).get('quarter', 0)
                     week = civil_entries.get(loop_name, {}).get('week', 0) or cable_entries.get(loop_name, {}).get('week', 0)
-                    
-                    date_ranges_with_data[date_range].append({
-                        "loop_name": loop_name,
-                        "actual": combined_actual,
-                        "expected": combined_expected,
-                        "construction_status": construction_status,
-                        "year": year,
-                        "quarter": quarter,
-                        "week": week,
-                    })
+
+                    if project_type == "bank":
+                        actual_lag_status = civil_entries.get(loop_name, {}).get('actual_lag_status', 0) or cable_entries.get(loop_name, {}).get('actual_lag_status', 0)
+                        expected_lag_status = civil_entries.get(loop_name, {}).get('expected_lag_status', 0) or cable_entries.get(loop_name, {}).get('expected_lag_status', 0)
+                        date_ranges_with_data[date_range].append({
+                            "loop_name": loop_name,
+                            "actual": combined_actual,
+                            "expected": combined_expected,
+                            "construction_status": construction_status,
+                            "actual_lag_status": actual_lag_status,
+                            "expected_lag_status": expected_lag_status,
+                            "year": year,
+                            "quarter": quarter,
+                            "week": week,
+                        })
+                    else:
+                        date_ranges_with_data[date_range].append({
+                            "loop_name": loop_name,
+                            "actual": combined_actual,
+                            "expected": combined_expected,
+                            "construction_status": construction_status,
+                            "year": year,
+                            "quarter": quarter,
+                            "week": week,
+                        })
+
 
             # 轉換有序字典並提取最新的 date_range 數據
             ordered_date_ranges = OrderedDict(sorted(date_ranges_with_data.items(), reverse=True))
@@ -1189,32 +1697,47 @@ class GetVoltage228KAllQuarterProgress(APIView):
                 # 第一頁直接展示包括最新的 date_range 數據
                 for date_range, data in page_obj.object_list:
                     for item in data:
-                        formatted_results.append({
-                            "year": item["year"],
-                            "quarter": item["quarter"],
-                            "week": item["week"],
-                            "loop_name": item["loop_name"],
-                            "date_range": date_range,
-                            "actual": item["actual"],
-                            "expected": item["expected"],
-                            "construction_status": item["construction_status"],
-                        })
+                        if project_type == "bank":
+                            formatted_results.append({
+                                "year": item["year"],
+                                "quarter": item["quarter"],
+                                "week": item["week"],
+                                "loop_name": item["loop_name"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"],
+                                "construction_status": item["construction_status"],
+                                "actual_lag_status": item["actual_lag_status"],
+                                "expected_lag_status": item["expected_lag_status"],
+                            })
+                        else:
+                            formatted_results.append({
+                                "year": item["year"],
+                                "quarter": item["quarter"],
+                                "week": item["week"],
+                                "loop_name": item["loop_name"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"],
+                                "construction_status": item["construction_status"],
+                            })
             else:
                 # 從第二頁開始，在資料頂部都增加最新的 date_range 數據
                 for item in latest_data:
-                    formatted_results.append({
-                        "year": item["year"],
-                        "quarter": item["quarter"],
-                        "week": item["week"],
-                        "loop_name": item["loop_name"],
-                        "date_range": latest_date_range,
-                        "actual": item["actual"],
-                        "expected": item["expected"],
-                        "construction_status": item["construction_status"],
-                    })
-                # 添加當前頁的其他數據
-                for date_range, data in page_obj.object_list:
-                    for item in data:
+                    if project_type == "bank":
+                        formatted_results.append({
+                            "year": item["year"],
+                            "quarter": item["quarter"],
+                            "week": item["week"],
+                            "loop_name": item["loop_name"],
+                            "date_range": date_range,
+                            "actual": item["actual"],
+                            "expected": item["expected"],
+                            "construction_status": item["construction_status"],
+                            "actual_lag_status": item["actual_lag_status"],
+                            "expected_lag_status": item["expected_lag_status"],
+                        })
+                    else:
                         formatted_results.append({
                             "year": item["year"],
                             "quarter": item["quarter"],
@@ -1225,6 +1748,33 @@ class GetVoltage228KAllQuarterProgress(APIView):
                             "expected": item["expected"],
                             "construction_status": item["construction_status"],
                         })
+                # 添加當前頁的其他數據
+                for date_range, data in page_obj.object_list:
+                    for item in data:
+                        if project_type == "bank":
+                            formatted_results.append({
+                                "year": item["year"],
+                                "quarter": item["quarter"],
+                                "week": item["week"],
+                                "loop_name": item["loop_name"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"],
+                                "construction_status": item["construction_status"],
+                                "actual_lag_status": item["actual_lag_status"],
+                                "expected_lag_status": item["expected_lag_status"],
+                            })
+                        else:
+                            formatted_results.append({
+                                "year": item["year"],
+                                "quarter": item["quarter"],
+                                "week": item["week"],
+                                "loop_name": item["loop_name"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"],
+                                "construction_status": item["construction_status"],
+                            })
 
             return Response({
                 'results': formatted_results,
@@ -1285,26 +1835,52 @@ class GetVoltage228KQuarterProgress(APIView):
                                 ).first()
                                 if expected_record:
                                     date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
-                                    civil_date_ranges_with_data[date_range].append({
-                                        "year": last_week.year,
-                                        "quarter": last_week.quarter,
-                                        "week": last_week.week,
-                                        "voltage228k_name": voltage228k.voltage228k_name,
-                                        "actual": progress_record.progress_percentage,
-                                        "expected": expected_record.progress_percentage,
-                                        "construction_status": voltage228k.construction_status,
-                                    })
+                                    if project_type == "bank":
+                                        civil_date_ranges_with_data[date_range].append({
+                                            "year": last_week.year,
+                                            "quarter": last_week.quarter,
+                                            "week": last_week.week,
+                                            "voltage228k_name": voltage228k.voltage228k_name,
+                                            "actual": progress_record.progress_percentage,
+                                            "expected": expected_record.progress_percentage,
+                                            "construction_status": voltage228k.construction_status,
+                                            "actual_lag_status": progress_record.lag_status,
+                                            "expected_lag_status": expected_record.lag_status,
+                                        })
+                                    else:    
+                                        civil_date_ranges_with_data[date_range].append({
+                                            "year": last_week.year,
+                                            "quarter": last_week.quarter,
+                                            "week": last_week.week,
+                                            "voltage228k_name": voltage228k.voltage228k_name,
+                                            "actual": progress_record.progress_percentage,
+                                            "expected": expected_record.progress_percentage,
+                                            "construction_status": voltage228k.construction_status,
+                                        })
                         else:
                             date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
-                            civil_date_ranges_with_data[date_range].append({
-                                "voltage228k_name": voltage228k.voltage228k_name,
-                                "construction_status": voltage228k.construction_status,
-                                "actual": 0,
-                                "expected": 0,
-                                "year": last_week.year,
-                                "quarter": last_week.quarter,
-                                "week": last_week.week,
-                            })
+                            if project_type == "bank":
+                                civil_date_ranges_with_data[date_range].append({
+                                    "year": last_week.year,
+                                    "quarter": last_week.quarter,
+                                    "week": last_week.week,
+                                    "voltage228k_name": voltage228k.voltage228k_name,
+                                    "actual": 0,
+                                    "expected": 0,
+                                    "construction_status": voltage228k.construction_status,
+                                    "actual_lag_status": 0,
+                                    "expected_lag_status": 0,
+                                })
+                            else:    
+                                civil_date_ranges_with_data[date_range].append({
+                                    "year": last_week.year,
+                                    "quarter": last_week.quarter,
+                                    "week": last_week.week,
+                                    "voltage228k_name": voltage228k.voltage228k_name,
+                                    "actual": 0,
+                                    "expected": 0,
+                                    "construction_status": voltage228k.construction_status,
+                                })
 
             for voltage228k in cable_datas:
                 for quarter in range(1, 5):
@@ -1332,26 +1908,52 @@ class GetVoltage228KQuarterProgress(APIView):
                                 ).first()
                                 if expected_record:
                                     date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
-                                    cable_date_ranges_with_data[date_range].append({
-                                        "year": last_week.year,
-                                        "quarter": last_week.quarter,
-                                        "week": last_week.week,
-                                        "voltage228k_name": voltage228k.voltage228k_name,
-                                        "actual": progress_record.progress_percentage,
-                                        "expected": expected_record.progress_percentage,
-                                        "construction_status": voltage228k.construction_status,
-                                    })
+                                    if project_type == "bank":
+                                        cable_date_ranges_with_data[date_range].append({
+                                            "year": last_week.year,
+                                            "quarter": last_week.quarter,
+                                            "week": last_week.week,
+                                            "voltage228k_name": voltage228k.voltage228k_name,
+                                            "actual": progress_record.progress_percentage,
+                                            "expected": expected_record.progress_percentage,
+                                            "construction_status": voltage228k.construction_status,
+                                            "actual_lag_status": progress_record.lag_status,
+                                            "expected_lag_status": expected_record.lag_status,
+                                        })
+                                    else:    
+                                        cable_date_ranges_with_data[date_range].append({
+                                            "year": last_week.year,
+                                            "quarter": last_week.quarter,
+                                            "week": last_week.week,
+                                            "voltage228k_name": voltage228k.voltage228k_name,
+                                            "actual": progress_record.progress_percentage,
+                                            "expected": expected_record.progress_percentage,
+                                            "construction_status": voltage228k.construction_status,
+                                        })
                         else:
                             date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
-                            cable_date_ranges_with_data[date_range].append({
-                                "voltage228k_name": voltage228k.voltage228k_name,
-                                "construction_status": voltage228k.construction_status,
-                                "actual": 0,
-                                "expected": 0,
-                                "year": last_week.year,
-                                "quarter": last_week.quarter,
-                                "week": last_week.week,
-                            })
+                            if project_type == "bank":
+                                cable_date_ranges_with_data[date_range].append({
+                                    "year": last_week.year,
+                                    "quarter": last_week.quarter,
+                                    "week": last_week.week,
+                                    "voltage228k_name": voltage228k.voltage228k_name,
+                                    "actual": 0,
+                                    "expected": 0,
+                                    "construction_status": voltage228k.construction_status,
+                                    "actual_lag_status": 0,
+                                    "expected_lag_status": 0,
+                                })
+                            else:
+                                cable_date_ranges_with_data[date_range].append({
+                                    "year": last_week.year,
+                                    "quarter": last_week.quarter,
+                                    "week": last_week.week,
+                                    "voltage228k_name": voltage228k.voltage228k_name,
+                                    "actual": 0,
+                                    "expected": 0,
+                                    "construction_status": voltage228k.construction_status,
+                                })
 
             
             date_ranges_with_data = defaultdict(list)
@@ -1376,15 +1978,30 @@ class GetVoltage228KQuarterProgress(APIView):
                     quarter = civil_entries.get(loop_name, {}).get('quarter', 0) or cable_entries.get(loop_name, {}).get('quarter', 0)
                     week = civil_entries.get(loop_name, {}).get('week', 0) or cable_entries.get(loop_name, {}).get('week', 0)
                     
-                    date_ranges_with_data[date_range].append({
-                        "loop_name": loop_name,
-                        "actual": combined_actual,
-                        "expected": combined_expected,
-                        "construction_status": construction_status,
-                        "year": year,
-                        "quarter": quarter,
-                        "week": week,
-                    })
+                    if project_type == "bank":
+                        actual_lag_status = civil_entries.get(loop_name, {}).get('actual_lag_status', 0) or cable_entries.get(loop_name, {}).get('actual_lag_status', 0)
+                        expected_lag_status = civil_entries.get(loop_name, {}).get('expected_lag_status', 0) or cable_entries.get(loop_name, {}).get('expected_lag_status', 0)
+                        date_ranges_with_data[date_range].append({
+                            "loop_name": loop_name,
+                            "actual": combined_actual,
+                            "expected": combined_expected,
+                            "construction_status": construction_status,
+                            "actual_lag_status": actual_lag_status,
+                            "expected_lag_status": expected_lag_status,
+                            "year": year,
+                            "quarter": quarter,
+                            "week": week,
+                        })
+                    else:
+                        date_ranges_with_data[date_range].append({
+                            "loop_name": loop_name,
+                            "actual": combined_actual,
+                            "expected": combined_expected,
+                            "construction_status": construction_status,
+                            "year": year,
+                            "quarter": quarter,
+                            "week": week,
+                        })
             
             # 轉換有序字典並提取最新的 date_range 數據
             ordered_date_ranges = OrderedDict(sorted(date_ranges_with_data.items(), reverse=True))
@@ -1403,32 +2020,47 @@ class GetVoltage228KQuarterProgress(APIView):
                 # 第一頁直接展示包括最新的 date_range 數據
                 for date_range, data in page_obj.object_list:
                     for item in data:
-                        formatted_results.append({
-                            "year": item["year"],
-                            "quarter": item["quarter"],
-                            "week": item["week"],
-                            "loop_name": item["loop_name"],
-                            "date_range": date_range,
-                            "actual": item["actual"],
-                            "expected": item["expected"],
-                            "construction_status": item["construction_status"],
-                        })
+                        if project_type == "bank":
+                            formatted_results.append({
+                                "year": item["year"],
+                                "quarter": item["quarter"],
+                                "week": item["week"],
+                                "loop_name": item["loop_name"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"],
+                                "construction_status": item["construction_status"],
+                                "actual_lag_status": item["actual_lag_status"],
+                                "expected_lag_status": item["expected_lag_status"],
+                            })
+                        else:
+                            formatted_results.append({
+                                "year": item["year"],
+                                "quarter": item["quarter"],
+                                "week": item["week"],
+                                "loop_name": item["loop_name"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"],
+                                "construction_status": item["construction_status"],
+                            })
             else:
                 # 從第二頁開始，在資料頂部都增加最新的 date_range 數據
                 for item in latest_data:
-                    formatted_results.append({
-                        "year": item["year"],
-                        "quarter": item["quarter"],
-                        "week": item["week"],
-                        "loop_name": item["loop_name"],
-                        "date_range": latest_date_range,
-                        "actual": item["actual"],
-                        "expected": item["expected"],
-                        "construction_status": item["construction_status"],
-                    })
-                # 添加當前頁的其他數據
-                for date_range, data in page_obj.object_list:
-                    for item in data:
+                    if project_type == "bank":
+                        formatted_results.append({
+                            "year": item["year"],
+                            "quarter": item["quarter"],
+                            "week": item["week"],
+                            "loop_name": item["loop_name"],
+                            "date_range": date_range,
+                            "actual": item["actual"],
+                            "expected": item["expected"],
+                            "construction_status": item["construction_status"],
+                            "actual_lag_status": item["actual_lag_status"],
+                            "expected_lag_status": item["expected_lag_status"],
+                        })
+                    else:
                         formatted_results.append({
                             "year": item["year"],
                             "quarter": item["quarter"],
@@ -1439,6 +2071,33 @@ class GetVoltage228KQuarterProgress(APIView):
                             "expected": item["expected"],
                             "construction_status": item["construction_status"],
                         })
+                # 添加當前頁的其他數據
+                for date_range, data in page_obj.object_list:
+                    for item in data:
+                        if project_type == "bank":
+                            formatted_results.append({
+                                "year": item["year"],
+                                "quarter": item["quarter"],
+                                "week": item["week"],
+                                "loop_name": item["loop_name"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"],
+                                "construction_status": item["construction_status"],
+                                "actual_lag_status": item["actual_lag_status"],
+                                "expected_lag_status": item["expected_lag_status"],
+                            })
+                        else:
+                            formatted_results.append({
+                                "year": item["year"],
+                                "quarter": item["quarter"],
+                                "week": item["week"],
+                                "loop_name": item["loop_name"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"],
+                                "construction_status": item["construction_status"],
+                            })
 
             return Response({
                 'results': formatted_results,
@@ -1474,10 +2133,8 @@ class GetCivilQuarterChartProgress(APIView):
 
             loops = ProjectLoop.objects.filter(project_id=project_id)
             loop_ids = loops.values_list('loop_id', flat=True)
-            print(f"Found loops for project_id {project_id}: {loop_ids}")
 
             voltage228ks = ProjectVoltage228K.objects.filter(loop_id__in=loop_ids, engineer=1)
-            print(f"Found {voltage228ks.count()} civil engineering projects for project_id {project_id}")
 
             if project_type == "engineering":
                 progress_model = ProjectVoltage228KProgress
@@ -1556,10 +2213,8 @@ class GetCivilAllQuarterChartProgress(APIView):
 
             loops = ProjectLoop.objects.filter(project_id=project_id)
             loop_ids = loops.values_list('loop_id', flat=True)
-            print(f"Found loops for project_id {project_id}: {loop_ids}")
 
             voltage228ks = ProjectVoltage228K.objects.filter(loop_id__in=loop_ids, engineer=1)
-            print(f"Found {voltage228ks.count()} civil engineering projects for project_id {project_id}")
 
             if project_type == "engineering":
                 progress_model = ProjectVoltage228KProgress
@@ -1641,10 +2296,8 @@ class GetCivilWeekChartProgress(APIView):
 
             loops = ProjectLoop.objects.filter(project_id=project_id)
             loop_ids = loops.values_list('loop_id', flat=True)
-            print(f"Found loops for project_id {project_id}: {loop_ids}")
 
             voltage228ks = ProjectVoltage228K.objects.filter(loop_id__in=loop_ids, engineer=1)
-            print(f"Found {voltage228ks.count()} civil engineering projects for project_id {project_id}")
 
             if project_type == "engineering":
                 progress_model = ProjectVoltage228KProgress
@@ -1729,10 +2382,8 @@ class GetCableQuarterChartProgress(APIView):
 
             loops = ProjectLoop.objects.filter(project_id=project_id)
             loop_ids = loops.values_list('loop_id', flat=True)
-            print(f"Found loops for project_id {project_id}: {loop_ids}")
 
             voltage228ks = ProjectVoltage228K.objects.filter(loop_id__in=loop_ids, engineer=2)
-            print(f"Found {voltage228ks.count()} civil engineering projects for project_id {project_id}")
 
             if project_type == "engineering":
                 progress_model = ProjectVoltage228KProgress
@@ -1811,10 +2462,8 @@ class GetCableAllQuarterChartProgress(APIView):
 
             loops = ProjectLoop.objects.filter(project_id=project_id)
             loop_ids = loops.values_list('loop_id', flat=True)
-            print(f"Found loops for project_id {project_id}: {loop_ids}")
 
             voltage228ks = ProjectVoltage228K.objects.filter(loop_id__in=loop_ids, engineer=2)
-            print(f"Found {voltage228ks.count()} civil engineering projects for project_id {project_id}")
 
             if project_type == "engineering":
                 progress_model = ProjectVoltage228KProgress
@@ -1896,10 +2545,8 @@ class GetCableWeekChartProgress(APIView):
 
             loops = ProjectLoop.objects.filter(project_id=project_id)
             loop_ids = loops.values_list('loop_id', flat=True)
-            print(f"Found loops for project_id {project_id}: {loop_ids}")
 
             voltage228ks = ProjectVoltage228K.objects.filter(loop_id__in=loop_ids, engineer=2)
-            print(f"Found {voltage228ks.count()} civil engineering projects for project_id {project_id}")
 
             if project_type == "engineering":
                 progress_model = ProjectVoltage228KProgress
@@ -1983,7 +2630,6 @@ class GetVoltage228KWeekChartProgress(APIView):
 
             loops = ProjectLoop.objects.filter(project_id=project_id)
             loop_ids = loops.values_list('loop_id', flat=True)
-            print(f"Found loops for project_id {project_id}: {loop_ids}")
 
             civil_datas = ProjectVoltage228K.objects.filter(loop_id__in=loop_ids, engineer=1)
             cable_datas = ProjectVoltage228K.objects.filter(loop_id__in=loop_ids, engineer=2)
@@ -2082,7 +2728,6 @@ class GetVoltage228KAllQuarterChartProgress(APIView):
 
             loops = ProjectLoop.objects.filter(project_id=project_id)
             loop_ids = loops.values_list('loop_id', flat=True)
-            print(f"Found loops for project_id {project_id}: {loop_ids}")
 
             civil_datas = ProjectVoltage228K.objects.filter(loop_id__in=loop_ids, engineer=1)
             cable_datas = ProjectVoltage228K.objects.filter(loop_id__in=loop_ids, engineer=2)
@@ -2177,7 +2822,6 @@ class GetVoltage228KQuarterChartProgress(APIView):
 
             loops = ProjectLoop.objects.filter(project_id=project_id)
             loop_ids = loops.values_list('loop_id', flat=True)
-            print(f"Found loops for project_id {project_id}: {loop_ids}")
 
             civil_datas = ProjectVoltage228K.objects.filter(loop_id__in=loop_ids, engineer=1)
             cable_datas = ProjectVoltage228K.objects.filter(loop_id__in=loop_ids, engineer=2)
