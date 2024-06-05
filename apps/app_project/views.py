@@ -493,7 +493,7 @@ class GetLoopAllQuarterProgress(APIView):
                             "expected": item["expected"],
                             "construction_status": item["construction_status"],
                         })
-
+            print(formatted_results)
             return Response({
                 'results': formatted_results,
                 'totalPages': paginator.num_pages,
@@ -616,6 +616,7 @@ class GetLoopQuarterProgress(APIView):
                             "expected": item["expected"],
                             "construction_status": item["construction_status"],
                         })
+            print(formatted_results)
 
             return Response({
                 'results': formatted_results,
