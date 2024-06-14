@@ -231,6 +231,7 @@ class GetProjectPercentageDataView(APIView):
 class GetPlanPercentageDataView(APIView):
     def get(self, request, plan_id):
         try:
+            
             projects = Project.objects.filter(plan_id=plan_id)
 
             # 構建返回的數據結構
@@ -238,7 +239,7 @@ class GetPlanPercentageDataView(APIView):
 
             for project in projects:
                 # 獲得與 project_name 對應的 proportionblock 的 id
-                block_id = ProportionBlocks.objects.filter(name=project.project_name).values('id')
+                block_id = ProportionBlocks.objects.filter(id=project.block_id.id).values('id')
 
                 # 從 ProportionHistory 中查找對應的 percentage
                 proportion_history = ProportionHistory.objects.filter(
