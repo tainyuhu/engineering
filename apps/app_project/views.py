@@ -176,9 +176,9 @@ class GetLoopPercentageData(APIView):
             # 構建返回的數據結構
             percentage_data = []
 
-            for case in cases:
-                # 獲得與 cases_name 對應的 proportionblock 的 id
-                block_id = ProportionBlocks.objects.filter(name=case.cases_name).values('id')
+            for onecase in cases:
+                # 獲得與 block_id 對應的 proportionblock 的 id
+                block_id = ProportionBlocks.objects.filter(id=onecase.block_id.id).values('id')
 
                 # 從 ProportionHistory 中查找對應的 percentage
                 proportion_history = ProportionHistory.objects.filter(
@@ -187,7 +187,7 @@ class GetLoopPercentageData(APIView):
 
                 if proportion_history:
                     percentage_data.append({
-                        'vb_name': case.cases_name,
+                        'vb_name': onecase.cases_name,
                         'percentage': proportion_history.percentage
                     })
 
@@ -207,8 +207,8 @@ class GetProjectPercentageDataView(APIView):
             percentage_data = []
 
             for loop in projects:
-                # 獲得與 project_name 對應的 proportionblock 的 id
-                block_id = ProportionBlocks.objects.filter(name=loop.loop_name).values('id')
+                # 獲得與 project_block 對應的 proportionblock 的 id
+                block_id = ProportionBlocks.objects.filter(id=loop.block_id.id).values('id')
 
                 # 從 ProportionHistory 中查找對應的 percentage
                 proportion_history = ProportionHistory.objects.filter(
@@ -238,7 +238,7 @@ class GetPlanPercentageDataView(APIView):
             percentage_data = []
 
             for project in projects:
-                # 獲得與 project_name 對應的 proportionblock 的 id
+                # 獲得與 project_block 對應的 proportionblock 的 id
                 block_id = ProportionBlocks.objects.filter(id=project.block_id.id).values('id')
 
                 # 從 ProportionHistory 中查找對應的 percentage
@@ -267,8 +267,8 @@ class GetMasterPlanPercentageDataView(APIView):
             percentage_data = []
 
             for plan in plans:
-                # 獲得與 project_name 對應的 proportionblock 的 id
-                block_id = ProportionBlocks.objects.filter(name=plan.plan_name).values('id')
+                # 獲得與 project_block 對應的 proportionblock 的 id
+                block_id = ProportionBlocks.objects.filter(id=plan.block_id.id).values('id')
 
                 # 從 ProportionHistory 中查找對應的 percentage
                 proportion_history = ProportionHistory.objects.filter(
@@ -687,9 +687,13 @@ class GetLoopQuarterChartProgress(APIView):
                             loop_week_id=last_week.week_id
                         ).first() if progress_record else None
 
-                        actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
-                        expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
-
+                        if loop.construction_status == 1 :
+                            actual_percentage = 100
+                            expected_percentage = 100
+                        else:
+                            actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
+                            expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
+                        
                         actual_data.append(actual_percentage)
                         expected_data.append(expected_percentage)
 
@@ -761,8 +765,12 @@ class GetLoopAllQuarterChartProgress(APIView):
                             loop_week_id=last_week.week_id
                         ).first() if progress_record else None
 
-                        actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
-                        expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
+                        if loop.construction_status == 1 :
+                            actual_percentage = 100
+                            expected_percentage = 100
+                        else:
+                            actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
+                            expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
 
                         actual_data.append(actual_percentage)
                         expected_data.append(expected_percentage)
@@ -839,8 +847,12 @@ class GetLoopWeekChartProgress(APIView):
                         loop_week_id=week.week_id
                     ).first()
 
-                    actual_percentage = progress_record.progress_percentage * 100 if progress_record else 0
-                    expected_percentage = expected_record.progress_percentage * 100 if expected_record else 0
+                    if loop.construction_status == 1 :
+                        actual_percentage = 100
+                        expected_percentage = 100
+                    else:
+                        actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
+                        expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
 
                     actual_data.append(actual_percentage)
                     expected_data.append(expected_percentage)
@@ -1248,8 +1260,12 @@ class GetProjectQuarterChartProgress(APIView):
                             project_week_id=last_week.week_id
                         ).first() if progress_record else None
 
-                        actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
-                        expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
+                        if project.construction_status == 1 :
+                            actual_percentage = 100
+                            expected_percentage = 100
+                        else:
+                            actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
+                            expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
 
                         actual_data.append(actual_percentage)
                         expected_data.append(expected_percentage)
@@ -1321,8 +1337,12 @@ class GetProjectAllQuarterChartProgress(APIView):
                             project_week_id=last_week.week_id
                         ).first() if progress_record else None
 
-                        actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
-                        expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
+                        if project.construction_status == 1 :
+                            actual_percentage = 100
+                            expected_percentage = 100
+                        else:
+                            actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
+                            expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
 
                         actual_data.append(actual_percentage)
                         expected_data.append(expected_percentage)
@@ -1398,8 +1418,12 @@ class GetProjectWeekChartProgress(APIView):
                         project_week_id=week.week_id
                     ).first()
 
-                    actual_percentage = progress_record.progress_percentage * 100 if progress_record else 0
-                    expected_percentage = expected_record.progress_percentage * 100 if expected_record else 0
+                    if project.construction_status == 1 :
+                            actual_percentage = 100
+                            expected_percentage = 100
+                    else:
+                        actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
+                        expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
 
                     actual_data.append(actual_percentage)
                     expected_data.append(expected_percentage)

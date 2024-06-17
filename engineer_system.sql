@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2024-06-14 08:53:58
+-- 產生時間： 2024-06-17 10:14:29
 -- 伺服器版本： 10.4.28-MariaDB
 -- PHP 版本： 8.2.4
 
@@ -5958,7 +5958,16 @@ INSERT INTO `electrical_progress` (`progress_id`, `electrical_id`, `progress_per
 (33, 6, 0.4, NULL, NULL, NULL, '2024-06-14', '2024-05-16 07:10:43', '2024-05-16 07:00:18', 25, 2, 6),
 (34, 7, 0.4, NULL, NULL, NULL, '2024-06-14', '2024-05-16 07:10:43', '2024-05-16 07:00:18', 25, 2, 6),
 (35, 8, 0.4, NULL, NULL, NULL, '2024-06-14', '2024-05-16 07:10:43', '2024-05-16 07:00:18', 25, 2, 6),
-(36, 9, 0.4, NULL, NULL, NULL, '2024-06-14', '2024-05-16 07:10:43', '2024-05-16 07:00:18', 25, 2, 6);
+(36, 9, 0.4, NULL, NULL, NULL, '2024-06-14', '2024-05-16 07:10:43', '2024-05-16 07:00:18', 25, 2, 6),
+(37, 10, 0.95, NULL, NULL, NULL, '2024-03-30', '2024-06-17 01:24:41', '2024-06-17 01:24:41', 15, 2, 29),
+(38, 11, 0.85, NULL, NULL, NULL, '2024-03-30', '2024-06-17 01:24:41', '2024-06-17 01:24:41', 15, 2, 28),
+(39, 12, 0.85, NULL, NULL, NULL, '2024-03-30', '2024-06-17 01:24:41', '2024-06-17 01:24:41', 15, 2, 28),
+(40, 13, 0.85, NULL, NULL, NULL, '2024-03-30', '2024-06-17 01:24:41', '2024-06-17 01:24:41', 15, 2, 28),
+(41, 14, 0.85, NULL, NULL, NULL, '2024-03-30', '2024-06-17 01:24:41', '2024-06-17 01:24:41', 15, 2, 28),
+(42, 15, 0.85, NULL, NULL, NULL, '2024-03-30', '2024-06-17 01:24:41', '2024-06-17 01:24:41', 15, 2, 28),
+(43, 16, 0.85, NULL, NULL, NULL, '2024-03-30', '2024-06-17 01:24:41', '2024-06-17 01:24:41', 15, 2, 28),
+(44, 17, 0.85, NULL, NULL, NULL, '2024-03-30', '2024-06-17 01:24:41', '2024-06-17 01:24:41', 15, 2, 28),
+(45, 18, 0.85, NULL, NULL, NULL, '2024-03-30', '2024-06-17 01:24:41', '2024-06-17 01:24:41', 15, 2, 28);
 
 -- --------------------------------------------------------
 
@@ -6405,7 +6414,9 @@ INSERT INTO `loops_progress` (`progress_id`, `loop_id`, `series_id`, `progress_p
 (346, 9, NULL, 0.0154, NULL, '2024-06-14 03:32:33', '2024-06-14 03:32:33', 25, 2),
 (347, 30, NULL, 0.95, NULL, '2024-06-12 09:23:31', '2024-05-23 02:39:04', 25, 2),
 (348, 31, NULL, 1, NULL, '2024-06-12 09:23:31', '2024-05-23 02:39:04', 25, 2),
-(349, 32, NULL, 1, NULL, '2024-06-12 09:23:31', '2024-05-23 02:39:04', 25, 2);
+(349, 32, NULL, 1, NULL, '2024-06-12 09:23:31', '2024-05-23 02:39:04', 25, 2),
+(350, 55, NULL, 1, NULL, '2024-06-17 06:01:10', '2024-06-17 06:01:10', 1, 2),
+(351, 54, NULL, 1, NULL, '2024-06-17 06:01:10', '2024-06-17 06:01:10', 1, 2);
 
 -- --------------------------------------------------------
 
@@ -6714,7 +6725,9 @@ INSERT INTO `loops_progress_expected` (`progress_id`, `loop_id`, `progress_perce
 (291, 9, 0, NULL, '2024-06-14 03:32:33', '2024-06-14 03:32:33', 25, 2),
 (292, 30, 1, NULL, '2024-05-23 02:37:07', '2024-05-23 02:37:07', 25, 2),
 (293, 31, 1, NULL, '2024-05-23 02:37:07', '2024-05-23 02:37:07', 25, 2),
-(294, 32, 1, NULL, '2024-05-23 02:37:07', '2024-05-23 02:37:07', 25, 2);
+(294, 32, 1, NULL, '2024-05-23 02:37:07', '2024-05-23 02:37:07', 25, 2),
+(295, 55, 1, NULL, '2024-06-17 06:01:11', '2024-06-17 06:01:11', 1, 2),
+(296, 54, 1, NULL, '2024-06-17 06:01:11', '2024-06-17 06:01:11', 1, 2);
 
 -- --------------------------------------------------------
 
@@ -8086,7 +8099,16 @@ INSERT INTO `project_electrical` (`electrical_id`, `electrical_name`, `planned_s
 (6, 'SN6', NULL, NULL, NULL, NULL, 2, '2024-05-16 05:19:32', '2024-05-13 08:57:30', 4, 2, 1),
 (7, 'SN7', NULL, NULL, NULL, NULL, 2, '2024-05-16 05:19:32', '2024-05-13 08:57:30', 4, 2, 1),
 (8, 'SN8', NULL, NULL, NULL, NULL, 2, '2024-05-16 05:19:32', '2024-05-13 08:57:30', 4, 2, 1),
-(9, 'SN9', NULL, NULL, NULL, NULL, 2, '2024-05-16 05:19:32', '2024-05-13 08:57:30', 4, 2, 1);
+(9, 'SN9', NULL, NULL, NULL, NULL, 2, '2024-05-16 05:19:32', '2024-05-13 08:57:30', 4, 2, 1),
+(10, 'S01', NULL, NULL, NULL, NULL, 2, '2024-06-17 01:15:40', '2024-06-17 01:15:40', 8, 2, 2),
+(11, 'S02', NULL, NULL, NULL, NULL, 2, '2024-06-17 01:15:40', '2024-06-17 01:15:40', 8, 2, 2),
+(12, 'S03', NULL, NULL, NULL, NULL, 2, '2024-06-17 01:15:40', '2024-06-17 01:15:40', 8, 2, 2),
+(13, 'S04', NULL, NULL, NULL, NULL, 2, '2024-06-17 01:15:40', '2024-06-17 01:15:40', 8, 2, 2),
+(14, 'S05', NULL, NULL, NULL, NULL, 2, '2024-06-17 01:15:40', '2024-06-17 01:15:40', 8, 2, 2),
+(15, 'S06', NULL, NULL, NULL, NULL, 2, '2024-06-17 01:15:40', '2024-06-17 01:15:40', 8, 2, 2),
+(16, 'S07', NULL, NULL, NULL, NULL, 2, '2024-06-17 01:15:40', '2024-06-17 01:15:40', 8, 2, 2),
+(17, 'S09', NULL, NULL, NULL, NULL, 2, '2024-06-17 01:15:40', '2024-06-17 01:15:40', 8, 2, 2),
+(18, 'S10', NULL, NULL, NULL, NULL, 2, '2024-06-17 01:15:40', '2024-06-17 01:15:40', 8, 2, 2);
 
 -- --------------------------------------------------------
 
@@ -8102,7 +8124,7 @@ CREATE TABLE `project_loops` (
   `plannedend_date` date DEFAULT NULL,
   `actualstart_date` date DEFAULT NULL,
   `actualend_date` date DEFAULT NULL,
-  `construction_status` varchar(255) DEFAULT NULL,
+  `construction_status` int(11) DEFAULT NULL,
   `planned_parallel_date` date DEFAULT NULL,
   `actual_parallel_date` date DEFAULT NULL,
   `parallel_status` varchar(255) DEFAULT NULL,
@@ -8110,7 +8132,7 @@ CREATE TABLE `project_loops` (
   `last_update` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `create_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `user_id` int(11) NOT NULL DEFAULT 0,
-  `block_id` int(11) NOT NULL
+  `block_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -8118,38 +8140,53 @@ CREATE TABLE `project_loops` (
 --
 
 INSERT INTO `project_loops` (`loop_id`, `project_id`, `loop_name`, `plannedstart_date`, `plannedend_date`, `actualstart_date`, `actualend_date`, `construction_status`, `planned_parallel_date`, `actual_parallel_date`, `parallel_status`, `notes`, `last_update`, `create_at`, `user_id`, `block_id`) VALUES
-(1, 3, 'SN1', NULL, NULL, NULL, NULL, '2', NULL, NULL, NULL, NULL, '2024-05-09 07:05:22', '2024-02-27 12:24:35', 2, 1),
-(2, 3, 'SN2', NULL, NULL, NULL, NULL, '2', NULL, NULL, NULL, NULL, '2024-05-09 07:05:22', '2024-02-27 12:24:35', 2, 2),
-(5, 2, 'SN1', NULL, NULL, NULL, NULL, '2', NULL, NULL, NULL, NULL, '2024-05-09 07:08:22', '2024-02-27 12:24:35', 2, 1),
-(7, 2, 'SN3', NULL, NULL, NULL, NULL, '2', NULL, NULL, NULL, NULL, '2024-05-09 07:08:26', '2024-03-22 03:45:30', 2, 3),
-(8, 3, 'SN4', NULL, NULL, NULL, NULL, '2', NULL, NULL, NULL, NULL, '2024-06-14 02:59:55', '2024-03-22 03:45:30', 2, 4),
-(9, 3, 'SN5', NULL, NULL, NULL, NULL, '2', NULL, NULL, NULL, NULL, '2024-05-09 07:05:22', '2024-03-22 03:45:30', 2, 5),
-(10, 3, 'SN6', NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL, '2024-05-09 07:07:49', '2024-03-22 03:45:30', 2, 6),
-(11, 3, 'SN7', NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL, '2024-05-09 07:07:49', '2024-03-22 03:45:30', 2, 7),
-(12, 3, 'SN8', NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL, '2024-05-09 07:07:49', '2024-03-22 03:45:30', 2, 8),
-(13, 3, 'SN9', NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL, '2024-05-09 07:07:49', '2024-03-22 03:45:30', 2, 9),
-(19, 1, '主變壓器 (#TR3, #TR4)', NULL, NULL, NULL, NULL, '1', NULL, NULL, NULL, NULL, '2024-05-09 07:08:04', '2024-03-22 03:48:20', 2, 81),
-(20, 1, '台電要求之50+2卸載設備', NULL, NULL, NULL, NULL, '1', NULL, NULL, NULL, NULL, '2024-05-09 07:08:07', '2024-03-22 03:48:20', 2, 82),
-(21, 1, '管理中心及勤務中心', NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL, '2024-05-09 07:07:49', '2024-03-22 03:48:20', 2, 83),
-(22, 2, 'SN2', NULL, NULL, NULL, NULL, '2', NULL, NULL, NULL, NULL, '2024-05-09 07:08:29', '2024-03-22 03:48:42', 2, 2),
-(23, 3, 'SN3', NULL, NULL, NULL, NULL, '2', NULL, NULL, NULL, NULL, '2024-05-09 07:05:22', '2024-03-22 03:48:42', 2, 3),
-(24, 2, 'SN4', NULL, NULL, NULL, NULL, '2', NULL, NULL, NULL, NULL, '2024-05-09 07:08:32', '2024-03-22 03:48:42', 2, 4),
-(25, 2, 'SN5', NULL, NULL, NULL, NULL, '2', NULL, NULL, NULL, NULL, '2024-05-20 06:14:26', '2024-03-22 03:48:42', 2, 5),
-(26, 2, 'SN6', NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL, '2024-05-09 07:07:49', '2024-03-22 03:48:42', 2, 6),
-(27, 2, 'SN7', NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL, '2024-05-09 07:07:49', '2024-03-22 03:48:42', 2, 7),
-(28, 2, 'SN8', NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL, '2024-05-09 07:07:49', '2024-03-22 03:48:42', 2, 8),
-(29, 2, 'SN9', NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL, '2024-05-09 07:07:49', '2024-03-22 03:48:42', 2, 9),
-(30, 10, '永安案場', NULL, NULL, NULL, NULL, '2', NULL, NULL, NULL, NULL, '2024-05-16 09:23:57', '2024-05-16 09:23:57', 2, 91),
-(31, 10, '台西案場', NULL, NULL, NULL, NULL, '1', NULL, NULL, NULL, NULL, '2024-05-17 01:07:58', '2024-05-16 09:24:26', 2, 92),
-(32, 10, '上東勢案場(內埔)', NULL, NULL, NULL, NULL, '1', NULL, NULL, NULL, NULL, '2024-05-17 01:08:03', '2024-05-16 09:24:45', 2, 93),
-(33, 7, 'S02', NULL, NULL, NULL, NULL, '2', NULL, NULL, NULL, NULL, '2024-05-21 02:05:24', '2024-05-21 02:05:24', 2, 99),
-(34, 7, 'S03', NULL, NULL, NULL, NULL, '2', NULL, NULL, NULL, NULL, '2024-05-21 02:05:24', '2024-05-21 02:05:24', 2, 100),
-(35, 7, 'S04', NULL, NULL, NULL, NULL, '2', NULL, NULL, NULL, NULL, '2024-05-21 02:05:24', '2024-05-21 02:05:24', 2, 101),
-(36, 7, 'S05', NULL, NULL, NULL, NULL, '2', NULL, NULL, NULL, NULL, '2024-05-21 02:05:24', '2024-05-21 02:05:24', 2, 102),
-(37, 7, 'S06', NULL, NULL, NULL, NULL, '2', NULL, NULL, NULL, NULL, '2024-05-21 02:05:24', '2024-05-21 02:05:24', 2, 103),
-(38, 7, 'S07', NULL, NULL, NULL, NULL, '2', NULL, NULL, NULL, NULL, '2024-05-21 02:05:24', '2024-05-21 02:05:24', 2, 104),
-(39, 7, 'S09', NULL, NULL, NULL, NULL, '2', NULL, NULL, NULL, NULL, '2024-05-21 02:05:24', '2024-05-21 02:05:24', 2, 105),
-(40, 7, 'S10', NULL, NULL, NULL, NULL, '2', NULL, NULL, NULL, NULL, '2024-05-21 02:05:24', '2024-05-21 02:05:24', 2, 106);
+(1, 3, 'SN1', NULL, NULL, NULL, NULL, 2, NULL, NULL, NULL, NULL, '2024-05-09 07:05:22', '2024-02-27 12:24:35', 2, 1),
+(2, 3, 'SN2', NULL, NULL, NULL, NULL, 2, NULL, NULL, NULL, NULL, '2024-05-09 07:05:22', '2024-02-27 12:24:35', 2, 2),
+(5, 2, 'SN1', NULL, NULL, NULL, NULL, 2, NULL, NULL, NULL, NULL, '2024-05-09 07:08:22', '2024-02-27 12:24:35', 2, 1),
+(7, 2, 'SN3', NULL, NULL, NULL, NULL, 2, NULL, NULL, NULL, NULL, '2024-05-09 07:08:26', '2024-03-22 03:45:30', 2, 3),
+(8, 3, 'SN4', NULL, NULL, NULL, NULL, 2, NULL, NULL, NULL, NULL, '2024-06-14 02:59:55', '2024-03-22 03:45:30', 2, 4),
+(9, 3, 'SN5', NULL, NULL, NULL, NULL, 2, NULL, NULL, NULL, NULL, '2024-05-09 07:05:22', '2024-03-22 03:45:30', 2, 5),
+(10, 3, 'SN6', NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, '2024-05-09 07:07:49', '2024-03-22 03:45:30', 2, 6),
+(11, 3, 'SN7', NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, '2024-05-09 07:07:49', '2024-03-22 03:45:30', 2, 7),
+(12, 3, 'SN8', NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, '2024-05-09 07:07:49', '2024-03-22 03:45:30', 2, 8),
+(13, 3, 'SN9', NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, '2024-05-09 07:07:49', '2024-03-22 03:45:30', 2, 9),
+(19, 1, '主變壓器 (#TR3, #TR4)', NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, '2024-05-09 07:08:04', '2024-03-22 03:48:20', 2, 81),
+(20, 1, '台電要求之50+2卸載設備', NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, '2024-05-09 07:08:07', '2024-03-22 03:48:20', 2, 82),
+(21, 1, '管理中心及勤務中心', NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, '2024-05-09 07:07:49', '2024-03-22 03:48:20', 2, 83),
+(22, 2, 'SN2', NULL, NULL, NULL, NULL, 2, NULL, NULL, NULL, NULL, '2024-05-09 07:08:29', '2024-03-22 03:48:42', 2, 2),
+(23, 3, 'SN3', NULL, NULL, NULL, NULL, 2, NULL, NULL, NULL, NULL, '2024-05-09 07:05:22', '2024-03-22 03:48:42', 2, 3),
+(24, 2, 'SN4', NULL, NULL, NULL, NULL, 2, NULL, NULL, NULL, NULL, '2024-05-09 07:08:32', '2024-03-22 03:48:42', 2, 4),
+(25, 2, 'SN5', NULL, NULL, NULL, NULL, 2, NULL, NULL, NULL, NULL, '2024-05-20 06:14:26', '2024-03-22 03:48:42', 2, 5),
+(26, 2, 'SN6', NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, '2024-05-09 07:07:49', '2024-03-22 03:48:42', 2, 6),
+(27, 2, 'SN7', NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, '2024-05-09 07:07:49', '2024-03-22 03:48:42', 2, 7),
+(28, 2, 'SN8', NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, '2024-05-09 07:07:49', '2024-03-22 03:48:42', 2, 8),
+(29, 2, 'SN9', NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, '2024-05-09 07:07:49', '2024-03-22 03:48:42', 2, 9),
+(30, 10, '永安案場', NULL, NULL, NULL, NULL, 2, NULL, NULL, NULL, NULL, '2024-05-16 09:23:57', '2024-05-16 09:23:57', 2, 91),
+(31, 10, '台西案場', NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, '2024-05-17 01:07:58', '2024-05-16 09:24:26', 2, 92),
+(32, 10, '上東勢案場(內埔)', NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, '2024-05-17 01:08:03', '2024-05-16 09:24:45', 2, 93),
+(33, 7, 'S02', NULL, NULL, NULL, NULL, 2, NULL, NULL, NULL, NULL, '2024-05-21 02:05:24', '2024-05-21 02:05:24', 2, 99),
+(34, 7, 'S03', NULL, NULL, NULL, NULL, 2, NULL, NULL, NULL, NULL, '2024-05-21 02:05:24', '2024-05-21 02:05:24', 2, 100),
+(35, 7, 'S04', NULL, NULL, NULL, NULL, 2, NULL, NULL, NULL, NULL, '2024-05-21 02:05:24', '2024-05-21 02:05:24', 2, 101),
+(36, 7, 'S05', NULL, NULL, NULL, NULL, 2, NULL, NULL, NULL, NULL, '2024-05-21 02:05:24', '2024-05-21 02:05:24', 2, 102),
+(37, 7, 'S06', NULL, NULL, NULL, NULL, 2, NULL, NULL, NULL, NULL, '2024-05-21 02:05:24', '2024-05-21 02:05:24', 2, 103),
+(38, 7, 'S07', NULL, NULL, NULL, NULL, 2, NULL, NULL, NULL, NULL, '2024-05-21 02:05:24', '2024-05-21 02:05:24', 2, 104),
+(39, 7, 'S09', NULL, NULL, NULL, NULL, 2, NULL, NULL, NULL, NULL, '2024-05-21 02:05:24', '2024-05-21 02:05:24', 2, 105),
+(40, 7, 'S10', NULL, NULL, NULL, NULL, 2, NULL, NULL, NULL, NULL, '2024-05-21 02:05:24', '2024-05-21 02:05:24', 2, 106),
+(41, 6, 'S01', NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, '2024-06-17 02:51:39', '2024-06-14 08:02:03', 2, 171),
+(42, 6, 'S02', NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, '2024-06-17 02:51:44', '2024-06-14 08:02:03', 2, 163),
+(43, 6, 'S03', NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, '2024-06-17 02:51:50', '2024-06-14 08:02:03', 2, 164),
+(44, 6, 'S04', NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, '2024-06-17 02:51:54', '2024-06-14 08:02:03', 2, 165),
+(45, 6, 'S05', NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, '2024-06-17 02:51:57', '2024-06-14 08:02:03', 2, 166),
+(46, 6, 'S06', NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, '2024-06-17 02:52:01', '2024-06-14 08:02:03', 2, 167),
+(47, 6, 'S07', NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, '2024-06-17 02:52:05', '2024-06-14 08:02:03', 2, 168),
+(48, 6, 'S09', NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, '2024-06-17 02:52:08', '2024-06-14 08:02:03', 2, 169),
+(49, 6, 'S10', NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, '2024-06-17 02:52:11', '2024-06-14 08:02:03', 2, 170),
+(50, 5, 'A1管路工程(I)', NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, '2024-06-17 03:43:09', '2024-06-17 03:43:09', 2, 172),
+(51, 5, 'A2管路工程(II)', NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, '2024-06-17 03:43:09', '2024-06-17 03:43:09', 2, 173),
+(52, 5, 'A3電纜工程(太電)', NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, '2024-06-17 03:43:09', '2024-06-17 03:43:09', 2, 174),
+(53, 5, 'A4變電站(GIS)', NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, '2024-06-17 03:43:09', '2024-06-17 03:43:09', 2, 175),
+(54, 9, '土木工程', NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, '2024-06-17 05:35:01', '2024-06-17 05:35:01', 2, 176),
+(55, 9, '機電工程', NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, '2024-06-17 05:35:01', '2024-06-17 05:35:01', 2, 177);
 
 -- --------------------------------------------------------
 
@@ -8390,9 +8427,13 @@ CREATE TABLE `project_voltage161k` (
 --
 
 INSERT INTO `project_voltage161k` (`voltage161k_id`, `voltage161k_name`, `planned_start_date`, `planned_end_date`, `actual_start_date`, `actual_end_date`, `construction_status`, `series_id`, `last_update`, `create_at`, `project_id`, `user_id`) VALUES
-(1, '主變壓器 (#TR3, #TR4)', NULL, NULL, NULL, NULL, 1, NULL, '2024-04-10 09:14:59', '2024-04-10 09:14:59', 1, 2),
-(2, '台電要求之50+2卸載設備', NULL, NULL, NULL, NULL, 1, NULL, '2024-04-10 09:14:59', '2024-04-10 09:14:59', 1, 2),
-(3, '管理中心及勤務中心', NULL, NULL, NULL, NULL, 0, NULL, '2024-04-10 09:14:59', '2024-04-10 09:14:59', 1, 2);
+(1, '主變壓器 (#TR3, #TR4)', NULL, NULL, NULL, NULL, 1, NULL, '2024-06-17 03:40:09', '2024-04-10 09:14:59', 1, 2),
+(2, '台電要求之50+2卸載設備', NULL, NULL, NULL, NULL, 1, NULL, '2024-06-17 03:40:16', '2024-04-10 09:14:59', 1, 2),
+(3, '管理中心及勤務中心', NULL, NULL, NULL, NULL, 0, NULL, '2024-06-17 03:40:19', '2024-04-10 09:14:59', 1, 2),
+(6, 'A1管路工程(I)', NULL, NULL, NULL, NULL, 1, NULL, '2024-06-14 12:55:44', '2024-06-14 12:55:44', 5, 2),
+(7, 'A2管路工程(II)', NULL, NULL, NULL, NULL, 1, NULL, '2024-06-14 12:55:44', '2024-06-14 12:55:44', 5, 2),
+(8, 'A3電纜工程(太電)', NULL, NULL, NULL, NULL, 1, NULL, '2024-06-14 12:55:44', '2024-06-14 12:55:44', 5, 2),
+(9, 'A4變電站(GIS)', NULL, NULL, NULL, NULL, 1, NULL, '2024-06-14 12:55:44', '2024-06-14 12:55:44', 5, 2);
 
 -- --------------------------------------------------------
 
@@ -8438,7 +8479,25 @@ INSERT INTO `project_voltage228k` (`voltage228k_id`, `voltage228k_name`, `planne
 (15, 'SN8', NULL, NULL, NULL, NULL, 0, 1, NULL, '2024-04-09 05:38:59', '2024-04-01 01:36:14', 28, 2),
 (16, 'SN8', NULL, NULL, NULL, NULL, 0, 2, NULL, '2024-04-09 05:39:01', '2024-04-01 01:36:14', 28, 2),
 (17, 'SN9', NULL, NULL, NULL, NULL, 0, 1, NULL, '2024-04-09 05:39:03', '2024-04-01 01:36:14', 29, 2),
-(18, 'SN9', NULL, NULL, NULL, NULL, 0, 2, NULL, '2024-04-09 05:39:06', '2024-04-01 01:36:14', 29, 2);
+(18, 'SN9', NULL, NULL, NULL, NULL, 0, 2, NULL, '2024-04-09 05:39:06', '2024-04-01 01:36:14', 29, 2),
+(19, 'S01', NULL, NULL, NULL, NULL, 1, 1, NULL, '2024-06-14 08:09:47', '2024-06-14 08:09:47', 41, 2),
+(20, 'S01', NULL, NULL, NULL, NULL, 1, 2, NULL, '2024-06-14 08:09:47', '2024-06-14 08:09:47', 41, 2),
+(21, 'S02', NULL, NULL, NULL, NULL, 1, 1, NULL, '2024-06-14 08:09:47', '2024-06-14 08:09:47', 42, 2),
+(22, 'S02', NULL, NULL, NULL, NULL, 1, 2, NULL, '2024-06-14 08:09:47', '2024-06-14 08:09:47', 42, 2),
+(23, 'S03', NULL, NULL, NULL, NULL, 1, 1, NULL, '2024-06-14 08:09:47', '2024-06-14 08:09:47', 43, 2),
+(24, 'S03', NULL, NULL, NULL, NULL, 1, 2, NULL, '2024-06-14 08:09:47', '2024-06-14 08:09:47', 43, 2),
+(25, 'S04', NULL, NULL, NULL, NULL, 1, 1, NULL, '2024-06-14 08:09:47', '2024-06-14 08:09:47', 44, 2),
+(26, 'S04', NULL, NULL, NULL, NULL, 1, 2, NULL, '2024-06-14 08:09:47', '2024-06-14 08:09:47', 44, 2),
+(27, 'S05', NULL, NULL, NULL, NULL, 1, 1, NULL, '2024-06-14 08:09:47', '2024-06-14 08:09:47', 45, 2),
+(28, 'S05', NULL, NULL, NULL, NULL, 1, 2, NULL, '2024-06-14 08:09:47', '2024-06-14 08:09:47', 45, 2),
+(29, 'S06', NULL, NULL, NULL, NULL, 1, 1, NULL, '2024-06-14 08:09:47', '2024-06-14 08:09:47', 46, 2),
+(30, 'S06', NULL, NULL, NULL, NULL, 1, 2, NULL, '2024-06-14 08:09:47', '2024-06-14 08:09:47', 46, 2),
+(31, 'S07', NULL, NULL, NULL, NULL, 1, 1, NULL, '2024-06-14 08:09:47', '2024-06-14 08:09:47', 47, 2),
+(32, 'S07', NULL, NULL, NULL, NULL, 1, 2, NULL, '2024-06-14 08:09:47', '2024-06-14 08:09:47', 47, 2),
+(33, 'S09', NULL, NULL, NULL, NULL, 1, 1, NULL, '2024-06-14 08:09:47', '2024-06-14 08:09:47', 48, 2),
+(34, 'S09', NULL, NULL, NULL, NULL, 1, 2, NULL, '2024-06-14 08:09:47', '2024-06-14 08:09:47', 48, 2),
+(35, 'S10', NULL, NULL, NULL, NULL, 1, 1, NULL, '2024-06-14 08:09:47', '2024-06-14 08:09:47', 49, 2),
+(36, 'S10', NULL, NULL, NULL, NULL, 1, 2, NULL, '2024-06-14 08:09:47', '2024-06-14 08:09:47', 49, 2);
 
 -- --------------------------------------------------------
 
@@ -8621,7 +8680,22 @@ INSERT INTO `proportionblocks` (`id`, `name`, `parent_id`, `updated_at`, `user_i
 (159, '10-409', 106, '2024-01-01 00:00:00', 2, 'money'),
 (160, '3-15', 100, '2024-01-01 00:00:00', 2, 'money'),
 (161, '3-16', 100, '2024-01-01 00:00:00', 2, 'money'),
-(162, '3-17', 100, '2024-01-01 00:00:00', 2, 'money');
+(162, '3-17', 100, '2024-01-01 00:00:00', 2, 'money'),
+(163, 'S02', 96, '2024-01-01 00:00:00', 2, 'money'),
+(164, 'S03', 96, '2024-01-01 00:00:00', 2, 'money'),
+(165, 'S04', 96, '2024-01-01 00:00:00', 2, 'money'),
+(166, 'S05', 96, '2024-01-01 00:00:00', 2, 'money'),
+(167, 'S06', 96, '2024-01-01 00:00:00', 2, 'money'),
+(168, 'S07', 96, '2024-01-01 00:00:00', 2, 'money'),
+(169, 'S09', 96, '2024-01-01 00:00:00', 2, 'money'),
+(170, 'S10', 96, '2024-01-01 00:00:00', 2, 'money'),
+(171, 'S01', 96, '2024-01-01 00:00:00', 2, 'money'),
+(172, 'A1管路工程(I)', 97, '2024-01-01 00:00:00', 2, 'money'),
+(173, 'A2管路工程(II)', 97, '2024-01-01 00:00:00', 2, 'money'),
+(174, 'A3電纜工程(太電)', 97, '2024-01-01 00:00:00', 2, 'money'),
+(175, 'A4變電站(GIS)', 97, '2024-01-01 00:00:00', 2, 'money'),
+(176, '土木工程', 98, '2024-01-01 00:00:00', 2, 'money'),
+(177, '機電工程', 98, '2024-01-01 00:00:00', 2, 'money');
 
 -- --------------------------------------------------------
 
@@ -8632,7 +8706,7 @@ INSERT INTO `proportionblocks` (`id`, `name`, `parent_id`, `updated_at`, `user_i
 CREATE TABLE `proportionhistory` (
   `history_id` int(11) NOT NULL,
   `block_id` int(11) NOT NULL,
-  `quantity` float NOT NULL,
+  `quantity` float DEFAULT NULL,
   `percentage` float NOT NULL,
   `effective_date` datetime NOT NULL,
   `user_id` int(11) NOT NULL
@@ -8804,7 +8878,22 @@ INSERT INTO `proportionhistory` (`history_id`, `block_id`, `quantity`, `percenta
 (163, 159, 3444.48, 0.2447, '2024-01-01 00:00:00', 2),
 (164, 160, 3119.04, 0.20345, '2024-01-01 00:00:00', 2),
 (165, 161, 2480.64, 0.161808, '2024-01-01 00:00:00', 2),
-(166, 162, 2799.84, 0.182629, '2024-01-01 00:00:00', 2);
+(166, 162, 2799.84, 0.182629, '2024-01-01 00:00:00', 2),
+(167, 171, NULL, 0.064, '2024-01-01 00:00:00', 2),
+(168, 163, NULL, 0.1062, '2024-01-01 00:00:00', 2),
+(169, 164, NULL, 0.1267, '2024-01-01 00:00:00', 2),
+(170, 165, NULL, 0.1352, '2024-01-01 00:00:00', 2),
+(171, 166, NULL, 0.1408, '2024-01-01 00:00:00', 2),
+(172, 167, NULL, 0.1206, '2024-01-01 00:00:00', 2),
+(173, 168, NULL, 0.1182, '2024-01-01 00:00:00', 2),
+(174, 169, NULL, 0.0749, '2024-01-01 00:00:00', 2),
+(175, 170, NULL, 0.1134, '2024-01-01 00:00:00', 2),
+(176, 172, NULL, 0.249, '2024-01-01 00:00:00', 2),
+(177, 173, NULL, 0.249, '2024-01-01 00:00:00', 2),
+(178, 174, NULL, 0.416, '2024-01-01 00:00:00', 2),
+(179, 175, NULL, 0.086, '2024-01-01 00:00:00', 2),
+(180, 176, NULL, 0.244, '2024-01-01 00:00:00', 2),
+(181, 177, NULL, 0.756, '2024-01-01 00:00:00', 2);
 
 -- --------------------------------------------------------
 
@@ -15401,7 +15490,21 @@ INSERT INTO `stages` (`stage_id`, `stage_name`, `completion_percentage`, `user_i
 (13, '使照', 0.85, 2, '2024-05-16 03:13:06', 13, 1, NULL),
 (14, '附屬綠能', 0.90, 2, '2024-05-16 03:13:06', 14, 1, NULL),
 (15, '電業執照', 0.95, 2, '2024-05-16 03:13:06', 15, 1, NULL),
-(16, '正式購售電能', 1.00, 2, '2024-05-16 05:15:28', 16, 1, NULL);
+(16, '正式購售電能', 1.00, 2, '2024-05-16 05:15:28', 16, 1, NULL),
+(17, '併聯審查意見書', 0.05, 2, '2024-06-17 01:11:38', 1, 2, NULL),
+(18, '地政機關意見書', 0.10, 2, '2024-06-17 01:11:38', 2, 2, NULL),
+(19, '環境敏感地區調查', 0.15, 2, '2024-06-17 01:11:38', 3, 2, NULL),
+(20, '地方政府同意', 0.20, 2, '2024-06-17 01:11:38', 4, 2, NULL),
+(21, '電業籌設', 0.30, 2, '2024-06-17 01:11:38', 5, 2, NULL),
+(22, '同意備案', 0.40, 2, '2024-06-17 01:11:38', 6, 2, NULL),
+(23, '台電契約', 0.45, 2, '2024-06-17 01:11:38', 7, 2, NULL),
+(24, '初步協商', 0.50, 2, '2024-06-17 01:11:38', 8, 2, NULL),
+(25, '細部協商', 0.55, 2, '2024-06-17 01:11:38', 9, 2, NULL),
+(26, '出流管制', 0.65, 2, '2024-06-17 01:11:38', 10, 2, NULL),
+(27, '施工許可', 0.75, 2, '2024-06-17 01:11:38', 11, 2, NULL),
+(28, '併聯完工', 0.85, 2, '2024-06-17 01:11:38', 12, 2, NULL),
+(29, '電業執照', 0.95, 2, '2024-06-17 01:11:38', 13, 2, NULL),
+(30, '正式購售電能', 1.00, 2, '2024-06-17 01:11:38', 14, 2, NULL);
 
 -- --------------------------------------------------------
 
@@ -15423,7 +15526,8 @@ CREATE TABLE `stages_series` (
 --
 
 INSERT INTO `stages_series` (`series_id`, `series_name`, `description`, `last_update`, `create_at`, `user_id`) VALUES
-(1, 'Phase2電業申辦', NULL, '2024-05-16 03:11:12', '2024-05-16 03:11:12', 2);
+(1, 'Phase2電業申辦', NULL, '2024-05-16 03:11:12', '2024-05-16 03:11:12', 2),
+(2, 'Phase1電業申辦', NULL, '2024-06-17 00:57:18', '2024-06-17 00:57:18', 5);
 
 -- --------------------------------------------------------
 
@@ -15922,7 +16026,25 @@ INSERT INTO `voltage228kbank_progress` (`voltage228k_bank_id`, `voltage228k_id`,
 (65, 3, 0.8556000000, '2024-06-14 03:41:22', '2024-06-14 03:41:22', 22, 2, 0),
 (66, 5, 0.5369000000, '2024-06-14 03:41:22', '2024-06-14 03:41:22', 22, 2, 0),
 (67, 7, 0.0000000000, '2024-06-14 03:41:22', '2024-06-14 03:41:22', 22, 2, 0),
-(68, 9, 0.6371000000, '2024-06-14 03:41:22', '2024-06-14 03:41:22', 22, 2, 0);
+(68, 9, 0.6371000000, '2024-06-14 03:41:22', '2024-06-14 03:41:22', 22, 2, 0),
+(69, 19, 1.0000000000, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2, 0),
+(70, 20, 1.0000000000, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2, 0),
+(71, 21, 1.0000000000, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2, 0),
+(72, 22, 1.0000000000, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2, 0),
+(73, 23, 1.0000000000, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2, 0),
+(74, 24, 1.0000000000, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2, 0),
+(75, 25, 1.0000000000, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2, 0),
+(76, 26, 1.0000000000, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2, 0),
+(77, 27, 1.0000000000, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2, 0),
+(78, 28, 1.0000000000, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2, 0),
+(79, 29, 1.0000000000, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2, 0),
+(80, 30, 1.0000000000, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2, 0),
+(81, 31, 1.0000000000, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2, 0),
+(82, 32, 1.0000000000, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2, 0),
+(83, 33, 1.0000000000, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2, 0),
+(84, 34, 1.0000000000, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2, 0),
+(85, 35, 1.0000000000, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2, 0),
+(86, 36, 1.0000000000, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2, 0);
 
 -- --------------------------------------------------------
 
@@ -16018,7 +16140,25 @@ INSERT INTO `voltage228kbank_progress_expected` (`voltage228k_bank_expected_id`,
 (68, 3, NULL, NULL, 1.0000000000, '2024-06-14 03:41:22', '2024-06-14 03:41:22', 22, 2, 0),
 (69, 5, NULL, NULL, 0.4350000000, '2024-06-14 03:41:22', '2024-06-14 03:41:22', 22, 2, 0),
 (70, 7, NULL, NULL, 0.4350000000, '2024-06-14 03:41:22', '2024-06-14 03:41:22', 22, 2, 0),
-(71, 9, NULL, NULL, 0.0000000000, '2024-06-14 03:41:22', '2024-06-14 03:41:22', 22, 2, 0);
+(71, 9, NULL, NULL, 0.0000000000, '2024-06-14 03:41:22', '2024-06-14 03:41:22', 22, 2, 0),
+(72, 19, NULL, NULL, 1.0000000000, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2, 0),
+(73, 20, NULL, NULL, 1.0000000000, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2, 0),
+(74, 21, NULL, NULL, 1.0000000000, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2, 0),
+(75, 22, NULL, NULL, 1.0000000000, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2, 0),
+(76, 23, NULL, NULL, 1.0000000000, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2, 0),
+(77, 24, NULL, NULL, 1.0000000000, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2, 0),
+(78, 25, NULL, NULL, 1.0000000000, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2, 0),
+(79, 26, NULL, NULL, 1.0000000000, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2, 0),
+(80, 27, NULL, NULL, 1.0000000000, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2, 0),
+(81, 28, NULL, NULL, 1.0000000000, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2, 0),
+(82, 29, NULL, NULL, 1.0000000000, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2, 0),
+(83, 30, NULL, NULL, 1.0000000000, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2, 0),
+(84, 31, NULL, NULL, 1.0000000000, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2, 0),
+(85, 32, NULL, NULL, 1.0000000000, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2, 0),
+(86, 33, NULL, NULL, 1.0000000000, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2, 0),
+(87, 34, NULL, NULL, 1.0000000000, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2, 0),
+(88, 35, NULL, NULL, 1.0000000000, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2, 0),
+(89, 36, NULL, NULL, 1.0000000000, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2, 0);
 
 -- --------------------------------------------------------
 
@@ -16153,7 +16293,25 @@ INSERT INTO `voltage228k_expected_progress` (`expected_progress_id`, `voltage228
 (68, 3, NULL, 1.0000000000, NULL, '2024-06-14 03:41:22', '2024-06-14 03:41:22', 22, 2),
 (69, 5, NULL, 0.4350000000, NULL, '2024-06-14 03:41:22', '2024-06-14 03:41:22', 22, 2),
 (70, 7, NULL, 0.4350000000, NULL, '2024-06-14 03:41:22', '2024-06-14 03:41:22', 22, 2),
-(71, 9, NULL, 0.0000000000, NULL, '2024-06-14 03:41:22', '2024-06-14 03:41:22', 22, 2);
+(71, 9, NULL, 0.0000000000, NULL, '2024-06-14 03:41:22', '2024-06-14 03:41:22', 22, 2),
+(72, 19, NULL, 1.0000000000, NULL, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2),
+(73, 20, NULL, 1.0000000000, NULL, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2),
+(74, 21, NULL, 1.0000000000, NULL, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2),
+(75, 22, NULL, 1.0000000000, NULL, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2),
+(76, 23, NULL, 1.0000000000, NULL, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2),
+(77, 24, NULL, 1.0000000000, NULL, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2),
+(78, 25, NULL, 1.0000000000, NULL, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2),
+(79, 26, NULL, 1.0000000000, NULL, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2),
+(80, 27, NULL, 1.0000000000, NULL, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2),
+(81, 28, NULL, 1.0000000000, NULL, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2),
+(82, 29, NULL, 1.0000000000, NULL, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2),
+(83, 30, NULL, 1.0000000000, NULL, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2),
+(84, 31, NULL, 1.0000000000, NULL, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2),
+(85, 32, NULL, 1.0000000000, NULL, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2),
+(86, 33, NULL, 1.0000000000, NULL, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2),
+(87, 34, NULL, 1.0000000000, NULL, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2),
+(88, 35, NULL, 1.0000000000, NULL, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2),
+(89, 36, NULL, 1.0000000000, NULL, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2);
 
 -- --------------------------------------------------------
 
@@ -16247,7 +16405,25 @@ INSERT INTO `voltage228k_progress` (`progress_id`, `voltage228k_id`, `series_id`
 (65, 3, NULL, 0.8556000000, NULL, NULL, NULL, '2024-06-14 03:41:22', '2024-06-14 03:41:22', 22, 2),
 (66, 5, NULL, 0.5369000000, NULL, NULL, NULL, '2024-06-14 03:41:22', '2024-06-14 03:41:22', 22, 2),
 (67, 7, NULL, 0.0000000000, NULL, NULL, NULL, '2024-06-14 03:41:22', '2024-06-14 03:41:22', 22, 2),
-(68, 9, NULL, 0.6371000000, NULL, NULL, NULL, '2024-06-14 03:41:22', '2024-06-14 03:41:22', 22, 2);
+(68, 9, NULL, 0.6371000000, NULL, NULL, NULL, '2024-06-14 03:41:22', '2024-06-14 03:41:22', 22, 2),
+(69, 19, NULL, 1.0000000000, NULL, NULL, NULL, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2),
+(70, 20, NULL, 1.0000000000, NULL, NULL, NULL, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2),
+(71, 21, NULL, 1.0000000000, NULL, NULL, NULL, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2),
+(72, 22, NULL, 1.0000000000, NULL, NULL, NULL, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2),
+(73, 23, NULL, 1.0000000000, NULL, NULL, NULL, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2),
+(74, 24, NULL, 1.0000000000, NULL, NULL, NULL, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2),
+(75, 25, NULL, 1.0000000000, NULL, NULL, NULL, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2),
+(76, 26, NULL, 1.0000000000, NULL, NULL, NULL, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2),
+(77, 27, NULL, 1.0000000000, NULL, NULL, NULL, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2),
+(78, 28, NULL, 1.0000000000, NULL, NULL, NULL, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2),
+(79, 29, NULL, 1.0000000000, NULL, NULL, NULL, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2),
+(80, 30, NULL, 1.0000000000, NULL, NULL, NULL, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2),
+(81, 31, NULL, 1.0000000000, NULL, NULL, NULL, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2),
+(82, 32, NULL, 1.0000000000, NULL, NULL, NULL, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2),
+(83, 33, NULL, 1.0000000000, NULL, NULL, NULL, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2),
+(84, 34, NULL, 1.0000000000, NULL, NULL, NULL, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2),
+(85, 35, NULL, 1.0000000000, NULL, NULL, NULL, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2),
+(86, 36, NULL, 1.0000000000, NULL, NULL, NULL, '2024-06-17 02:34:03', '2024-06-17 02:34:03', 9, 2);
 
 -- --------------------------------------------------------
 
@@ -17213,7 +17389,7 @@ ALTER TABLE `electrical_expected_progress`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `electrical_progress`
 --
 ALTER TABLE `electrical_progress`
-  MODIFY `progress_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `progress_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `file_progress`
@@ -17249,13 +17425,13 @@ ALTER TABLE `loops_history`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `loops_progress`
 --
 ALTER TABLE `loops_progress`
-  MODIFY `progress_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=350;
+  MODIFY `progress_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=352;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `loops_progress_expected`
 --
 ALTER TABLE `loops_progress_expected`
-  MODIFY `progress_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=295;
+  MODIFY `progress_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=297;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `loop_week`
@@ -17387,13 +17563,13 @@ ALTER TABLE `project_cases`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `project_electrical`
 --
 ALTER TABLE `project_electrical`
-  MODIFY `electrical_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `electrical_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `project_loops`
 --
 ALTER TABLE `project_loops`
-  MODIFY `loop_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+  MODIFY `loop_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `project_pv`
@@ -17423,25 +17599,25 @@ ALTER TABLE `project_value_ratios_history`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `project_voltage161k`
 --
 ALTER TABLE `project_voltage161k`
-  MODIFY `voltage161k_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `voltage161k_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `project_voltage228k`
 --
 ALTER TABLE `project_voltage228k`
-  MODIFY `voltage228k_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `voltage228k_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `proportionblocks`
 --
 ALTER TABLE `proportionblocks`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=163;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=178;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `proportionhistory`
 --
 ALTER TABLE `proportionhistory`
-  MODIFY `history_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=167;
+  MODIFY `history_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=182;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `pvbank_progress`
@@ -17501,13 +17677,13 @@ ALTER TABLE `series_history`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `stages`
 --
 ALTER TABLE `stages`
-  MODIFY `stage_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `stage_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `stages_series`
 --
 ALTER TABLE `stages_series`
-  MODIFY `series_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `series_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `stage_changes`
@@ -17573,13 +17749,13 @@ ALTER TABLE `voltage161k_week`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `voltage228kbank_progress`
 --
 ALTER TABLE `voltage228kbank_progress`
-  MODIFY `voltage228k_bank_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=69;
+  MODIFY `voltage228k_bank_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=87;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `voltage228kbank_progress_expected`
 --
 ALTER TABLE `voltage228kbank_progress_expected`
-  MODIFY `voltage228k_bank_expected_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
+  MODIFY `voltage228k_bank_expected_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=90;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `voltage228k_bank_expected_history`
@@ -17597,13 +17773,13 @@ ALTER TABLE `voltage228k_bank_history`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `voltage228k_expected_progress`
 --
 ALTER TABLE `voltage228k_expected_progress`
-  MODIFY `expected_progress_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
+  MODIFY `expected_progress_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=90;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `voltage228k_progress`
 --
 ALTER TABLE `voltage228k_progress`
-  MODIFY `progress_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=69;
+  MODIFY `progress_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=87;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `voltage228k_week`
@@ -18000,7 +18176,7 @@ ALTER TABLE `project_value_ratios_history`
 --
 ALTER TABLE `project_voltage161k`
   ADD CONSTRAINT `fk_project_voltage161k_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`),
-  ADD CONSTRAINT `project_voltage161k_ibfk_1` FOREIGN KEY (`project_id`) REFERENCES `projects` (`project_id`),
+  ADD CONSTRAINT `project_voltage161k_ibfk_1` FOREIGN KEY (`project_id`) REFERENCES `project_loops` (`loop_id`),
   ADD CONSTRAINT `project_voltage161k_ibfk_2` FOREIGN KEY (`series_id`) REFERENCES `series` (`series_id`);
 
 --
