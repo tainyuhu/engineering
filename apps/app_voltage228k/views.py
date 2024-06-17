@@ -2176,8 +2176,12 @@ class GetCivilQuarterChartProgress(APIView):
                             voltage228k_week_id=last_week.week_id
                         ).first() if progress_record else None
 
-                        actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
-                        expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
+                        if voltage228k.construction_status == 1 :
+                                actual_percentage = 100
+                                expected_percentage = 100
+                        else:
+                            actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
+                            expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
 
                         actual_data.append(actual_percentage)
                         expected_data.append(expected_percentage)
@@ -2259,8 +2263,12 @@ class GetCivilAllQuarterChartProgress(APIView):
                             voltage228k_week_id=last_week.week_id
                         ).first() if progress_record else None
 
-                        actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
-                        expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
+                        if voltage228k.construction_status == 1 :
+                                actual_percentage = 100
+                                expected_percentage = 100
+                        else:
+                            actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
+                            expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
 
                         actual_data.append(actual_percentage)
                         expected_data.append(expected_percentage)
@@ -2345,8 +2353,12 @@ class GetCivilWeekChartProgress(APIView):
                         voltage228k_week_id=week.week_id
                     ).first()
 
-                    actual_percentage = progress_record.progress_percentage * 100 if progress_record else 0
-                    expected_percentage = expected_record.progress_percentage * 100 if expected_record else 0
+                    if voltage228k.construction_status == 1 :
+                            actual_percentage = 100
+                            expected_percentage = 100
+                    else:
+                        actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
+                        expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
 
                     actual_data.append(actual_percentage)
                     expected_data.append(expected_percentage)
@@ -2425,8 +2437,12 @@ class GetCableQuarterChartProgress(APIView):
                             voltage228k_week_id=last_week.week_id
                         ).first() if progress_record else None
 
-                        actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
-                        expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
+                        if voltage228k.construction_status == 1 :
+                            actual_percentage = 100
+                            expected_percentage = 100
+                        else:
+                            actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
+                            expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
 
                         actual_data.append(actual_percentage)
                         expected_data.append(expected_percentage)
@@ -2508,8 +2524,12 @@ class GetCableAllQuarterChartProgress(APIView):
                             voltage228k_week_id=last_week.week_id
                         ).first() if progress_record else None
 
-                        actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
-                        expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
+                        if voltage228k.construction_status == 1 :
+                            actual_percentage = 100
+                            expected_percentage = 100
+                        else:
+                            actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
+                            expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
 
                         actual_data.append(actual_percentage)
                         expected_data.append(expected_percentage)
@@ -2594,8 +2614,12 @@ class GetCableWeekChartProgress(APIView):
                         voltage228k_week_id=week.week_id
                     ).first()
 
-                    actual_percentage = progress_record.progress_percentage * 100 if progress_record else 0
-                    expected_percentage = expected_record.progress_percentage * 100 if expected_record else 0
+                    if voltage228k.construction_status == 1 :
+                        actual_percentage = 100
+                        expected_percentage = 100
+                    else:
+                        actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
+                        expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
 
                     actual_data.append(actual_percentage)
                     expected_data.append(expected_percentage)
@@ -2692,8 +2716,12 @@ class GetVoltage228KWeekChartProgress(APIView):
                             voltage228k_week_id=week.week_id
                         ).first()
 
-                        actual_percentage = (cable_progress_record.progress_percentage if cable_progress_record else 0 ) * 50 + (civil_progress_record.progress_percentage if civil_progress_record else 0) * 50
-                        expected_percentage = (cable_expected_record.progress_percentage if cable_expected_record else 0 ) * 50 + (civil_expected_record.progress_percentage if civil_expected_record else 0) * 50
+                        if (civil_data.construction_status == 1 ) and (cable_data.construction_status == 1):
+                            actual_percentage = 100
+                            expected_percentage = 100
+                        else:
+                            actual_percentage = (cable_progress_record.progress_percentage if cable_progress_record else 0 ) * 50 + (civil_progress_record.progress_percentage if civil_progress_record else 0) * 50
+                            expected_percentage = (cable_expected_record.progress_percentage if cable_expected_record else 0 ) * 50 + (civil_expected_record.progress_percentage if civil_expected_record else 0) * 50
 
                         actual_data.append(actual_percentage)
                         expected_data.append(expected_percentage)
@@ -2786,8 +2814,12 @@ class GetVoltage228KAllQuarterChartProgress(APIView):
                                 voltage228k_week_id=last_week.week_id
                             ).first()
 
-                            actual_percentage = (cable_progress_record.progress_percentage if cable_progress_record else 0 ) * 50 + (civil_progress_record.progress_percentage if civil_progress_record else 0) * 50
-                            expected_percentage = (cable_expected_record.progress_percentage if cable_expected_record else 0 ) * 50 + (civil_expected_record.progress_percentage if civil_expected_record else 0) * 50
+                            if (civil_data.construction_status == 1 ) and (cable_data.construction_status == 1):
+                                actual_percentage = 100
+                                expected_percentage = 100
+                            else:
+                                actual_percentage = (cable_progress_record.progress_percentage if cable_progress_record else 0 ) * 50 + (civil_progress_record.progress_percentage if civil_progress_record else 0) * 50
+                                expected_percentage = (cable_expected_record.progress_percentage if cable_expected_record else 0 ) * 50 + (civil_expected_record.progress_percentage if civil_expected_record else 0) * 50
 
                             actual_data.append(actual_percentage)
                             expected_data.append(expected_percentage)
@@ -2878,8 +2910,12 @@ class GetVoltage228KQuarterChartProgress(APIView):
                                 voltage228k_week_id=last_week.week_id
                             ).first()
 
-                            actual_percentage = (cable_progress_record.progress_percentage if cable_progress_record else 0 ) * 50 + (civil_progress_record.progress_percentage if civil_progress_record else 0) * 50
-                            expected_percentage = (cable_expected_record.progress_percentage if cable_expected_record else 0 ) * 50 + (civil_expected_record.progress_percentage if civil_expected_record else 0) * 50
+                            if (civil_data.construction_status == 1 ) and (cable_data.construction_status == 1):
+                                actual_percentage = 100
+                                expected_percentage = 100
+                            else:
+                                actual_percentage = (cable_progress_record.progress_percentage if cable_progress_record else 0 ) * 50 + (civil_progress_record.progress_percentage if civil_progress_record else 0) * 50
+                                expected_percentage = (cable_expected_record.progress_percentage if cable_expected_record else 0 ) * 50 + (civil_expected_record.progress_percentage if civil_expected_record else 0) * 50
 
                             actual_data.append(actual_percentage)
                             expected_data.append(expected_percentage)

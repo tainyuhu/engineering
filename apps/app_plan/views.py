@@ -585,8 +585,12 @@ class GetPlanQuarterChartProgress(APIView):
                             plan_week_id=last_week.week_id
                         ).first() if progress_record else None
 
-                        actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
-                        expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
+                        if plan.construction_status == 1 :
+                                actual_percentage = 100
+                                expected_percentage = 100
+                        else:
+                            actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
+                            expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
 
                         actual_data.append(actual_percentage)
                         expected_data.append(expected_percentage)
@@ -658,8 +662,12 @@ class GetPlanAllQuarterChartProgress(APIView):
                             plan_week_id=last_week.week_id
                         ).first() if progress_record else None
 
-                        actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
-                        expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
+                        if plan.construction_status == 1 :
+                                actual_percentage = 100
+                                expected_percentage = 100
+                        else:
+                            actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
+                            expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
 
                         actual_data.append(actual_percentage)
                         expected_data.append(expected_percentage)
@@ -735,8 +743,12 @@ class GetPlanWeekChartProgress(APIView):
                         plan_week_id=week.week_id
                     ).first()
 
-                    actual_percentage = progress_record.progress_percentage * 100 if progress_record else 0
-                    expected_percentage = expected_record.progress_percentage * 100 if expected_record else 0
+                    if plan.construction_status == 1 :
+                            actual_percentage = 100
+                            expected_percentage = 100
+                    else:
+                        actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
+                        expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
 
                     actual_data.append(actual_percentage)
                     expected_data.append(expected_percentage)

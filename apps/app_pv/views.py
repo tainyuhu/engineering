@@ -1523,8 +1523,12 @@ class GetPVQuarterChartProgress(APIView):
                                 pv_week_id=last_week.week_id
                             ).first() if progress_record else None
 
-                            actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
-                            expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
+                            if pv.construction_status == 1 :
+                                    actual_percentage = 100
+                                    expected_percentage = 100
+                            else:
+                                actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
+                                expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
 
                             actual_data.append(actual_percentage)
                             expected_data.append(expected_percentage)
@@ -1601,8 +1605,12 @@ class GetPVAllQuarterChartProgress(APIView):
                                     pv_week_id=last_week.week_id
                                 ).first() if progress_record else None
 
-                                actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
-                                expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
+                                if pv.construction_status == 1 :
+                                        actual_percentage = 100
+                                        expected_percentage = 100
+                                else:
+                                    actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
+                                    expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
 
                                 actual_data.append(actual_percentage)
                                 expected_data.append(expected_percentage)
@@ -1683,8 +1691,12 @@ class GetPVWeekChartProgress(APIView):
                             pv_week_id=week.week_id
                         ).first()
 
-                        actual_percentage = progress_record.progress_percentage * 100 if progress_record else 0
-                        expected_percentage = expected_record.progress_percentage * 100 if expected_record else 0
+                        if pv.construction_status == 1 :
+                                actual_percentage = 100
+                                expected_percentage = 100
+                        else:
+                            actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
+                            expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
 
                         actual_data.append(actual_percentage)
                         expected_data.append(expected_percentage)
@@ -1859,7 +1871,7 @@ class GetLoopChartProgress(APIView):
                     pv_expected = pv_entries.get(loop_name, {}).get('expected', 0)
                     breeding_actual = breeding_entries.get(loop_name, {}).get('actual', 0)
                     breeding_expected = breeding_entries.get(loop_name, {}).get('expected', 0)
-                
+
                     combined_actual = float(pv_actual) * 100 * 0.8 + float(breeding_actual) * 100 * 0.2
                     combined_expected = float(pv_expected) * 100 * 0.8 + float(breeding_expected) * 100 * 0.2
 
