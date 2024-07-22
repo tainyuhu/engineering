@@ -51,5 +51,16 @@ urlpatterns = [
     path('get_breeding_all_quarter_chart_progress/<int:loop_id>/<str:project_type>/', views.GetBreedingAllQuarterChartProgress.as_view(), name='get_breeding_all_quarter_chart_progress'),
     # 計算周進度報表
     path('get_breeding_week_chart_progress/<int:loop_id>/<int:currentPage>/<int:itemsPerPage>/<str:project_type>/', views.GetBreedingWeekChartProgress.as_view(), name='get_breeding_week_chart_progress'),
-
+    # 計算純BreedingLOOP周進度
+    path('get_only_breeding_loop_progress/<int:project_id>/<int:currentPage>/<int:itemsPerPage>/', views.GetOnlyLoopBreedingProgress.as_view(), name='get_only_breeding_loop_progress'),
+    # 計算純BreedingLOOP所有季進度
+    path('get_only_breeding_loop_all_quarter_progress/<int:project_id>/<int:currentPage>/<int:itemsPerPage>/', views.GetOnlyLoopBreedingAllQuarterProgress.as_view(), name='get_only_breeding_loop_all_quarter_progress'),
+    # 計算純BreedingLOOP季進度
+    path('get_only_breeding_loop_quarter_progress/<int:project_id>/<int:currentPage>/<int:itemsPerPage>/', views.GetOnlyLoopBreedingQuarterProgress.as_view(), name='get_only_breeding_loop_quarter_progress'),
+    # 計算總迴路即時季進度報表
+    path('get_loop_breeding_quarter_chart_progress/<int:project_id>/', views.GetLoopBreedingQuarterChartProgress.as_view(), name='get_gloop_quarter_chart_progress'),
+    # 計算總迴路所有季進度報表
+    path('get_loop_breeding_all_quarter_chart_progress/<int:project_id>/', views.GetLoopBreedingAllQuarterChartProgress.as_view(), name='get_gloop_all_quarter_chart_progress'),
+    # 計算總迴路所有周進度報表
+    path('get_loop_breeding_week_chart_progress/<int:project_id>/<int:currentPage>/<int:itemsPerPage>/', views.GetLoopBreedingWeekChartProgress.as_view(), name='get_gloop_week_chart_progress'),
 ]
