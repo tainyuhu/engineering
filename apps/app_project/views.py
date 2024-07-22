@@ -32,7 +32,6 @@ class ProportionBlocksDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ProportionBlocksSerializer
 #endregion
 
-
 #region 比例歷史
 class ProportionHistoryList(generics.ListCreateAPIView):
     queryset = ProportionHistory.objects.all()
@@ -42,7 +41,6 @@ class ProportionHistoryDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = ProportionHistory.objects.all()
     serializer_class = ProportionHistorySerializer
 #endregion
-
 
 #region 專案
 class ProjectList(generics.ListCreateAPIView):
@@ -300,7 +298,6 @@ class GetLoopProgress(APIView):
             progress_model = LoopsProgress
             expected_model = LoopsProgressExpected
 
-            
             for loop in loops:
                 progress_records = progress_model.objects.filter(loop_id=loop.loop_id).order_by('-loop_week_id')
                 if progress_records.exists():
@@ -391,14 +388,24 @@ class GetLoopAllQuarterProgress(APIView):
             progress_model = LoopsProgress
             expected_model = LoopsProgressExpected
 
+            # 確認是否在工程時間內
+            projectss = projects.first()
+            engineering_start = min(projectss.actualstart_date, projectss.plannedstart_date)
+            engineering_end = projectss.actualend_date or datetime.date.today()
+
+            relevant_years = LoopWeek.objects.filter(
+                start_date__gte=engineering_start,
+                end_date__lte=engineering_end
+            ).values_list('year', flat=True).distinct()
+
             for loop in loops:
-               # 找到每一個季度的最後一周
-                all_years = LoopWeek.objects.values_list('year', flat=True).distinct()
-                for year in all_years:
+                for year in relevant_years:
                     for quarter in range(1, 5):
                         last_week_of_quarter = LoopWeek.objects.filter(
                             year=year, 
-                            quarter=quarter
+                            quarter=quarter,
+                            start_date__gte=engineering_start,
+                            end_date__lte=engineering_end
                         ).aggregate(Max('week'))['week__max']
 
                         if last_week_of_quarter:
@@ -509,7 +516,6 @@ class GetLoopAllQuarterProgress(APIView):
 class GetLoopQuarterProgress(APIView):
     def get(self, request, project_id, currentPage, itemsPerPage):
         try:
-            current_year = datetime.datetime.now().year
             projects = Project.objects.filter(project_id=project_id)
             loops = ProjectLoop.objects.filter(project_id__in=projects)
 
@@ -517,52 +523,69 @@ class GetLoopQuarterProgress(APIView):
             progress_model = LoopsProgress
             expected_model = LoopsProgressExpected
 
+            # 確認是否在工程時間內
+            loopss = loops.first()
+            engineering_start = min(loopss.actualstart_date, loopss.plannedstart_date)
+            engineering_end = loopss.actualend_date or datetime.date.today()
+
+            # 確認工程結束年份
+            engineering_end_year = engineering_end.year
+
+            relevant_years = LoopWeek.objects.filter(
+                start_date__gte=engineering_start,
+                end_date__lte=engineering_end,
+                year=engineering_end_year
+            ).values_list('year', flat=True).distinct()
+
             for loop in loops:
-                for quarter in range(1, 5):
-                    last_week_of_quarter = LoopWeek.objects.filter(
-                        year=current_year, 
-                        quarter=quarter
-                    ).aggregate(Max('week'))['week__max']
+                for year in relevant_years:
+                    for quarter in range(1, 5):
+                        last_week_of_quarter = LoopWeek.objects.filter(
+                            year=year, 
+                            quarter=quarter,
+                            start_date__gte=engineering_start,
+                            end_date__lte=engineering_end
+                        ).aggregate(Max('week'))['week__max']
 
-                    if last_week_of_quarter:
-                        last_week = LoopWeek.objects.get(
-                            year=current_year, 
-                            quarter=quarter, 
-                            week=last_week_of_quarter
-                        )
+                        if last_week_of_quarter:
+                            last_week = LoopWeek.objects.get(
+                                year=year, 
+                                quarter=quarter, 
+                                week=last_week_of_quarter
+                            )
 
-                        progress_records = progress_model.objects.filter(
-                            loop_id=loop.loop_id, 
-                            loop_week_id=last_week.week_id
-                        )
-                        if progress_records.exists():
-                            for progress_record in progress_records:
-                                expected_record = expected_model.objects.filter(
-                                    loop_id=loop.loop_id, 
-                                    loop_week_id=progress_record.loop_week_id
-                                ).first()
-                                if expected_record:
-                                    date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
-                                    date_ranges_with_data[date_range].append({
-                                        "year": last_week.year,
-                                        "quarter": last_week.quarter,
-                                        "week": last_week.week,
-                                        "loop_name": loop.loop_name,
-                                        "actual": progress_record.progress_percentage,
-                                        "expected": expected_record.progress_percentage,
-                                        "construction_status": loop.construction_status,
-                                    })
-                        else:
-                            date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
-                            date_ranges_with_data[date_range].append({
-                                "loop_name": loop.loop_name,
-                                "construction_status": loop.construction_status,
-                                "actual": 0,
-                                "expected": 0,
-                                "year": last_week.year,
-                                "quarter": last_week.quarter,
-                                "week": last_week.week,
-                            })
+                            progress_records = progress_model.objects.filter(
+                                loop_id=loop.loop_id, 
+                                loop_week_id=last_week.week_id
+                            )
+                            if progress_records.exists():
+                                for progress_record in progress_records:
+                                    expected_record = expected_model.objects.filter(
+                                        loop_id=loop.loop_id, 
+                                        loop_week_id=progress_record.loop_week_id
+                                    ).first()
+                                    if expected_record:
+                                        date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
+                                        date_ranges_with_data[date_range].append({
+                                            "year": last_week.year,
+                                            "quarter": last_week.quarter,
+                                            "week": last_week.week,
+                                            "loop_name": loop.loop_name,
+                                            "actual": progress_record.progress_percentage,
+                                            "expected": expected_record.progress_percentage,
+                                            "construction_status": loop.construction_status,
+                                        })
+                            else:
+                                date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
+                                date_ranges_with_data[date_range].append({
+                                    "loop_name": loop.loop_name,
+                                    "construction_status": loop.construction_status,
+                                    "actual": 0,
+                                    "expected": 0,
+                                    "year": last_week.year,
+                                    "quarter": last_week.quarter,
+                                    "week": last_week.week,
+                                })
 
             # 轉換有序字典並提取最新的 date_range 數據
             ordered_date_ranges = OrderedDict(sorted(date_ranges_with_data.items(), reverse=True))
@@ -656,23 +679,46 @@ class GetLoopQuarterChartProgress(APIView):
             progress_model = LoopsProgress
             expected_model = LoopsProgressExpected
 
-            current_year = datetime.datetime.now().year
-            labels = [f"Q{quarter}" for quarter in range(1, 5)]
-
             datasets = []
+            relevant_years_and_quarters = set()
+
+            # 確認是否在工程時間內
+            loopss = loops.first()
+            engineering_start = min(loopss.actualstart_date, loopss.plannedstart_date)
+            engineering_end = loopss.actualend_date or datetime.date.today()
+
+            # 確認工程結束年份
+            engineering_end_year = engineering_end.year
+
+            for loop in loops:
+                # 根據工程日期範圍過濾 Week，並收集指定年份的季度
+                years_and_quarters = LoopWeek.objects.filter(
+                    start_date__gte=engineering_start,
+                    end_date__lte=engineering_end,
+                    year=engineering_end_year  # 只取出該年分季度的資料
+                ).values_list('year', 'quarter').distinct()
+
+                for year, quarter in years_and_quarters:
+                    relevant_years_and_quarters.add((year, quarter))
+
+            # 將收集到的年份和季度排序並生成標籤
+            all_years_and_quarters = sorted(relevant_years_and_quarters)
+            labels = [f"{year} Q{quarter}" for year, quarter in all_years_and_quarters]
 
             for loop in loops:
                 actual_data = []
                 expected_data = []
                 for quarter in range(1, 5):
                     last_week_of_quarter = LoopWeek.objects.filter(
-                        year=current_year, 
-                        quarter=quarter
+                        year=engineering_end_year, 
+                        quarter=quarter,
+                        start_date__gte=engineering_start,
+                        end_date__lte=engineering_end
                     ).aggregate(Max('week'))['week__max']
 
                     if last_week_of_quarter:
                         last_week = LoopWeek.objects.get(
-                            year=current_year, 
+                            year=engineering_end_year, 
                             quarter=quarter, 
                             week=last_week_of_quarter
                         )
@@ -687,9 +733,12 @@ class GetLoopQuarterChartProgress(APIView):
                             loop_week_id=last_week.week_id
                         ).first() if progress_record else None
 
-                        if loop.construction_status == 1 :
+                        if progress_record == None and loop.construction_status == 1:
                             actual_percentage = 100
                             expected_percentage = 100
+                        elif progress_record == None :
+                            actual_percentage = 0
+                            expected_percentage = 0
                         else:
                             actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
                             expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
@@ -732,28 +781,44 @@ class GetLoopAllQuarterChartProgress(APIView):
             expected_model = LoopsProgressExpected
 
             datasets = []
-            all_years = LoopWeek.objects.values_list('year', flat=True).order_by('year').distinct()
+            relevant_years_and_quarters = set()
 
-            labels = [f"{year} Q{quarter}" for year in all_years for quarter in range(1, 5)]
+            # 確認是否在工程時間內
+            loopss = loops.first()
+            engineering_start = min(loopss.actualstart_date, loopss.plannedstart_date)
+            engineering_end = loopss.actualend_date or datetime.date.today()
+
+            for loop in loops:
+                # 根據工程日期範圍過濾 Week，並收集指定年份的季度
+                years_and_quarters = LoopWeek.objects.filter(
+                    start_date__gte=engineering_start,
+                    end_date__lte=engineering_end
+                ).values_list('year', 'quarter').distinct()
+
+                for year, quarter in years_and_quarters:
+                    relevant_years_and_quarters.add((year, quarter))
+
+            # 將收集到的年份和季度排序並生成標籤
+            all_years_and_quarters = sorted(relevant_years_and_quarters)
+            labels = [f"{year} Q{quarter}" for year, quarter in all_years_and_quarters]
 
             for loop in loops:
                 actual_data = []
                 expected_data = []
-                for year in all_years:
-                    quarters_with_data = LoopWeek.objects.filter(year=year).values_list('quarter', flat=True).distinct()
+                for year, quarter in all_years_and_quarters:
+                    last_week_of_quarter = LoopWeek.objects.filter(
+                        year=year, 
+                        quarter=quarter,
+                        start_date__gte=engineering_start,
+                        end_date__lte=engineering_end
+                    ).aggregate(Max('week'))['week__max']
 
-                    for quarter in quarters_with_data:
-                        last_week_of_quarter = LoopWeek.objects.filter(
+                    if last_week_of_quarter:
+                        last_week = LoopWeek.objects.get(
                             year=year, 
-                            quarter=quarter
-                        ).aggregate(Max('week'))['week__max']
-
-                        if last_week_of_quarter:
-                            last_week = LoopWeek.objects.get(
-                                year=year, 
-                                quarter=quarter, 
-                                week=last_week_of_quarter
-                            )
+                            quarter=quarter, 
+                            week=last_week_of_quarter
+                        )
 
                         progress_record = progress_model.objects.filter(
                             loop_id=loop.loop_id, 
@@ -765,9 +830,12 @@ class GetLoopAllQuarterChartProgress(APIView):
                             loop_week_id=last_week.week_id
                         ).first() if progress_record else None
 
-                        if loop.construction_status == 1 :
+                        if progress_record == None and loop.construction_status == 1:
                             actual_percentage = 100
                             expected_percentage = 100
+                        elif progress_record == None :
+                            actual_percentage = 0
+                            expected_percentage = 0
                         else:
                             actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
                             expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
@@ -810,8 +878,16 @@ class GetLoopWeekChartProgress(APIView):
             progress_model = LoopsProgress
             expected_model = LoopsProgressExpected
 
+            # 確認是否在工程時間內
+            loopss = loops.first()
+            engineering_start = min(loopss.actualstart_date, loopss.plannedstart_date)
+            engineering_end = loopss.actualend_date or datetime.date.today()
+
             # 獲取所有周，並由新到舊排序
-            all_weeks = LoopWeek.objects.annotate(
+            all_weeks = LoopWeek.objects.filter(
+                start_date__gte=engineering_start,
+                end_date__lte=engineering_end
+            ).annotate(
                 date_range=Concat(
                     'start_date', V(' - '), 'end_date',
                     output_field=CharField()
@@ -847,9 +923,12 @@ class GetLoopWeekChartProgress(APIView):
                         loop_week_id=week.week_id
                     ).first()
 
-                    if loop.construction_status == 1 :
+                    if progress_record == None and loop.construction_status == 1:
                         actual_percentage = 100
                         expected_percentage = 100
+                    elif progress_record == None :
+                        actual_percentage = 0
+                        expected_percentage = 0
                     else:
                         actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
                         expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
@@ -983,14 +1062,25 @@ class GetProjectAllQuarterProgress(APIView):
             progress_model = ProjectsProgress
             expected_model = ProjectsProgressExpected
 
+            # 確認是否在工程時間內
+            plans = Plan.objects.filter(plan_id=plan_id).first()
+            engineering_start = min(plans.actual_start_date, plans.planned_start_date)
+            engineering_end = plans.actual_end_date or datetime.date.today()
+
+            relevant_years = ProjectWeek.objects.filter(
+                start_date__gte=engineering_start,
+                end_date__lte=engineering_end
+            ).values_list('year', flat=True).distinct()
+
             for project in projects:
                # 找到每一個季度的最後一周
-                all_years = ProjectWeek.objects.values_list('year', flat=True).distinct()
-                for year in all_years:
+                for year in relevant_years:
                     for quarter in range(1, 5):
                         last_week_of_quarter = ProjectWeek.objects.filter(
                             year=year, 
-                            quarter=quarter
+                            quarter=quarter,
+                            start_date__gte=engineering_start,
+                            end_date__lte=engineering_end
                         ).aggregate(Max('week'))['week__max']
 
                         if last_week_of_quarter:
@@ -1101,59 +1191,75 @@ class GetProjectAllQuarterProgress(APIView):
 class GetProjectQuarterProgress(APIView):
     def get(self, request, plan_id, currentPage, itemsPerPage):
         try:
-            current_year = datetime.datetime.now().year
             projects = Project.objects.filter(plan_id=plan_id)
 
             date_ranges_with_data = defaultdict(list)
             progress_model = ProjectsProgress
             expected_model = ProjectsProgressExpected
 
+            # 確認是否在工程時間內
+            plans = Plan.objects.filter(plan_id=plan_id).first()
+            engineering_start = min(plans.actual_start_date, plans.planned_start_date)
+            engineering_end = plans.actual_end_date or datetime.date.today()
+
+            # 確認工程結束年份
+            engineering_end_year = engineering_end.year
+
+            relevant_years = ProjectWeek.objects.filter(
+                start_date__gte=engineering_start,
+                end_date__lte=engineering_end,
+                year=engineering_end_year
+            ).values_list('year', flat=True).distinct()
+
             for project in projects:
-                for quarter in range(1, 5):
-                    last_week_of_quarter = ProjectWeek.objects.filter(
-                        year=current_year, 
-                        quarter=quarter
-                    ).aggregate(Max('week'))['week__max']
+                for year in relevant_years:
+                    for quarter in range(1, 5):
+                        last_week_of_quarter = ProjectWeek.objects.filter(
+                            year=year, 
+                            quarter=quarter,
+                            start_date__gte=engineering_start,
+                            end_date__lte=engineering_end
+                        ).aggregate(Max('week'))['week__max']
 
-                    if last_week_of_quarter:
-                        last_week = ProjectWeek.objects.get(
-                            year=current_year, 
-                            quarter=quarter, 
-                            week=last_week_of_quarter
-                        )
+                        if last_week_of_quarter:
+                            last_week = ProjectWeek.objects.get(
+                                year=year, 
+                                quarter=quarter, 
+                                week=last_week_of_quarter
+                            )
 
-                        progress_records = progress_model.objects.filter(
-                            project_id=project.project_id, 
-                            project_week_id=last_week.week_id
-                        )
-                        if progress_records.exists():
-                            for progress_record in progress_records:
-                                expected_record = expected_model.objects.filter(
-                                    project_id=project.project_id, 
-                                    project_week_id=progress_record.project_week_id
-                                ).first()
-                                if expected_record:
-                                    date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
-                                    date_ranges_with_data[date_range].append({
-                                        "year": last_week.year,
-                                        "quarter": last_week.quarter,
-                                        "week": last_week.week,
-                                        "project_name": project.project_name,
-                                        "actual": progress_record.progress_percentage,
-                                        "expected": expected_record.progress_percentage,
-                                        "construction_status": project.construction_status,
-                                    })
-                        else:
-                            date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
-                            date_ranges_with_data[date_range].append({
-                                "project_name": project.project_name,
-                                "construction_status": project.construction_status,
-                                "actual": 0,
-                                "expected": 0,
-                                "year": last_week.year,
-                                "quarter": last_week.quarter,
-                                "week": last_week.week,
-                            })
+                            progress_records = progress_model.objects.filter(
+                                project_id=project.project_id, 
+                                project_week_id=last_week.week_id
+                            )
+                            if progress_records.exists():
+                                for progress_record in progress_records:
+                                    expected_record = expected_model.objects.filter(
+                                        project_id=project.project_id, 
+                                        project_week_id=progress_record.project_week_id
+                                    ).first()
+                                    if expected_record:
+                                        date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
+                                        date_ranges_with_data[date_range].append({
+                                            "year": last_week.year,
+                                            "quarter": last_week.quarter,
+                                            "week": last_week.week,
+                                            "project_name": project.project_name,
+                                            "actual": progress_record.progress_percentage,
+                                            "expected": expected_record.progress_percentage,
+                                            "construction_status": project.construction_status,
+                                        })
+                            else:
+                                date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
+                                date_ranges_with_data[date_range].append({
+                                    "project_name": project.project_name,
+                                    "construction_status": project.construction_status,
+                                    "actual": 0,
+                                    "expected": 0,
+                                    "year": last_week.year,
+                                    "quarter": last_week.quarter,
+                                    "week": last_week.week,
+                                })
 
             # 轉換有序字典並提取最新的 date_range 數據
             ordered_date_ranges = OrderedDict(sorted(date_ranges_with_data.items(), reverse=True))
@@ -1229,23 +1335,46 @@ class GetProjectQuarterChartProgress(APIView):
             progress_model = ProjectsProgress
             expected_model = ProjectsProgressExpected
 
-            current_year = datetime.datetime.now().year
-            labels = [f"Q{quarter}" for quarter in range(1, 5)]
-
             datasets = []
+            relevant_years_and_quarters = set()
+
+            # 確認是否在工程時間內
+            plans = Plan.objects.filter(plan_id=plan_id).first()
+            engineering_start = min(plans.actual_start_date, plans.planned_start_date)
+            engineering_end = plans.actual_end_date or datetime.date.today()
+
+            # 確認工程結束年份
+            engineering_end_year = engineering_end.year
+
+            for project in projects:
+                # 根據工程日期範圍過濾 Week，並收集指定年份的季度
+                years_and_quarters = ProjectWeek.objects.filter(
+                    start_date__gte=engineering_start,
+                    end_date__lte=engineering_end,
+                    year=engineering_end_year  # 只取出該年分季度的資料
+                ).values_list('year', 'quarter').distinct()
+
+                for year, quarter in years_and_quarters:
+                    relevant_years_and_quarters.add((year, quarter))
+
+            # 將收集到的年份和季度排序並生成標籤
+            all_years_and_quarters = sorted(relevant_years_and_quarters)
+            labels = [f"{year} Q{quarter}" for year, quarter in all_years_and_quarters]
 
             for project in projects:
                 actual_data = []
                 expected_data = []
                 for quarter in range(1, 5):
                     last_week_of_quarter = ProjectWeek.objects.filter(
-                        year=current_year, 
-                        quarter=quarter
+                        year=year, 
+                        quarter=quarter,
+                        start_date__gte=engineering_start,
+                        end_date__lte=engineering_end
                     ).aggregate(Max('week'))['week__max']
 
                     if last_week_of_quarter:
                         last_week = ProjectWeek.objects.get(
-                            year=current_year, 
+                            year=year, 
                             quarter=quarter, 
                             week=last_week_of_quarter
                         )
@@ -1260,9 +1389,13 @@ class GetProjectQuarterChartProgress(APIView):
                             project_week_id=last_week.week_id
                         ).first() if progress_record else None
 
-                        if project.construction_status == 1 :
-                            actual_percentage = 100
-                            expected_percentage = 100
+                        if progress_record is None:
+                            if project.construction_status == 1:
+                                actual_percentage = 100
+                                expected_percentage = 100
+                            else:
+                                actual_percentage = 0
+                                expected_percentage = 0
                         else:
                             actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
                             expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
@@ -1304,28 +1437,44 @@ class GetProjectAllQuarterChartProgress(APIView):
             expected_model = ProjectsProgressExpected
 
             datasets = []
-            all_years = ProjectWeek.objects.values_list('year', flat=True).order_by('year').distinct()
+            relevant_years_and_quarters = set()
 
-            labels = [f"{year} Q{quarter}" for year in all_years for quarter in range(1, 5)]
+            # 確認是否在工程時間內
+            plans = Plan.objects.filter(plan_id=plan_id).first()
+            engineering_start = min(plans.actual_start_date, plans.planned_start_date)
+            engineering_end = plans.actual_end_date or datetime.date.today()
+
+            for project in projects:
+                # 根據工程日期範圍過濾 Week，並收集指定年份的季度
+                years_and_quarters = ProjectWeek.objects.filter(
+                    start_date__gte=engineering_start,
+                    end_date__lte=engineering_end
+                ).values_list('year', 'quarter').distinct()
+
+                for year, quarter in years_and_quarters:
+                    relevant_years_and_quarters.add((year, quarter))
+
+            # 將收集到的年份和季度排序並生成標籤
+            all_years_and_quarters = sorted(relevant_years_and_quarters)
+            labels = [f"{year} Q{quarter}" for year, quarter in all_years_and_quarters]
 
             for project in projects:
                 actual_data = []
                 expected_data = []
-                for year in all_years:
-                    quarters_with_data = ProjectWeek.objects.filter(year=year).values_list('quarter', flat=True).distinct()
+                for year, quarter in all_years_and_quarters:
+                    last_week_of_quarter = ProjectWeek.objects.filter(
+                        year=year, 
+                        quarter=quarter,
+                        start_date__gte=engineering_start,
+                        end_date__lte=engineering_end
+                    ).aggregate(Max('week'))['week__max']
 
-                    for quarter in quarters_with_data:
-                        last_week_of_quarter = ProjectWeek.objects.filter(
+                    if last_week_of_quarter:
+                        last_week = ProjectWeek.objects.get(
                             year=year, 
-                            quarter=quarter
-                        ).aggregate(Max('week'))['week__max']
-
-                        if last_week_of_quarter:
-                            last_week = ProjectWeek.objects.get(
-                                year=year, 
-                                quarter=quarter, 
-                                week=last_week_of_quarter
-                            )
+                            quarter=quarter, 
+                            week=last_week_of_quarter
+                        )
 
                         progress_record = progress_model.objects.filter(
                             project_id=project.project_id, 
@@ -1337,9 +1486,13 @@ class GetProjectAllQuarterChartProgress(APIView):
                             project_week_id=last_week.week_id
                         ).first() if progress_record else None
 
-                        if project.construction_status == 1 :
-                            actual_percentage = 100
-                            expected_percentage = 100
+                        if progress_record is None:
+                            if project.construction_status == 1:
+                                actual_percentage = 100
+                                expected_percentage = 100
+                            else:
+                                actual_percentage = 0
+                                expected_percentage = 0
                         else:
                             actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
                             expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
@@ -1381,8 +1534,16 @@ class GetProjectWeekChartProgress(APIView):
             progress_model = ProjectsProgress
             expected_model = ProjectsProgressExpected
 
+            # 確認是否在工程時間內
+            plans = Plan.objects.filter(plan_id=plan_id).first()
+            engineering_start = min(plans.actual_start_date, plans.planned_start_date)
+            engineering_end = plans.actual_end_date or datetime.date.today()
+
             # 獲取所有周，並由新到舊排序
-            all_weeks = ProjectWeek.objects.annotate(
+            all_weeks = ProjectWeek.objects.filter(
+                start_date__gte=engineering_start,
+                end_date__lte=engineering_end
+            ).annotate(
                 date_range=Concat(
                     'start_date', V(' - '), 'end_date',
                     output_field=CharField()
@@ -1418,9 +1579,13 @@ class GetProjectWeekChartProgress(APIView):
                         project_week_id=week.week_id
                     ).first()
 
-                    if project.construction_status == 1 :
+                    if progress_record is None:
+                        if project.construction_status == 1:
                             actual_percentage = 100
                             expected_percentage = 100
+                        else:
+                            actual_percentage = 0
+                            expected_percentage = 0
                     else:
                         actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
                         expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0

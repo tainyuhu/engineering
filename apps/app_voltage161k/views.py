@@ -207,7 +207,7 @@ class GetVoltage161KProgress(APIView):
                     if project_type == "bank":
                         formatted_results.append({
                             "loop_name": item["loop_name"],
-                            "date_range": date_range,
+                            "date_range": latest_date_range,
                             "actual": item["actual"],
                             "expected": item["expected"],
                             "construction_status": item["construction_status"],
@@ -217,7 +217,7 @@ class GetVoltage161KProgress(APIView):
                     else:
                         formatted_results.append({
                             "loop_name": item["loop_name"],
-                            "date_range": date_range,
+                            "date_range": latest_date_range,
                             "actual": item["actual"],
                             "expected": item["expected"],
                             "construction_status": item["construction_status"],
@@ -271,15 +271,26 @@ class GetVoltage161KAllQuarterProgress(APIView):
                 expected_model = Voltage161KBankProgressExpected
             else:
                 return Response({"error": "Invalid project type."}, status=400)
+            
+            # 確認是否在工程時間內
+            project = Project.objects.filter(project_id=project_id).first()
+            engineering_start = min(project.actualstart_date, project.plannedstart_date)
+            engineering_end = project.actualend_date or datetime.date.today()
+
+            relevant_years = Voltage161KWeek.objects.filter(
+                start_date__gte=engineering_start,
+                end_date__lte=engineering_end
+            ).values_list('year', flat=True).distinct()
 
             for voltage161k in voltage161ks:
-               # 找到每一個季度的最後一周
-                all_years = Voltage161KWeek.objects.values_list('year', flat=True).distinct()
-                for year in all_years:
+                # 找到每一個季度的最後一周
+                for year in relevant_years:
                     for quarter in range(1, 5):
                         last_week_of_quarter = Voltage161KWeek.objects.filter(
                             year=year, 
-                            quarter=quarter
+                            quarter=quarter,
+                            start_date__gte=engineering_start,
+                            end_date__lte=engineering_end
                         ).aggregate(Max('week'))['week__max']
 
                         if last_week_of_quarter:
@@ -398,7 +409,7 @@ class GetVoltage161KAllQuarterProgress(APIView):
                             "quarter": item["quarter"],
                             "week": item["week"],
                             "loop_name": item["loop_name"],
-                            "date_range": date_range,
+                            "date_range": latest_date_range,
                             "actual": item["actual"],
                             "expected": item["expected"],
                             "construction_status": item["construction_status"],
@@ -411,7 +422,7 @@ class GetVoltage161KAllQuarterProgress(APIView):
                             "quarter": item["quarter"],
                             "week": item["week"],
                             "loop_name": item["loop_name"],
-                            "date_range": date_range,
+                            "date_range": latest_date_range,
                             "actual": item["actual"],
                             "expected": item["expected"],
                             "construction_status": item["construction_status"],
@@ -458,7 +469,6 @@ class GetVoltage161KAllQuarterProgress(APIView):
 class GetVoltage161KQuarterProgress(APIView):
     def get(self, request, project_id, currentPage, itemsPerPage, project_type):
         try:
-            current_year = datetime.datetime.now().year
             projects = Project.objects.filter(project_id=project_id)
             voltage161ks = ProjectVoltage161K.objects.filter(project_id__in=projects)
 
@@ -472,55 +482,75 @@ class GetVoltage161KQuarterProgress(APIView):
                 expected_model = Voltage161KBankProgressExpected
             else:
                 return Response({"error": "Invalid project type."}, status=400)
+            
+            # 確認是否在工程時間內
+            project = Project.objects.filter(project_id=project_id).first()
+            # 獲取工程開始和結束日期
+            engineering_start = min(project.actualstart_date, project.plannedstart_date)
+            engineering_end = project.actualend_date or datetime.date.today()
 
+            # 確認工程結束年份
+            engineering_end_year = engineering_end.year
+
+            relevant_years = Voltage161KWeek.objects.filter(
+                start_date__gte=engineering_start,
+                end_date__lte=engineering_end,
+                year=engineering_end_year
+            ).values_list('year', flat=True).distinct()
+            
             for voltage161k in voltage161ks:
-                for quarter in range(1, 5):
-                    last_week_of_quarter = Voltage161KWeek.objects.filter(
-                        year=current_year, 
-                        quarter=quarter
-                    ).aggregate(Max('week'))['week__max']
+                # 找到每一個季度的最後一周
+                for year in relevant_years:
+                    for quarter in range(1, 5):
+                        last_week_of_quarter = Voltage161KWeek.objects.filter(
+                            year=year, 
+                            quarter=quarter,
+                            start_date__gte=engineering_start,
+                            end_date__lte=engineering_end
+                        ).aggregate(Max('week'))['week__max']
 
-                    if last_week_of_quarter:
-                        last_week = Voltage161KWeek.objects.get(
-                            year=current_year, 
-                            quarter=quarter, 
-                            week=last_week_of_quarter
-                        )
+                        if last_week_of_quarter:
+                            last_week = Voltage161KWeek.objects.get(
+                                year=year, 
+                                quarter=quarter, 
+                                week=last_week_of_quarter
+                            )
 
-                        progress_records = progress_model.objects.filter(
-                            voltage161k_id=voltage161k.voltage161k_id, 
-                            voltage161k_week_id=last_week.week_id
-                        )
-                        if progress_records.exists():
-                            for progress_record in progress_records:
-                                expected_record = expected_model.objects.filter(
-                                    voltage161k_id=voltage161k.voltage161k_id, 
-                                    voltage161k_week_id=progress_record.voltage161k_week_id
-                                ).first()
-                                if expected_record:
-                                    date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
-                                    if project_type == "bank":
-                                        date_ranges_with_data[date_range].append({
-                                            "year": last_week.year,
-                                            "quarter": last_week.quarter,
-                                            "week": last_week.week,
-                                            "loop_name": voltage161k.voltage161k_name,
-                                            "actual": progress_record.progress_percentage,
-                                            "expected": expected_record.progress_percentage,
-                                            "construction_status": voltage161k.construction_status,
-                                            "actual_lag_status": progress_record.lag_status,
-                                            "expected_lag_status": expected_record.lag_status,
-                                        })
-                                    else:
-                                        date_ranges_with_data[date_range].append({
-                                            "loop_name": voltage161k.voltage161k_name,
-                                            "actual": progress_record.progress_percentage,
-                                            "expected": expected_record.progress_percentage,
-                                            "construction_status": voltage161k.construction_status,
-                                            "year": last_week.year,
-                                            "quarter": last_week.quarter,
-                                            "week": last_week.week,
-                                        })
+                            progress_records = progress_model.objects.filter(
+                                voltage161k_id=voltage161k.voltage161k_id, 
+                                voltage161k_week_id=last_week.week_id
+                            )
+
+                            if progress_records.exists():
+                                for progress_record in progress_records:
+                                    expected_record = expected_model.objects.filter(
+                                        voltage161k_id=voltage161k.voltage161k_id, 
+                                        voltage161k_week_id=progress_record.voltage161k_week_id
+                                    ).first()
+                                    if expected_record:
+                                        date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
+                                        if project_type == "bank":
+                                            date_ranges_with_data[date_range].append({
+                                                "year": last_week.year,
+                                                "quarter": last_week.quarter,
+                                                "week": last_week.week,
+                                                "loop_name": voltage161k.voltage161k_name,
+                                                "actual": progress_record.progress_percentage,
+                                                "expected": expected_record.progress_percentage,
+                                                "construction_status": voltage161k.construction_status,
+                                                "actual_lag_status": progress_record.lag_status,
+                                                "expected_lag_status": expected_record.lag_status,
+                                            })
+                                        else:
+                                            date_ranges_with_data[date_range].append({
+                                                "loop_name": voltage161k.voltage161k_name,
+                                                "actual": progress_record.progress_percentage,
+                                                "expected": expected_record.progress_percentage,
+                                                "construction_status": voltage161k.construction_status,
+                                                "year": last_week.year,
+                                                "quarter": last_week.quarter,
+                                                "week": last_week.week,
+                                            })
                         else:
                             date_range = f"{last_week.start_date.strftime('%Y-%m-%d')} - {last_week.end_date.strftime('%Y-%m-%d')}"
                             if project_type == "bank":
@@ -596,7 +626,7 @@ class GetVoltage161KQuarterProgress(APIView):
                             "quarter": item["quarter"],
                             "week": item["week"],
                             "loop_name": item["loop_name"],
-                            "date_range": date_range,
+                            "date_range": latest_date_range,
                             "actual": item["actual"],
                             "expected": item["expected"],
                             "construction_status": item["construction_status"],
@@ -609,7 +639,7 @@ class GetVoltage161KQuarterProgress(APIView):
                             "quarter": item["quarter"],
                             "week": item["week"],
                             "loop_name": item["loop_name"],
-                            "date_range": date_range,
+                            "date_range": latest_date_range,
                             "actual": item["actual"],
                             "expected": item["expected"],
                             "construction_status": item["construction_status"],
@@ -673,7 +703,6 @@ class GetVoltage161KQuarterChartProgress(APIView):
     
     def get(self, request, project_id, project_type):
         try:
-
             projects = Project.objects.filter(project_id=project_id)
             voltage161ks = ProjectVoltage161K.objects.filter(project_id__in=projects)
 
@@ -686,23 +715,47 @@ class GetVoltage161KQuarterChartProgress(APIView):
             else:
                 return Response({"error": "Invalid project type."}, status=400)
 
-            current_year = datetime.datetime.now().year
-            labels = [f"Q{quarter}" for quarter in range(1, 5)]
-
             datasets = []
+            relevant_years_and_quarters = set()
+            # 確認是否在工程時間內
+            project = Project.objects.filter(project_id=project_id).first()
+            # 獲取工程開始和結束日期
+            engineering_start = min(project.actualstart_date, project.plannedstart_date)
+            engineering_end = project.actualend_date or datetime.date.today()
+
+            # 確認工程結束年份
+            engineering_end_year = engineering_end.year
+
+            for voltage161k in voltage161ks:
+                # 根據工程日期範圍過濾 Voltage161KWeek，並收集指定年份的季度
+                years_and_quarters = Voltage161KWeek.objects.filter(
+                    start_date__gte=engineering_start,
+                    end_date__lte=engineering_end,
+                    year=engineering_end_year  # 只取出該年分季度的資料
+                ).values_list('year', 'quarter').distinct()
+
+                for year, quarter in years_and_quarters:
+                    relevant_years_and_quarters.add((year, quarter))
+
+            # 將收集到的年份和季度排序並生成標籤
+            all_years_and_quarters = sorted(relevant_years_and_quarters)
+            labels = [f"{year} Q{quarter}" for year, quarter in all_years_and_quarters]
 
             for voltage161k in voltage161ks:
                 actual_data = []
                 expected_data = []
-                for quarter in range(1, 5):
+
+                for year, quarter in all_years_and_quarters:
                     last_week_of_quarter = Voltage161KWeek.objects.filter(
-                        year=current_year, 
-                        quarter=quarter
+                        year=engineering_end_year, 
+                        quarter=quarter,
+                        start_date__gte=engineering_start,
+                        end_date__lte=engineering_end
                     ).aggregate(Max('week'))['week__max']
 
                     if last_week_of_quarter:
                         last_week = Voltage161KWeek.objects.get(
-                            year=current_year, 
+                            year=year, 
                             quarter=quarter, 
                             week=last_week_of_quarter
                         )
@@ -717,13 +770,16 @@ class GetVoltage161KQuarterChartProgress(APIView):
                             voltage161k_week_id=last_week.week_id
                         ).first() if progress_record else None
 
-                        if voltage161k.construction_status == 1 :
-                                actual_percentage = 100
-                                expected_percentage = 100
+                        if progress_record == None and voltage161k.construction_status== 1:
+                            actual_percentage = 100
+                            expected_percentage = 100
+                        elif progress_record == None:
+                            actual_percentage = 0
+                            expected_percentage = 0
                         else:
-                            actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
-                            expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
-
+                            actual_percentage = (progress_record.progress_percentage * 100) if progress_record and progress_record.progress_percentage is not None else 0
+                            expected_percentage = (expected_record.progress_percentage * 100) if expected_record and expected_record.progress_percentage is not None else 0
+        
                         actual_data.append(actual_percentage)
                         expected_data.append(expected_percentage)
 
@@ -769,28 +825,47 @@ class GetVoltage161KAllQuarterChartProgress(APIView):
                 return Response({"error": "Invalid project type."}, status=400)
 
             datasets = []
-            all_years = Voltage161KWeek.objects.values_list('year', flat=True).order_by('year').distinct()
+            relevant_years_and_quarters = set()
 
-            labels = [f"{year} Q{quarter}" for year in all_years for quarter in range(1, 5)]
+            # 確認是否在工程時間內
+            project = Project.objects.filter(project_id=project_id).first()
+            # 獲取工程開始和結束日期
+            engineering_start = min(project.actualstart_date, project.plannedstart_date)
+            engineering_end = project.actualend_date or datetime.date.today()
+
+            for voltage161k in voltage161ks:
+                # 根據工程日期範圍過濾 Voltage161KWeek，並收集年份和季度
+                years_and_quarters = Voltage161KWeek.objects.filter(
+                    start_date__gte=engineering_start,
+                    end_date__lte=engineering_end
+                ).values_list('year', 'quarter').distinct()
+
+                for year, quarter in years_and_quarters:
+                    relevant_years_and_quarters.add((year, quarter))
+
+            # 將收集到的年份和季度排序並生成標籤
+            all_years_and_quarters = sorted(relevant_years_and_quarters)
+            labels = [f"{year} Q{quarter}" for year, quarter in all_years_and_quarters]
 
             for voltage161k in voltage161ks:
                 actual_data = []
                 expected_data = []
-                for year in all_years:
-                    quarters_with_data = Voltage161KWeek.objects.filter(year=year).values_list('quarter', flat=True).distinct()
 
-                    for quarter in quarters_with_data:
-                        last_week_of_quarter = Voltage161KWeek.objects.filter(
+                for year, quarter in all_years_and_quarters:
+                    # 找到每個季度的最後一週
+                    last_week_of_quarter = Voltage161KWeek.objects.filter(
+                        year=year, 
+                        quarter=quarter,
+                        start_date__gte=engineering_start,
+                        end_date__lte=engineering_end
+                    ).aggregate(Max('week'))['week__max']
+
+                    if last_week_of_quarter:
+                        last_week = Voltage161KWeek.objects.get(
                             year=year, 
-                            quarter=quarter
-                        ).aggregate(Max('week'))['week__max']
-
-                        if last_week_of_quarter:
-                            last_week = Voltage161KWeek.objects.get(
-                                year=year, 
-                                quarter=quarter, 
-                                week=last_week_of_quarter
-                            )
+                            quarter=quarter, 
+                            week=last_week_of_quarter
+                        )
 
                         progress_record = progress_model.objects.filter(
                             voltage161k_id=voltage161k.voltage161k_id, 
@@ -802,13 +877,16 @@ class GetVoltage161KAllQuarterChartProgress(APIView):
                             voltage161k_week_id=last_week.week_id
                         ).first() if progress_record else None
 
-                        if voltage161k.construction_status == 1 :
-                                actual_percentage = 100
-                                expected_percentage = 100
+                        if progress_record == None and voltage161k.construction_status== 1:
+                            actual_percentage = 100
+                            expected_percentage = 100
+                        elif progress_record == None:
+                            actual_percentage = 0
+                            expected_percentage = 0
                         else:
-                            actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
-                            expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
-
+                            actual_percentage = (progress_record.progress_percentage * 100) if progress_record and progress_record.progress_percentage is not None else 0
+                            expected_percentage = (expected_record.progress_percentage * 100) if expected_record and expected_record.progress_percentage is not None else 0
+        
                         actual_data.append(actual_percentage)
                         expected_data.append(expected_percentage)
 
@@ -826,6 +904,7 @@ class GetVoltage161KAllQuarterChartProgress(APIView):
                     "borderColor": base_color,
                     "borderDash": [5, 5]
                 })
+            print(datasets)
 
             return Response({
                 "labels": labels,
@@ -853,8 +932,17 @@ class GetVoltage161KWeekChartProgress(APIView):
             else:
                 return Response({"error": "Invalid project type."}, status=400)
 
+            # 確認是否在工程時間內
+            project = Project.objects.filter(project_id=project_id).first()
+            # 獲取工程開始和結束日期
+            engineering_start = min(project.actualstart_date, project.plannedstart_date)
+            engineering_end = project.actualend_date or datetime.date.today()
+
             # 獲取所有周，並由新到舊排序
-            all_weeks = Voltage161KWeek.objects.annotate(
+            all_weeks = Voltage161KWeek.objects.filter(
+                start_date__gte=engineering_start,
+                end_date__lte=engineering_end
+            ).annotate(
                 date_range=Concat(
                     'start_date', V(' - '), 'end_date',
                     output_field=CharField()
@@ -890,13 +978,16 @@ class GetVoltage161KWeekChartProgress(APIView):
                         voltage161k_week_id=week.week_id
                     ).first()
 
-                    if voltage161k.construction_status == 1 :
-                                actual_percentage = 100
-                                expected_percentage = 100
+                    if progress_record == None and voltage161k.construction_status== 1:
+                        actual_percentage = 100
+                        expected_percentage = 100
+                    elif progress_record == None:
+                        actual_percentage = 0
+                        expected_percentage = 0
                     else:
-                        actual_percentage = (progress_record.progress_percentage * 100) if progress_record else 0
-                        expected_percentage = (expected_record.progress_percentage * 100) if expected_record else 0
-
+                        actual_percentage = (progress_record.progress_percentage * 100) if progress_record and progress_record.progress_percentage is not None else 0
+                        expected_percentage = (expected_record.progress_percentage * 100) if expected_record and expected_record.progress_percentage is not None else 0
+     
                     actual_data.append(actual_percentage)
                     expected_data.append(expected_percentage)
 

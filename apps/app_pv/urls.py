@@ -96,4 +96,17 @@ urlpatterns = [
     path('get_loop_all_quarter_chart_progress/<int:loop_id>/<str:project_type>/', views.GetLoopAllQuarterChartProgress.as_view(), name='get_loop_all_quarter_chart_progress'),
     # 計算所有季進度報表
     path('get_loop_quarter_chart_progress/<int:loop_id>/<str:project_type>/', views.GetLoopQuarterChartProgress.as_view(), name='get_loop_quarter_chart_progress'),
+    
+    # 計算純PVLOOP周進度
+    path('get_only_pv_loop_progress/<int:project_id>/<int:currentPage>/<int:itemsPerPage>/', views.GetOnlyLoopPVProgress.as_view(), name='get_only_pv_loop_progress'),
+    # 計算純PVLOOP所有季進度
+    path('get_only_pv_loop_all_quarter_progress/<int:project_id>/<int:currentPage>/<int:itemsPerPage>/', views.GetOnlyLoopPVAllQuarterProgress.as_view(), name='get_only_pv_loop_all_quarter_progress'),
+    # 計算純PVLOOP季進度
+    path('get_only_pv_loop_quarter_progress/<int:project_id>/<int:currentPage>/<int:itemsPerPage>/', views.GetOnlyLoopPVQuarterProgress.as_view(), name='get_only_pv_loop_quarter_progress'),
+    # 計算總迴路即時季進度報表
+    path('get_loop_pv_quarter_chart_progress/<int:project_id>/', views.GetLoopPVQuarterChartProgress.as_view(), name='get_gloop_quarter_chart_progress'),
+    # 計算總迴路所有季進度報表
+    path('get_loop_pv_all_quarter_chart_progress/<int:project_id>/', views.GetLoopPVAllQuarterChartProgress.as_view(), name='get_gloop_all_quarter_chart_progress'),
+    # 計算總迴路所有周進度報表
+    path('get_loop_pv_week_chart_progress/<int:project_id>/<int:currentPage>/<int:itemsPerPage>/', views.GetLoopPVWeekChartProgress.as_view(), name='get_gloop_week_chart_progress'),
 ]

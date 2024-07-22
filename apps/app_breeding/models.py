@@ -98,22 +98,6 @@ class BreedingBankProgress(BaseModel):
         managed = False
         db_table = 'breedingbank_progress'
 
-# 專案Breeding實際進度(銀行版)歷史
-class BreedingBankHistory(BaseModel):
-    history_id = models.AutoField(primary_key=True)
-    reference_id = models.ForeignKey('BreedingBankProgress', on_delete=models.CASCADE, db_column='reference_id')
-    changed_column = models.CharField(max_length=255)
-    previous_value = models.TextField()
-    new_value = models.TextField()
-    change_type = models.CharField(max_length=50)
-    change_time = models.DateTimeField(auto_now_add=True)
-    changed_by = models.CharField(max_length=255)
-    change_reason = models.TextField()
-    change_description = models.TextField()
-
-    class Meta:
-        managed = False
-        db_table = 'breeding_bank_history'
 
 # 專案Breeding預期進度(銀行版)
 class BreedingBankProgressExpected(BaseModel):
@@ -131,6 +115,23 @@ class BreedingBankProgressExpected(BaseModel):
     class Meta:
         managed = False
         db_table = 'breedingbank_progress_expected'
+
+# 專案Breeding實際進度(銀行版)歷史
+class BreedingBankHistory(BaseModel):
+    history_id = models.AutoField(primary_key=True)
+    reference_id = models.ForeignKey('BreedingBankProgress', on_delete=models.CASCADE, db_column='reference_id')
+    changed_column = models.CharField(max_length=255)
+    previous_value = models.TextField()
+    new_value = models.TextField()
+    change_type = models.CharField(max_length=50)
+    change_time = models.DateTimeField(auto_now_add=True)
+    changed_by = models.CharField(max_length=255)
+    change_reason = models.TextField()
+    change_description = models.TextField()
+
+    class Meta:
+        managed = False
+        db_table = 'breeding_bank_history'
 
 # 專案Breeding預期進度(銀行版)歷史
 class BreedingBankExpectedHistory(BaseModel):
