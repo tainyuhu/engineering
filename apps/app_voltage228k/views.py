@@ -176,73 +176,82 @@ class GetCivilProgress(APIView):
                                 "construction_status": voltage228k.construction_status,
                             })
 
+            # 轉換有序字典並提取最新的 date_range 數據
             ordered_date_ranges = OrderedDict(sorted(date_ranges_with_data.items(), reverse=True))
             latest_date_range, latest_data = next(iter(ordered_date_ranges.items()))
+
+            # 準備分頁數據
+            if currentPage > 1:
+                pass
 
             paginator = Paginator(list(ordered_date_ranges.items()), itemsPerPage)
             page_obj = paginator.get_page(currentPage)
 
+            # 格式化當前數據
             formatted_results = []
             if currentPage == 1:
+                # 第一頁直接展示包括最新的 date_range 數據
                 for date_range, data in page_obj.object_list:
                     for item in data:
                         if project_type == "bank":
                             formatted_results.append({
                                 "loop_name": item["loop_name"],
+                                "construction_status": item["construction_status"],
                                 "date_range": date_range,
                                 "actual": item["actual"],
                                 "expected": item["expected"],
-                                "construction_status": item["construction_status"],
                                 "actual_lag_status": item["actual_lag_status"],
                                 "expected_lag_status": item["expected_lag_status"],
                             })
                         else:
                             formatted_results.append({
                                 "loop_name": item["loop_name"],
+                                "construction_status": item["construction_status"],
                                 "date_range": date_range,
                                 "actual": item["actual"],
-                                "expected": item["expected"],
-                                "construction_status": item["construction_status"],
+                                "expected": item["expected"]
                             })
             else:
+                # 從第二頁開始，在資料頂部都增加最新的 date_range 數據
                 for item in latest_data:
-                    if project_type == "bank":
-                        formatted_results.append({
-                            "loop_name": item["loop_name"],
-                            "date_range": latest_date_range,
-                            "actual": item["actual"],
-                            "expected": item["expected"],
-                            "construction_status": item["construction_status"],
-                            "actual_lag_status": item["actual_lag_status"],
-                            "expected_lag_status": item["expected_lag_status"],
-                        })
-                    else:
-                        formatted_results.append({
-                            "loop_name": item["loop_name"],
-                            "date_range": latest_date_range,
-                            "actual": item["actual"],
-                            "expected": item["expected"],
-                            "construction_status": item["construction_status"],
-                        })
-                for date_range, data in page_obj.object_list:
-                    for item in data:
                         if project_type == "bank":
                             formatted_results.append({
                                 "loop_name": item["loop_name"],
-                                "date_range": date_range,
+                                "construction_status": item["construction_status"],
+                                "date_range": latest_date_range,
                                 "actual": item["actual"],
                                 "expected": item["expected"],
-                                "construction_status": item["construction_status"],
                                 "actual_lag_status": item["actual_lag_status"],
                                 "expected_lag_status": item["expected_lag_status"],
                             })
                         else:
                             formatted_results.append({
                                 "loop_name": item["loop_name"],
+                                "construction_status": item["construction_status"],
+                                "date_range": latest_date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"]
+                            })
+                # 添加當前頁的其他數據
+                for date_range, data in page_obj.object_list:
+                    for item in data:
+                        if project_type == "bank":
+                            formatted_results.append({
+                                "loop_name": item["loop_name"],
+                                "construction_status": item["construction_status"],
                                 "date_range": date_range,
                                 "actual": item["actual"],
                                 "expected": item["expected"],
+                                "actual_lag_status": item["actual_lag_status"],
+                                "expected_lag_status": item["expected_lag_status"],
+                            })
+                        else:
+                            formatted_results.append({
+                                "loop_name": item["loop_name"],
                                 "construction_status": item["construction_status"],
+                                "date_range": date_range,
+                                "actual": item["actual"],
+                                "expected": item["expected"]
                             })
 
             return Response({
