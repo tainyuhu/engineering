@@ -1,13 +1,13 @@
 import datetime
 from rest_framework import generics
 from .models import (
-    FileProgressPhase, MeetingRecord, PlanWeek, PlansProgressExpected, ProjectValueRatio, ProjectValueRatiosHistory, Plan, PlansHistory,  PlansProgress, 
+    FileProgressMonth, FileProgressPhase, MeetingRecord, PlanWeek, PlansProgressExpected, ProjectValueRatio, ProjectValueRatiosHistory, Plan, PlansHistory,  PlansProgress, 
     MasterPlan, MasterPlansHistory, MasterPlanProgress,
     PlanWeight, PlanAssociation, PlanTotalEnergyProduction,
     ProjectLoopEnergyProduction, ProjectCaseEnergyProduction, EnergyProductionSeries, EnergyProductionRatio, FileProgress
 )
 from .serializers import (
-    FileProgressPhaseSerializer, MeetingRecordSerializer, ProjectValueRatioSerializer, ProjectValueRatiosHistorySerializer, PlanSerializer, PlansHistorySerializer, PlansProgressSerializer, 
+    FileProgressMonthSerializer, FileProgressPhaseSerializer, MeetingRecordSerializer, ProjectValueRatioSerializer, ProjectValueRatiosHistorySerializer, PlanSerializer, PlansHistorySerializer, PlansProgressSerializer, 
     MasterPlanSerializer, MasterPlansHistorySerializer, MasterPlanProgressSerializer,
     PlanWeightSerializer, PlanAssociationSerializer, PlanTotalEnergyProductionSerializer,
     ProjectLoopEnergyProductionSerializer, ProjectCaseEnergyProductionSerializer, 
@@ -185,7 +185,6 @@ class FileProgressDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = FileProgressSerializer
 #endregion
     
-
 #region 文件連結管理
 class FileProgressPhaseList(generics.ListCreateAPIView):
     queryset = FileProgressPhase.objects.all()
@@ -194,6 +193,16 @@ class FileProgressPhaseList(generics.ListCreateAPIView):
 class FileProgressPhaseDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = FileProgressPhase.objects.all()
     serializer_class = FileProgressPhaseSerializer
+#endregion
+
+#region 文件連結管理
+class FileProgressMonthList(generics.ListCreateAPIView):
+    queryset = FileProgressMonth.objects.all()
+    serializer_class = FileProgressMonthSerializer
+
+class FileProgressMonthDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = FileProgressMonth.objects.all()
+    serializer_class = FileProgressMonthSerializer
 #endregion
     
 #region 會議連結管理
