@@ -365,7 +365,7 @@ class GetPVAllQuarterProgress(APIView):
                 return Response({"error": "Invalid project type."}, status=400)
 
             # 確認是否在工程時間內
-            casess = ProjectCase.objects.filter(loop_id=loop_id).first()
+            casess = ProjectLoop.objects.filter(loop_id=loop_id).first()
             engineering_start = min(casess.actualstart_date, casess.plannedstart_date)
             engineering_end = casess.actualend_date or datetime.date.today()
 
@@ -562,6 +562,7 @@ class GetPVAllQuarterProgress(APIView):
 class GetPVQuarterProgress(APIView):
     def get(self, request, loop_id, currentPage, itemsPerPage, project_type):
         try:
+            print("1")
             # 獲取所有 cases
             cases = ProjectCase.objects.filter(loop_id=loop_id)
 
@@ -578,10 +579,10 @@ class GetPVQuarterProgress(APIView):
                 return Response({"error": "Invalid project type."}, status=400)
 
             # 確認是否在工程時間內
-            casess = ProjectCase.objects.filter(loop_id=loop_id).first()
-            engineering_start = min(casess.actualstart_date, casess.plannedstart_date)
+            casess = ProjectLoop.objects.filter(loop_id=loop_id).first()
             engineering_end = casess.actualend_date or datetime.date.today()
-
+            engineering_start = min(casess.actualstart_date, casess.plannedstart_date)
+            
             # 確認工程結束年份
             engineering_end_year = engineering_end.year
 
@@ -954,7 +955,7 @@ class GetLoopAllQuarterProgress(APIView):
             breeding_expected_model = ProjectBreedingExpectedProgress if project_type == "engineering" else BreedingBankProgressExpected
             
             # 確認是否在工程時間內
-            casess = ProjectCase.objects.filter(loop_id=loop_id).first()
+            casess = ProjectLoop.objects.filter(loop_id=loop_id).first()
             engineering_start = min(casess.actualstart_date, casess.plannedstart_date)
             engineering_end = casess.actualend_date or datetime.date.today()
 
@@ -1242,7 +1243,7 @@ class GetLoopQuarterProgress(APIView):
             breeding_expected_model = ProjectBreedingExpectedProgress if project_type == "engineering" else BreedingBankProgressExpected
             
             # 確認是否在工程時間內
-            casess = ProjectCase.objects.filter(loop_id=loop_id).first()
+            casess = ProjectLoop.objects.filter(loop_id=loop_id).first()
             engineering_start = min(casess.actualstart_date, casess.plannedstart_date)
             engineering_end = casess.actualend_date or datetime.date.today()
 
@@ -1548,7 +1549,7 @@ class GetPVQuarterChartProgress(APIView):
             relevant_years_and_quarters = set()
 
             # 確認是否在工程時間內
-            casess = ProjectCase.objects.filter(loop_id=loop_id).first()
+            casess = ProjectLoop.objects.filter(loop_id=loop_id).first()
             engineering_start = min(casess.actualstart_date, casess.plannedstart_date)
             engineering_end = casess.actualend_date or datetime.date.today()
 
@@ -1660,7 +1661,7 @@ class GetPVAllQuarterChartProgress(APIView):
             relevant_years_and_quarters = set()
 
             # 確認是否在工程時間內
-            casess = ProjectCase.objects.filter(loop_id=loop_id).first()
+            casess = ProjectLoop.objects.filter(loop_id=loop_id).first()
             engineering_start = min(casess.actualstart_date, casess.plannedstart_date)
             engineering_end = casess.actualend_date or datetime.date.today()
 
@@ -1772,7 +1773,7 @@ class GetPVWeekChartProgress(APIView):
                 return Response({"error": "Invalid project type."}, status=400)
 
             # 確認是否在工程時間內
-            casess = ProjectCase.objects.filter(loop_id=loop_id).first()
+            casess = ProjectLoop.objects.filter(loop_id=loop_id).first()
             engineering_start = min(casess.actualstart_date, casess.plannedstart_date)
             engineering_end = casess.actualend_date or datetime.date.today()
 
@@ -1873,7 +1874,7 @@ class GetLoopChartProgress(APIView):
             breeding_expected_model = ProjectBreedingExpectedProgress if project_type == "engineering" else BreedingBankProgressExpected
 
             # 確認是否在工程時間內
-            casess = ProjectCase.objects.filter(loop_id=loop_id).first()
+            casess = ProjectLoop.objects.filter(loop_id=loop_id).first()
             engineering_start = min(casess.actualstart_date, casess.plannedstart_date)
             engineering_end = casess.actualend_date or datetime.date.today()
 
@@ -2061,7 +2062,7 @@ class GetLoopAllQuarterChartProgress(APIView):
             relevant_years_and_quarters = set()
 
             # 確認是否在工程時間內
-            casess = ProjectCase.objects.filter(loop_id=loop_id).first()
+            casess = ProjectLoop.objects.filter(loop_id=loop_id).first()
             engineering_start = min(casess.actualstart_date, casess.plannedstart_date)
             engineering_end = casess.actualend_date or datetime.date.today()
 
@@ -2334,7 +2335,7 @@ class GetLoopQuarterChartProgress(APIView):
             relevant_years_and_quarters = set()
 
             # 確認是否在工程時間內
-            casess = ProjectCase.objects.filter(loop_id=loop_id).first()
+            casess = ProjectLoop.objects.filter(loop_id=loop_id).first()
             engineering_start = min(casess.actualstart_date, casess.plannedstart_date)
             engineering_end = casess.actualend_date or datetime.date.today()
 
