@@ -285,7 +285,7 @@ class GetBreedingAllQuarterProgress(APIView):
                 return Response({"error": "Invalid project type."}, status=400)
             
             # 確認是否在工程時間內
-            casess = ProjectCase.objects.filter(loop_id=loop_id).first()
+            casess = ProjectLoop.objects.filter(loop_id=loop_id).first()
             engineering_start = min(casess.actualstart_date, casess.plannedstart_date)
             engineering_end = casess.actualend_date or datetime.date.today()
 
@@ -498,7 +498,7 @@ class GetBreedingQuarterProgress(APIView):
                 return Response({"error": "Invalid project type."}, status=400)
 
             # 確認是否在工程時間內
-            casess = ProjectCase.objects.filter(loop_id=loop_id).first()
+            casess = ProjectLoop.objects.filter(loop_id=loop_id).first()
             engineering_start = min(casess.actualstart_date, casess.plannedstart_date)
             engineering_end = casess.actualend_date or datetime.date.today()
 
@@ -731,7 +731,7 @@ class GetBreedingQuarterChartProgress(APIView):
             relevant_years_and_quarters = set()
 
             # 確認是否在工程時間內
-            casess = ProjectCase.objects.filter(loop_id=loop_id).first()
+            casess = ProjectLoop.objects.filter(loop_id=loop_id).first()
             engineering_start = min(casess.actualstart_date, casess.plannedstart_date)
             engineering_end = casess.actualend_date or datetime.date.today()
 
@@ -841,7 +841,7 @@ class GetBreedingAllQuarterChartProgress(APIView):
             relevant_years_and_quarters = set()
 
             # 確認是否在工程時間內
-            casess = ProjectCase.objects.filter(loop_id=loop_id).first()
+            casess = ProjectLoop.objects.filter(loop_id=loop_id).first()
             engineering_start = min(casess.actualstart_date, casess.plannedstart_date)
             engineering_end = casess.actualend_date or datetime.date.today()
 
@@ -962,7 +962,7 @@ class GetBreedingWeekChartProgress(APIView):
                 return Response({"error": "Invalid project type."}, status=400)
 
             # 確認是否在工程時間內
-            casess = ProjectCase.objects.filter(loop_id=loop_id).first()
+            casess = ProjectLoop.objects.filter(loop_id=loop_id).first()
             engineering_start = min(casess.actualstart_date, casess.plannedstart_date)
             engineering_end = casess.actualend_date or datetime.date.today()
 
