@@ -1,13 +1,16 @@
 import datetime
+from django.utils import timezone
+from rest_framework import status
+from django.db.models import F, Func
 from rest_framework import generics
 from .models import (
-    FileProgressMonth, FileProgressPhase, MeetingRecord, PlanWeek, PlansProgressExpected, ProjectValueRatio, ProjectValueRatiosHistory, Plan, PlansHistory,  PlansProgress, 
+    Billboard, FileProgressMonth, FileProgressPhase, MeetingRecord, PlanWeek, PlansProgressExpected, ProjectValueRatio, ProjectValueRatiosHistory, Plan, PlansHistory,  PlansProgress, 
     MasterPlan, MasterPlansHistory, MasterPlanProgress,
     PlanWeight, PlanAssociation, PlanTotalEnergyProduction,
     ProjectLoopEnergyProduction, ProjectCaseEnergyProduction, EnergyProductionSeries, EnergyProductionRatio, FileProgress
 )
 from .serializers import (
-    FileProgressMonthSerializer, FileProgressPhaseSerializer, MeetingRecordSerializer, ProjectValueRatioSerializer, ProjectValueRatiosHistorySerializer, PlanSerializer, PlansHistorySerializer, PlansProgressSerializer, 
+    BillboardSerializer, FileProgressMonthSerializer, FileProgressPhaseSerializer, MeetingRecordSerializer, ProjectValueRatioSerializer, ProjectValueRatiosHistorySerializer, PlanSerializer, PlansHistorySerializer, PlansProgressSerializer, 
     MasterPlanSerializer, MasterPlansHistorySerializer, MasterPlanProgressSerializer,
     PlanWeightSerializer, PlanAssociationSerializer, PlanTotalEnergyProductionSerializer,
     ProjectLoopEnergyProductionSerializer, ProjectCaseEnergyProductionSerializer, 
@@ -214,7 +217,37 @@ class MeetingRecordDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = MeetingRecord.objects.all()
     serializer_class = MeetingRecordSerializer
 #endregion
-    
+
+#region 公佈欄
+class BillboardList(generics.ListCreateAPIView):
+    queryset = Billboard.objects.all()
+    serializer_class = BillboardSerializer
+
+class BillboardDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Billboard.objects.all()
+    serializer_class = BillboardSerializer
+#endregion
+
+#region 取得首頁的日期資訊
+class GetIndexWeek(APIView):
+    def get(self, request, *args, **kwargs):
+        current_date = timezone.now().date()
+        
+        closest_plan_week = PlanWeek.objects.annotate(
+            distance=Func(F('start_date') - current_date, function='ABS')
+        ).order_by('distance').first()
+
+        if closest_plan_week:
+            data = {
+                'end_date': closest_plan_week.end_date,
+                'quarter': closest_plan_week.quarter,
+                'week': closest_plan_week.week,
+            }
+            return Response(data, status=status.HTTP_200_OK)
+        else:
+            return Response({"error": "No upcoming plan weeks found"}, status=status.HTTP_404_NOT_FOUND)
+#endregion
+
 #region 計算所有周Plan工程進度
 class GetPlanProgress(APIView):
     def get(self, request, master_plan_id, currentPage, itemsPerPage):

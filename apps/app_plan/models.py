@@ -327,6 +327,21 @@ class MeetingRecord(BaseModel):
         db_table = 'meeting_record'
 #endregion
 
+#region 公佈欄
+class Billboard(models.Model):
+    billboard_id = models.AutoField(primary_key=True)
+    file_name = models.CharField(max_length=255, null=False, blank=False)
+    content = models.TextField(null=False, blank=False)
+    category = models.CharField(max_length=50, null=False, blank=False)
+    update_date = models.DateTimeField(auto_now_add=True)
+    link = models.URLField(max_length=255, null=True, blank=True)
+    is_top = models.BooleanField(default=False)
+
+    class Meta:
+        managed = False
+        db_table = 'billboard'
+#endregion
+
 
 
 

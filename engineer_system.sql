@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2024-08-07 05:03:26
+-- 產生時間： 2024-08-08 09:39:32
 -- 伺服器版本： 10.4.28-MariaDB
 -- PHP 版本： 8.2.4
 
@@ -545,6 +545,29 @@ CREATE TABLE `auth_user_user_permissions` (
 
 INSERT INTO `auth_user_user_permissions` (`id`, `user_id`, `permission_id`) VALUES
 (1, 6, 361);
+
+-- --------------------------------------------------------
+
+--
+-- 資料表結構 `billboard`
+--
+
+CREATE TABLE `billboard` (
+  `billboard_id` int(11) NOT NULL,
+  `file_name` varchar(255) NOT NULL,
+  `content` text NOT NULL,
+  `category` varchar(50) NOT NULL,
+  `update_date` timestamp NOT NULL DEFAULT current_timestamp(),
+  `link` varchar(255) DEFAULT NULL,
+  `is_top` tinyint(1) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- 傾印資料表的資料 `billboard`
+--
+
+INSERT INTO `billboard` (`billboard_id`, `file_name`, `content`, `category`, `update_date`, `link`, `is_top`) VALUES
+(1, '增加Q3W04進度', 'Q3W04進度已更新，部分預計進度已經超過實際進度。', '進度更新', '2024-08-08 03:14:28', NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -27543,6 +27566,12 @@ ALTER TABLE `auth_user_user_permissions`
   ADD KEY `auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm` (`permission_id`);
 
 --
+-- 資料表索引 `billboard`
+--
+ALTER TABLE `billboard`
+  ADD PRIMARY KEY (`billboard_id`);
+
+--
 -- 資料表索引 `breedingbank_progress`
 --
 ALTER TABLE `breedingbank_progress`
@@ -28307,6 +28336,12 @@ ALTER TABLE `auth_user_groups`
 --
 ALTER TABLE `auth_user_user_permissions`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- 使用資料表自動遞增(AUTO_INCREMENT) `billboard`
+--
+ALTER TABLE `billboard`
+  MODIFY `billboard_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `breedingbank_progress`
