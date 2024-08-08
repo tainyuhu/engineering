@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import (
-    FileProgressMonth, FileProgressPhase, MeetingRecord, ProjectValueRatio, ProjectValueRatiosHistory, Plan, PlansHistory,
+    Billboard, FileProgressMonth, FileProgressPhase, MeetingRecord, ProjectValueRatio, ProjectValueRatiosHistory, Plan, PlansHistory,
     PlansProgress, MasterPlan, MasterPlansHistory, MasterPlanProgress,
     PlanWeight, PlanAssociation, PlanTotalEnergyProduction,
     ProjectLoopEnergyProduction, ProjectCaseEnergyProduction,
@@ -119,5 +119,11 @@ class FileProgressMonthSerializer(serializers.ModelSerializer):
 class MeetingRecordSerializer(serializers.ModelSerializer):
     class Meta:
         model = MeetingRecord
+        fields = '__all__'
+
+# 公佈欄
+class BillboardSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Billboard
         fields = '__all__'
 

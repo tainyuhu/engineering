@@ -98,4 +98,7 @@ urlpatterns = [
     path('get_project_all_quarter_chart_progress/<int:plan_id>/', views.GetProjectAllQuarterChartProgress.as_view(), name='get_project_all_quarter_chart_progress'),
     # 計算管理總表所有周進度報表
     path('get_project_week_chart_progress/<int:plan_id>/<int:currentPage>/<int:itemsPerPage>/', views.GetProjectWeekChartProgress.as_view(), name='get_gloop_week_chart_progress'),
+
+    # 取得最新一周的計畫進度
+    path('get_plan_progress/<int:master_plan_id>/', views.GetOnePlanProgress.as_view(), name='get_plan_progress'),
 ]

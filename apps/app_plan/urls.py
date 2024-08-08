@@ -78,6 +78,10 @@ urlpatterns = [
     path('meetingrecord/', views.MeetingRecordList.as_view(), name='meetingrecord-list'),
     path('meetingrecord/<int:pk>/', views.MeetingRecordDetail.as_view(), name='meetingrecord-detail'),
 
+    # 公佈欄 URLs
+    path('billboard/', views.BillboardList.as_view(), name='billboard-list'),
+    path('billboard/<int:pk>/', views.BillboardDetail.as_view(), name='billboard-detail'),
+
     # 計算總體計畫周進度
     path('get_plan_progress/<int:master_plan_id>/<int:currentPage>/<int:itemsPerPage>/', views.GetPlanProgress.as_view(), name='get_plan_progress'),
     # 計算總體計畫所有季進度
@@ -90,5 +94,6 @@ urlpatterns = [
     path('get_plan_all_quarter_chart_progress/<int:master_plan_id>/', views.GetPlanAllQuarterChartProgress.as_view(), name='get_plan_all_quarter_chart_progress'),
     # 計算總體計畫所有周進度報表
     path('get_plan_week_chart_progress/<int:master_plan_id>/<int:currentPage>/<int:itemsPerPage>/', views.GetPlanWeekChartProgress.as_view(), name='get_gloop_week_chart_progress'),
-    
+    # 取得首頁的紀錄日期資訊
+    path('get-index-week/', views.GetIndexWeek.as_view(), name='get-index-week'),
 ]

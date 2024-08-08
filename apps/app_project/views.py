@@ -1,5 +1,7 @@
 import datetime
-
+from django.utils import timezone
+from django.db.models import F, Func
+from rest_framework import status
 from apps.app_plan.models import Plan
 from .models import (
     LoopWeek, Project, ProjectWeek, ProjectsProgress, ProjectsProgressExpected, ProjectLoop, LoopsHistory,
@@ -1616,4 +1618,48 @@ class GetProjectWeekChartProgress(APIView):
             return Response({"error": str(e)}, status=500)
 #endregion
 
+#region 取得最新一周的計畫進度
+class GetOnePlanProgress(APIView):
+    def get(self, request, master_plan_id):
+        try:
+            plans = Plan.objects.filter(master_plan_id=master_plan_id)
+            current_date = timezone.now().date()
+            all_plans_progress = []
 
+            for plan in plans:
+                projects_progress_list = []
+                projects = Project.objects.filter(plan_id=plan.plan_id)
+                
+                for project in projects:
+                    progress_record = ProjectsProgress.objects.filter(project_id=project.project_id).order_by('-project_week_id').first()
+                    if progress_record:
+                        expected_record = ProjectsProgressExpected.objects.filter(
+                            project_id=project.project_id, 
+                            project_week_id=progress_record.project_week_id
+                        ).first()
+                        week_data = ProjectWeek.objects.filter(week_id=progress_record.project_week_id.week_id).first()
+                    else:
+                        week_data = ProjectWeek.objects.annotate(
+                            distance=Func(F('start_date') - current_date, function='ABS')
+                        ).order_by('distance').first()
+                        expected_record = None
+
+                    if week_data:
+                        project_progress = {
+                            "projectName": project.project_name,
+                            "progress": progress_record.progress_percentage if progress_record else 0,
+                            "expected": expected_record.progress_percentage if expected_record else 0,
+                            "construction_status": project.construction_status,
+                        }
+                        projects_progress_list.append(project_progress)
+
+                plan_progress = {
+                    "planName": plan.plan_name,
+                    "projects": projects_progress_list
+                }
+                all_plans_progress.append(plan_progress)
+
+            return Response(all_plans_progress, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=500)
+#endregion
